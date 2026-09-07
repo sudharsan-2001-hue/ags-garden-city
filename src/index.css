@@ -1,0 +1,1149 @@
+:root {
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+
+  /* Glassmorphism Color Palette */
+  --bg-dark: #0a0b14;
+  --bg-gradient: radial-gradient(circle at 15% 15%, rgba(139, 0, 201, 0.25) 0%, transparent 45%),
+                 radial-gradient(circle at 85% 25%, rgba(56, 189, 248, 0.22) 0%, transparent 45%),
+                 radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.18) 0%, transparent 50%),
+                 radial-gradient(circle at 20% 90%, rgba(99, 102, 241, 0.2) 0%, transparent 40%),
+                 #0b0c16;
+
+  /* Glass Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-hover: rgba(255, 255, 255, 0.09);
+  --glass-bg-active: rgba(255, 255, 255, 0.14);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-hover: rgba(255, 255, 255, 0.28);
+  --glass-border-active: rgba(168, 85, 247, 0.6);
+  --glass-blur: blur(16px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-glow: 0 0 25px rgba(168, 85, 247, 0.35);
+
+  /* Solid & Gradient Accents */
+  --primary: #9333ea;
+  --primary-light: #c084fc;
+  --primary-dark: #7e22ce;
+  --accent-cyan: #38bdf8;
+  --accent-pink: #f43f5e;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+
+  --gradient-primary: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #38bdf8 100%);
+  --gradient-accent: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  --gradient-card: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+
+  /* Text Colors */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-sub: #cbd5e1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-dark);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+/* Glassmorphism Utility Classes */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45), var(--glass-glow);
+  transform: translateY(-4px);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-family: var(--font-main);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.glass-input:focus {
+  border-color: var(--primary-light);
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 0 16px rgba(192, 132, 252, 0.35);
+}
+
+.glass-input option {
+  background: #111222;
+  color: #fff;
+}
+
+.glass-btn {
+  background: var(--gradient-primary);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 12px 24px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.4);
+}
+
+.glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(147, 51, 234, 0.65);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.glass-btn-secondary {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.glass-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+}
+
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-accent-text {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Ambient Floating Blur Orbs */
+.ambient-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  animation: float 20s infinite alternate ease-in-out;
+}
+
+.orb-1 {
+  width: 450px;
+  height: 450px;
+  background: rgba(147, 51, 234, 0.35);
+  top: -100px;
+  left: -100px;
+}
+
+.orb-2 {
+  width: 500px;
+  height: 500px;
+  background: rgba(56, 189, 248, 0.28);
+  top: 30%;
+  right: -150px;
+  animation-delay: -5s;
+}
+
+.orb-3 {
+  width: 400px;
+  height: 400px;
+  background: rgba(236, 72, 153, 0.25);
+  bottom: -50px;
+  left: 30%;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(40px, 60px) scale(1.08);
+  }
+  100% {
+    transform: translate(-30px, 30px) scale(0.95);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #090a13;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.6);
+}
+
+/* ========================================================= */
+/* 🏢 AGS GARDEN CITY LUXURY REAL ESTATE LOGIN PORTAL        */
+/* ========================================================= */
+.mach-login-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  position: relative;
+  z-index: 10;
+  background: radial-gradient(circle at 50% 30%, rgba(30, 58, 138, 0.35) 0%, rgba(13, 17, 26, 0.98) 75%), #0d111a;
+}
+
+.mach-login-card {
+  width: 100%;
+  max-width: 460px;
+  background: #18202f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(59, 130, 246, 0.15);
+  border-radius: 26px;
+  padding: 38px 32px;
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(16px);
+  animation: machCardFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes machCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mach-icon-badge {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #162238;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: #60a5fa;
+}
+
+.mach-header-title {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.mach-header-subtitle {
+  color: #94a3b8;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.mach-segmented-toggle {
+  display: flex;
+  background: #101622;
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mach-tab-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.mach-tab-btn.active {
+  background: #283344;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mach-tab-btn.inactive {
+  background: transparent;
+  color: #8391a5;
+}
+
+.mach-tab-btn.inactive:hover {
+  color: #cbd5e1;
+}
+
+.mach-field-group {
+  margin-bottom: 18px;
+}
+
+.mach-field-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.mach-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.mach-input-box {
+  width: 100%;
+  height: 48px;
+  background: #e2e8f0;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 14.5px;
+  color: #0f172a;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.mach-input-box::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.mach-input-box:focus {
+  background: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.mach-input-eye-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.mach-input-eye-btn:hover {
+  color: #0f172a;
+}
+
+.mach-remember-forgot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  font-size: 13px;
+}
+
+.mach-remember-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mach-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #3b82f6;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.mach-forgot-link {
+  color: #10b981;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+.mach-forgot-link:hover {
+  color: #34d399;
+  text-decoration: underline;
+}
+
+.mach-btn-login {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(59, 130, 246, 0.4);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.mach-btn-login:hover {
+  box-shadow: 0 6px 24px rgba(59, 130, 246, 0.6);
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.mach-btn-login:active {
+  transform: translateY(0);
+}
+
+.mach-btn-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.mach-footer-text {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.mach-footer-link {
+  color: #10b981;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  margin-left: 4px;
+}
+
+.mach-footer-link:hover {
+  color: #34d399;
+  text-decoration: underline;
+}
+
+.mach-demo-box {
+  margin-top: 18px;
+  padding: 10px 14px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px dashed rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: #93c5fd;
+}
+
+.mach-demo-btn {
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.mach-demo-btn:hover {
+  background: #3b82f6;
+}
+
+/* ========================================================= */
+/* 📱 MOBILE VIEW ALIGNMENT & WORKFLOW OVERHAUL              */
+/* ========================================================= */
+@media (max-width: 640px) {
+  .mach-login-wrapper {
+    padding: 16px 12px !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+  }
+
+  .mach-login-card {
+    padding: 24px 18px !important;
+    border-radius: 20px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .mach-icon-badge {
+    width: 50px !important;
+    height: 50px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .mach-header-title {
+    font-size: 20px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .mach-header-subtitle {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    margin-bottom: 16px !important;
+  }
+
+  .mach-segmented-toggle {
+    margin-bottom: 16px !important;
+    padding: 3px !important;
+  }
+
+  .mach-tab-btn {
+    padding: 8px 10px !important;
+    font-size: 12.5px !important;
+  }
+
+  .mach-field-group {
+    margin-bottom: 14px !important;
+  }
+
+  .mach-field-label {
+    font-size: 11px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .mach-input-box {
+    height: 44px !important;
+    font-size: 13.5px !important;
+    padding: 0 14px !important;
+  }
+
+  .mach-remember-forgot-row {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .mach-remember-label {
+    font-size: 12px !important;
+    gap: 6px !important;
+  }
+
+  .mach-forgot-link {
+    font-size: 12px !important;
+  }
+
+  .mach-btn-login {
+    height: 44px !important;
+    font-size: 14px !important;
+  }
+
+  .mach-demo-box {
+    margin-top: 14px !important;
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+  }
+
+  .mach-demo-btn {
+    padding: 4px 8px !important;
+    font-size: 10.5px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .mach-login-card {
+    padding: 20px 14px !important;
+  }
+
+  .mach-remember-forgot-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+
+  .mach-demo-box {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    text-align: center !important;
+    gap: 6px !important;
+  }
+
+  .mach-demo-btn {
+    width: 100% !important;
+  }
+}
+
+/* =========================================================================
+   BRIGHT & CLEAN OFFICIAL REAL ESTATE CUSTOMER DOSSIER STYLES
+   ========================================================================= */
+
+/* On-Screen Paper Container (Bright, Clean, High Contrast) */
+.dossier-paper-container {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  border: 1.5px solid #cbd5e1;
+  text-align: left;
+}
+
+.dossier-paper-container * {
+  color: #0f172a;
+}
+
+.dossier-letterhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dossier-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dossier-logo-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #0f172a;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.dossier-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dossier-main-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a !important;
+  letter-spacing: 0.03em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.dossier-sub-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0284c7 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.dossier-meta-text {
+  font-size: 11px;
+  color: #475569 !important;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.dossier-ref-badge-box {
+  text-align: right;
+}
+
+.dossier-doc-type {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  color: #475569 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dossier-ref-number {
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a !important;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+}
+
+.dossier-issue-date {
+  font-size: 11px;
+  color: #475569 !important;
+  margin-top: 2px;
+}
+
+.dossier-status-pill {
+  display: inline-block;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1.5px solid #10b981;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+.dossier-license-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: #334155 !important;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dossier-license-bar strong {
+  color: #0f172a !important;
+}
+
+.dossier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dossier-card {
+  background: #f8fafc !important;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.dossier-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a !important;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.dossier-chip {
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+.dossier-chip.green {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #10b981;
+}
+.dossier-chip.blue {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #60a5fa;
+}
+.dossier-chip.emerald {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #10b981;
+}
+.dossier-chip.purple {
+  background: #faf5ff !important;
+  color: #6d28d9 !important;
+  border: 1px solid #c084fc;
+}
+
+.dossier-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dossier-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.dossier-row.highlight-amount {
+  background: #ecfdf5 !important;
+  padding: 6px 8px;
+  border-radius: 6px;
+  margin: 2px 0;
+  border: 1px solid #a7f3d0;
+}
+
+.dossier-lbl {
+  color: #475569 !important;
+  font-size: 11px;
+}
+
+.dossier-val {
+  color: #0f172a !important;
+  text-align: right;
+}
+.dossier-val.bold {
+  font-weight: 700;
+}
+.dossier-val.mono {
+  font-family: monospace;
+  font-weight: 800;
+  color: #0369a1 !important;
+}
+.dossier-val.green-text {
+  color: #047857 !important;
+}
+.dossier-val.emerald-text {
+  color: #047857 !important;
+}
+
+.dossier-amount {
+  font-size: 15px;
+  font-weight: 900;
+  color: #047857 !important;
+}
+
+.dossier-seal-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1.5px solid #e2e8f0;
+  padding-top: 12px;
+  margin-top: 12px;
+  gap: 12px;
+}
+
+.dossier-sign-block {
+  flex: 1;
+  text-align: center;
+}
+
+.dossier-sign-line {
+  height: 1.5px;
+  background: #64748b;
+  margin-bottom: 6px;
+}
+
+.dossier-sign-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0f172a !important;
+}
+
+.dossier-sign-sub {
+  font-size: 10px;
+  color: #475569 !important;
+}
+
+.dossier-stamp-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.dossier-stamp-seal {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 2px dashed #047857;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+  color: #047857 !important;
+  transform: rotate(-4deg);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.dossier-stamp-seal span {
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #047857 !important;
+}
+
+.dossier-stamp-seal strong {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin: 1px 0;
+  color: #047857 !important;
+}
+
+.dossier-footnote {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 10px;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.dossier-barcode-text {
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #475569 !important;
+  margin-bottom: 2px;
+}
+
+.dossier-footnote p {
+  font-size: 9.5px;
+  color: #64748b !important;
+  margin: 0;
+}
+
+/* =========================================================================
+   UNIVERSAL CLEAN WHITE @MEDIA PRINT STYLESHEET (PDF & PAPER)
+   ========================================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  /* Reset document root to bright pure white */
+  html, body {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    font-size: 11pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Universal hide for all background interactive UI, navbar, ambient glows, buttons */
+  .no-print,
+  .modal-close-btn,
+  .dossier-modal-top-bar,
+  .section-top-header,
+  .section-title-group,
+  .navbar,
+  .footer,
+  .ambient-orb,
+  .live-ticker,
+  .beacon-container,
+  .voice-assistant-fab,
+  .robot-fab,
+  button,
+  .glass-btn,
+  .glass-btn-secondary,
+  .stats-banner,
+  table:not(.gst-invoice-table),
+  .filter-pill,
+  .section-wrapper > *:not(.glass-modal-overlay),
+  .app-container > *:not(.section-wrapper):not(.glass-modal-overlay) {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Modal overlay transforms into plain white wrapper without backdrop darkening */
+  .glass-modal-overlay {
+    position: static !important;
+    display: block !important;
+    visibility: visible !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  .glass-modal-content {
+    position: static !important;
+    display: block !important;
+    visibility: visible !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    color: #0f172a !important;
+    overflow: visible !important;
+  }
+
+  /* Printable Dossier Paper Container occupies standard crisp A4 */
+  #printableDossier,
+  .dossier-paper-container {
+    visibility: visible !important;
+    display: block !important;
+    position: static !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 2px solid #0f172a !important;
+    border-radius: 8px !important;
+    padding: 16px 20px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  #printableDossier *,
+  .dossier-paper-container * {
+    visibility: visible !important;
+  }
+
+  /* BookingCheckout tax invoice also prints with pure white crisp background */
+  .invoice-section-box {
+    visibility: visible !important;
+    display: block !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 2px solid #0f172a !important;
+    border-radius: 8px !important;
+    padding: 16px 20px !important;
+    box-shadow: none !important;
+  }
+
+  .invoice-section-box * {
+    color: #0f172a !important;
+    visibility: visible !important;
+  }
+
+  .gst-invoice-table {
+    border: 1px solid #cbd5e1 !important;
+  }
+  .gst-invoice-table th, 
+  .gst-invoice-table td {
+    border: 1px solid #e2e8f0 !important;
+    color: #0f172a !important;
+  }
+}
+
+
