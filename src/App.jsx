@@ -178,6 +178,8 @@ function App() {
           initialRole={activePage === 'admin' ? "admin" : "customer"}
           onCustomerSuccess={handleCustomerSuccess}
           onAdminSuccess={handleAdminSuccess}
+          onClose={() => setShowCustomerGate(false)}
+          onGuestAccess={() => setShowCustomerGate(false)}
         />
 
         {toastMessage && (

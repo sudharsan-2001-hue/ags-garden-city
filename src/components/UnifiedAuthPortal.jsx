@@ -26,7 +26,8 @@ function UnifiedAuthPortal({
   initialRole = 'customer', // 'customer' or 'admin'
   onCustomerSuccess, 
   onAdminSuccess, 
-  onClose 
+  onClose,
+  onGuestAccess
 }) {
   const [activePortal, setActivePortal] = useState(initialRole); // 'customer' or 'admin'
   
@@ -71,6 +72,59 @@ function UnifiedAuthPortal({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
+  const [isBackendDown, setIsBackendDown] = useState(false);
+  const [pendingCustomer, setPendingCustomer] = useState(null);
+  const [pendingAdmin, setPendingAdmin] = useState(null);
+
+  // Fallback Handlers for GitHub Pages / Offline Mode
+  const handleBypassCustomer = () => {
+    const isEmail = customerIdentifier.includes('@');
+    const user = pendingCustomer || {
+      name: isEmail ? customerIdentifier.split('@')[0].toUpperCase() : (customerName || 'VIP Customer'),
+      email: isEmail ? customerIdentifier : `${customerIdentifier || 'customer'}@agsgarden.com`,
+      phone: !isEmail ? customerIdentifier : '+91 98401 23456',
+      role: 'buyer'
+    };
+    safeStorage.setItem('agsgarden_customer', user);
+    try { localStorage.setItem('agsgarden_customer', JSON.stringify(user)); } catch (err) {}
+    if (onCustomerSuccess) onCustomerSuccess(user);
+  };
+
+  const handleBypassAdmin = () => {
+    const isEmail = adminIdentifier.includes('@');
+    const adminUser = pendingAdmin || {
+      role: 'super_admin',
+      email: isEmail ? adminIdentifier : 'admin@agsgarden.com',
+      phone: '+91 73971 35792',
+      name: isEmail ? adminIdentifier.split('@')[0].toUpperCase() + ' (Admin)' : 'Central Admin'
+    };
+    sessionStorage.setItem('agsgarden_admin_auth', 'true');
+    sessionStorage.setItem('agsgarden_current_admin', JSON.stringify(adminUser));
+    if (onAdminSuccess) onAdminSuccess(adminUser);
+  };
+
+  const handleQuickDemoCustomer = () => {
+    const demoUser = {
+      name: 'Kumar (Customer Demo)',
+      email: 'kumar2005@gmail.com',
+      phone: '+91 98401 23456',
+      role: 'buyer'
+    };
+    safeStorage.setItem('agsgarden_customer', demoUser);
+    try { localStorage.setItem('agsgarden_customer', JSON.stringify(demoUser)); } catch (err) {}
+    if (onCustomerSuccess) onCustomerSuccess(demoUser);
+  };
+
+  const handleQuickDemoAdmin = () => {
+    const demoAdmin = {
+      name: 'Kumar (Estate Admin)',
+      email: 'kumar2005@gmail.com',
+      role: 'super_admin'
+    };
+    sessionStorage.setItem('agsgarden_admin_auth', 'true');
+    sessionStorage.setItem('agsgarden_current_admin', JSON.stringify(demoAdmin));
+    if (onAdminSuccess) onAdminSuccess(demoAdmin);
+  };
 
   // Auto-fetch latest registered Real Estate customer from MongoDB backend on mount if not in local storage
   useEffect(() => {
@@ -143,7 +197,9 @@ function UnifiedAuthPortal({
     } catch (err) {
       console.warn('Backend customer login error:', err);
       setIsLoading(false);
-      setErrorMessage('Cannot connect to Real Estate backend server (http://localhost:5002). Please ensure the backend is running.');
+      setIsBackendDown(true);
+      setPendingCustomer(user);
+      setErrorMessage('Cannot connect to Real Estate backend server (http://localhost:5002).');
       return;
     }
 
@@ -222,9 +278,17 @@ function UnifiedAuthPortal({
         return;
       }
     } catch (err) {
-      console.warn('Backend customer register error:', err);
+      console.warn('Backend customer register offline fallback:', err);
+      // Safe offline fallback: store locally so visitor is never blocked
+      const recentReg = { name: user.name, email: user.email, phone: user.phone };
+      safeStorage.setItem('agsgarden_recent_registered_user', recentReg);
+      setRecentRegisteredCustomer(recentReg);
+      safeStorage.setItem('agsgarden_customer', user);
+      try {
+        localStorage.setItem('agsgarden_customer', JSON.stringify(user));
+      } catch (err2) {}
       setIsLoading(false);
-      setErrorMessage('Cannot connect to Real Estate backend server (http://localhost:5002). Please ensure the backend is running.');
+      if (onCustomerSuccess) onCustomerSuccess(user);
       return;
     }
 
@@ -286,6 +350,8 @@ function UnifiedAuthPortal({
     } catch (err) {
       console.warn('Backend admin login error:', err);
       setIsLoading(false);
+      setIsBackendDown(true);
+      setPendingAdmin(adminUser);
       setErrorMessage('Cannot connect to Real Estate backend server (http://localhost:5002).');
       return;
     }
@@ -551,16 +617,51 @@ function UnifiedAuthPortal({
             background: 'rgba(239, 68, 68, 0.15)',
             border: '1px solid rgba(239, 68, 68, 0.4)',
             borderRadius: '12px',
-            padding: '10px 14px',
+            padding: '12px 14px',
             marginBottom: '16px',
             color: '#fca5a5',
-            fontSize: '13px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
+            fontSize: '13px'
           }}>
-            <AlertCircle size={16} />
-            <span>{errorMessage}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{errorMessage}</span>
+            </div>
+
+            {/* Offline/Demo Fallback Action Button when backend connection fails */}
+            {isBackendDown && (
+              <div style={{
+                marginTop: '10px',
+                paddingTop: '10px',
+                borderTop: '1px solid rgba(239, 68, 68, 0.3)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{ fontSize: '11.5px', color: '#fecaca', lineHeight: 1.4 }}>
+                  💡 <strong>GitHub Pages Notice:</strong> Online HTTPS cannot reach local HTTP (localhost:5002). Click below to proceed in Demo / Offline Mode:
+                </div>
+                <button
+                  type="button"
+                  onClick={activePortal === 'customer' ? handleBypassCustomer : handleBypassAdmin}
+                  style={{
+                    padding: '8px 14px',
+                    background: 'linear-gradient(135deg, #10b981, #059669)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <Sparkles size={14} /> Continue in Offline / Demo Mode →
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -745,6 +846,54 @@ function UnifiedAuthPortal({
                   <LogIn size={18} />
                   <span>{isLoading ? 'Signing In...' : 'Log In'}</span>
                 </button>
+
+                {/* Quick Demo & Guest Shortcuts */}
+                <div style={{
+                  display: 'flex',
+                  gap: '8px',
+                  marginTop: '10px',
+                  marginBottom: '6px'
+                }}>
+                  <button
+                    type="button"
+                    onClick={handleQuickDemoCustomer}
+                    style={{
+                      flex: 1,
+                      padding: '8px 10px',
+                      background: 'rgba(56, 189, 248, 0.1)',
+                      border: '1px solid rgba(56, 189, 248, 0.3)',
+                      borderRadius: '8px',
+                      color: '#38bdf8',
+                      fontSize: '11.5px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '5px'
+                    }}
+                  >
+                    <Sparkles size={13} /> ⚡ Quick Demo Customer
+                  </button>
+                  {onGuestAccess && (
+                    <button
+                      type="button"
+                      onClick={onGuestAccess}
+                      style={{
+                        padding: '8px 12px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
+                        borderRadius: '8px',
+                        color: '#94a3b8',
+                        fontSize: '11.5px',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Browse as Guest →
+                    </button>
+                  )}
+                </div>
 
                 {/* Footer Switcher to Register */}
                 <div className="mach-footer-text">
@@ -1130,6 +1279,54 @@ function UnifiedAuthPortal({
                   <LogIn size={18} />
                   <span>{isLoading ? 'Authorizing...' : 'Log In'}</span>
                 </button>
+
+                {/* Quick Demo & Guest Shortcuts */}
+                <div style={{
+                  display: 'flex',
+                  gap: '8px',
+                  marginTop: '10px',
+                  marginBottom: '6px'
+                }}>
+                  <button
+                    type="button"
+                    onClick={handleQuickDemoAdmin}
+                    style={{
+                      flex: 1,
+                      padding: '8px 10px',
+                      background: 'rgba(168, 85, 247, 0.1)',
+                      border: '1px solid rgba(168, 85, 247, 0.3)',
+                      borderRadius: '8px',
+                      color: '#c084fc',
+                      fontSize: '11.5px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '5px'
+                    }}
+                  >
+                    <Sparkles size={13} /> ⚡ Quick Demo Admin
+                  </button>
+                  {onGuestAccess && (
+                    <button
+                      type="button"
+                      onClick={onGuestAccess}
+                      style={{
+                        padding: '8px 12px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
+                        borderRadius: '8px',
+                        color: '#94a3b8',
+                        fontSize: '11.5px',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Browse as Guest →
+                    </button>
+                  )}
+                </div>
 
                 {/* Footer Switcher: Direct Admin Register Page */}
                 <div className="mach-footer-text">
