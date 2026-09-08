@@ -467,28 +467,33 @@ function UnifiedAuthPortal({
           </button>
         )}
 
-        {/* Top Glowing Real Estate Logo Emblem */}
-        <div 
-          style={{
-            width: '68px',
-            height: '68px',
-            borderRadius: '18px',
-            overflow: 'hidden',
-            margin: '0 auto 16px',
-            boxShadow: '0 0 25px rgba(16, 185, 129, 0.5), 0 0 12px rgba(56, 189, 248, 0.35)',
-            border: '2px solid rgba(56, 189, 248, 0.5)',
-            background: '#0a0f1d',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <img 
-            src="/ags_logo.jpg" 
-            alt="AGS Garden City" 
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-          />
-        </div>
+        
+       {/* Top Glowing Real Estate Logo Emblem */}
+<div
+  style={{
+    width: '68px',
+    height: '68px',
+    borderRadius: '18px',
+    overflow: 'hidden',
+    margin: '0 auto 16px',
+    boxShadow: '0 0 25px rgba(16, 185, 129, 0.5), 0 0 12px rgba(56, 189, 248, 0.35)',
+    border: '2px solid rgba(56, 189, 248, 0.5)',
+    background: '#0a0f1d',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }}
+>
+  <img
+    src={`${import.meta.env.BASE_URL}ags_logo.jpg`}
+    alt="AGS Garden City"
+    style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover'
+    }}
+  />
+</div>
 
         {/* Title Header */}
         <h1 className="mach-header-title">
