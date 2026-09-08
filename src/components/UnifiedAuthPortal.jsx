@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import safeStorage from '../utils/safeStorage';
 import { API_ENDPOINTS } from '../utils/api';
+import agsLogo from '../assets/ags_logo.jpg';
 
 function UnifiedAuthPortal({ 
   initialRole = 'customer', // 'customer' or 'admin'
@@ -551,7 +552,11 @@ function UnifiedAuthPortal({
   }}
 >
   <img
-    src={`${import.meta.env.BASE_URL}ags_logo.jpg`}
+    src={agsLogo}
+    onError={(e) => {
+      e.target.onerror = null;
+      e.target.src = `${import.meta.env.BASE_URL}ags_logo.jpg`;
+    }}
     alt="AGS Garden City"
     style={{
       width: '100%',
