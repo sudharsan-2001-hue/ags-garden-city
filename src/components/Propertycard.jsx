@@ -159,6 +159,29 @@ function Propertycard({ property, onSelectProperty, onEnquire }) {
           <span className="card-badge badge-status">{status}</span>
         </div>
 
+        {/* Total Rooms & Side-Arrow Navigation Guide Banner */}
+        <div style={{
+          position: 'absolute',
+          top: '46px',
+          left: '12px',
+          zIndex: 6,
+          background: 'rgba(15, 23, 42, 0.92)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(56, 189, 248, 0.6)',
+          borderRadius: '10px',
+          padding: '3px 8px',
+          fontSize: '10.5px',
+          fontWeight: 800,
+          color: '#38bdf8',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.6)'
+        }}>
+          <Camera size={12} />
+          <span>{roomItems.length} ROOMS • TAP ◄ ► TO TOUR</span>
+        </div>
+
         {/* Floating 3D Icon Badge in Top Right Corner */}
         <button
           onClick={(e) => {
@@ -214,22 +237,22 @@ function Propertycard({ property, onSelectProperty, onEnquire }) {
               top: '50%',
               transform: 'translateY(-50%)',
               zIndex: 12,
-              width: '38px',
-              height: '38px',
+              width: '42px',
+              height: '42px',
               borderRadius: '50%',
-              background: 'rgba(15, 23, 42, 0.92)',
+              background: 'rgba(15, 23, 42, 0.95)',
               border: '2px solid #38bdf8',
               color: '#38bdf8',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.7), 0 0 12px rgba(56, 189, 248, 0.5)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.8), 0 0 16px rgba(56, 189, 248, 0.6)',
               transition: 'all 0.15s ease'
             }}
             title="Previous Room: Living, Bed, Kitchen, Bath"
           >
-            <ChevronLeft size={22} strokeWidth={2.8} />
+            <ChevronLeft size={24} strokeWidth={3} />
           </button>
         )}
 
@@ -244,22 +267,22 @@ function Propertycard({ property, onSelectProperty, onEnquire }) {
               top: '50%',
               transform: 'translateY(-50%)',
               zIndex: 12,
-              width: '38px',
-              height: '38px',
+              width: '42px',
+              height: '42px',
               borderRadius: '50%',
-              background: 'rgba(15, 23, 42, 0.92)',
+              background: 'rgba(15, 23, 42, 0.95)',
               border: '2px solid #38bdf8',
               color: '#38bdf8',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.7), 0 0 12px rgba(56, 189, 248, 0.5)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.8), 0 0 16px rgba(56, 189, 248, 0.6)',
               transition: 'all 0.15s ease'
             }}
             title="Next Room: Living, Bed, Kitchen, Bath"
           >
-            <ChevronRight size={22} strokeWidth={2.8} />
+            <ChevronRight size={24} strokeWidth={3} />
           </button>
         )}
 
@@ -271,20 +294,20 @@ function Propertycard({ property, onSelectProperty, onEnquire }) {
           zIndex: 8,
           background: 'rgba(15, 23, 42, 0.92)',
           backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(56, 189, 248, 0.6)',
+          border: '1.5px solid #38bdf8',
           borderRadius: '12px',
-          padding: '4px 10px',
-          fontSize: '11px',
+          padding: '5px 12px',
+          fontSize: '11.5px',
           fontWeight: 800,
-          color: '#38bdf8',
+          color: '#fff',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.6)'
+          gap: '8px',
+          boxShadow: '0 4px 14px rgba(0,0,0,0.7)'
         }}>
-          <span>{currentRoom.tag || currentRoom.name}</span>
-          <span style={{ color: '#94a3b8', fontSize: '10px', fontWeight: 700 }}>
-            ({currentImageIdx + 1}/{roomItems.length})
+          <span style={{ color: '#38bdf8' }}>{currentRoom.tag || currentRoom.name}</span>
+          <span style={{ color: '#34d399', fontSize: '11px', fontWeight: 800, background: 'rgba(16, 185, 129, 0.2)', padding: '2px 6px', borderRadius: '6px' }}>
+            Room {currentImageIdx + 1} of {roomItems.length}
           </span>
         </div>
 
@@ -300,7 +323,7 @@ function Propertycard({ property, onSelectProperty, onEnquire }) {
               gap: '4px',
               alignItems: 'center',
               background: 'rgba(15, 23, 42, 0.85)',
-              padding: '5px 8px',
+              padding: '6px 10px',
               borderRadius: '12px',
               backdropFilter: 'blur(8px)',
               border: '1px solid rgba(56, 189, 248, 0.35)',
@@ -315,13 +338,13 @@ function Propertycard({ property, onSelectProperty, onEnquire }) {
                   setCurrentImageIdx(i);
                 }}
                 style={{
-                  width: currentImageIdx === i ? '16px' : '6px',
+                  width: currentImageIdx === i ? '18px' : '6px',
                   height: '6px',
                   borderRadius: '3px',
                   background: currentImageIdx === i ? '#38bdf8' : 'rgba(255,255,255,0.35)',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  boxShadow: currentImageIdx === i ? '0 0 8px #38bdf8' : 'none'
+                  boxShadow: currentImageIdx === i ? '0 0 10px #38bdf8' : 'none'
                 }}
                 title={roomItems[i]?.name || `Room ${i + 1}`}
               />
@@ -329,6 +352,57 @@ function Propertycard({ property, onSelectProperty, onEnquire }) {
           </div>
         )}
       </div>
+
+      {/* Interactive Room-by-Room Direct Explorer Pills Strip */}
+      {roomItems.length > 1 && (
+        <div 
+          style={{
+            display: 'flex',
+            gap: '6px',
+            overflowX: 'auto',
+            padding: '8px 12px',
+            background: 'rgba(15, 23, 42, 0.75)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            scrollbarWidth: 'none'
+          }}
+        >
+          {roomItems.map((room, idx) => {
+            const isActive = idx === currentImageIdx;
+            return (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentImageIdx(idx);
+                }}
+                style={{
+                  padding: '4px 9px',
+                  borderRadius: '10px',
+                  fontSize: '11px',
+                  fontWeight: isActive ? 800 : 600,
+                  background: isActive 
+                    ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.4) 0%, rgba(56, 189, 248, 0.4) 100%)' 
+                    : 'rgba(255, 255, 255, 0.05)',
+                  border: isActive ? '1.5px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.1)',
+                  color: isActive ? '#fff' : 'var(--text-sub)',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  boxShadow: isActive ? '0 0 10px rgba(56, 189, 248, 0.35)' : 'none',
+                  transition: 'all 0.15s ease',
+                  flexShrink: 0
+                }}
+                title={`View ${room.name}`}
+              >
+                <span>{room.tag ? room.tag.split(' ')[0] : '📸'}</span>
+                <span>{room.name || `Room ${idx + 1}`}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Card Body */}
       <div className="property-card-body">

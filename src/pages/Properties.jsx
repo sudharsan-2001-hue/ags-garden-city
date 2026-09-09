@@ -171,8 +171,11 @@ function Properties({
 
       // Location filter
       if (selectedLocation !== 'All') {
-        const locMatch = (p.location || '').toLowerCase().includes(selectedLocation.toLowerCase()) || 
-                         (p.area || '').toLowerCase().includes(selectedLocation.toLowerCase());
+        const locTarget = selectedLocation.toLowerCase();
+        const locMatch = (p.location || '').toLowerCase().includes(locTarget) || 
+                         (p.city || '').toLowerCase().includes(locTarget) ||
+                         (p.title || '').toLowerCase().includes(locTarget) ||
+                         String(p.area || '').toLowerCase().includes(locTarget);
         if (!locMatch) return false;
       }
 
@@ -281,8 +284,11 @@ function Properties({
     // 1. Try matching by location
     let recs = properties.filter(p => {
       if (selectedLocation !== 'All') {
-        return (p.location || '').toLowerCase().includes(selectedLocation.toLowerCase()) || 
-               (p.area || '').toLowerCase().includes(selectedLocation.toLowerCase());
+        const locTarget = selectedLocation.toLowerCase();
+        return (p.location || '').toLowerCase().includes(locTarget) || 
+               (p.city || '').toLowerCase().includes(locTarget) ||
+               (p.title || '').toLowerCase().includes(locTarget) ||
+               String(p.area || '').toLowerCase().includes(locTarget);
       }
       return false;
     });
