@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import agsLogo from '../assets/ags_logo.jpg';
+import { AGS_LOGO_BASE64 } from '../assets/agsLogoBase64';
 import { 
   Building2, 
   Mail, 
@@ -47,11 +47,7 @@ function Footer({ setActivePage }) {
                 }}
               >
                 <img 
-                  src={agsLogo} 
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = `${import.meta.env.BASE_URL}ags_logo.jpg`;
-                  }}
+                  src={AGS_LOGO_BASE64} 
                   alt="AGS Garden City Logo" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 />

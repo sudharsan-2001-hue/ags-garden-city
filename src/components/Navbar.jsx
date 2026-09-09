@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import VoiceAssistant from './VoiceAssistant';
-import agsLogo from '../assets/ags_logo.jpg';
+import { AGS_LOGO_BASE64 } from '../assets/agsLogoBase64';
 import { 
   Building2, 
   Sparkles, 
@@ -272,11 +272,7 @@ function Navbar({
                 }}
               >
                 <img 
-                  src={agsLogo} 
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = `${import.meta.env.BASE_URL}ags_logo.jpg`;
-                  }}
+                  src={AGS_LOGO_BASE64} 
                   alt="AGS Garden City Logo" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 />

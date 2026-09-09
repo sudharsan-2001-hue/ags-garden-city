@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import agsLogo from '../assets/ags_logo.jpg';
+import { AGS_LOGO_BASE64 } from '../assets/agsLogoBase64';
 import { 
   ShieldCheck, 
   CreditCard, 
@@ -212,14 +212,10 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                     }}
                   >
                     <img 
-                      src={agsLogo} 
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = `${import.meta.env.BASE_URL}ags_logo.jpg`;
-                      }}
+                      src={AGS_LOGO_BASE64} 
                       alt="AGS Garden City Logo" 
                       className="print-logo-img"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
                     />
                   </div>
                   <div>

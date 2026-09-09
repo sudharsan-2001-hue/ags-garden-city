@@ -5,8 +5,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
 
-  // GitHub Pages repository path
-  base: '/ags-garden-city/',
+  // GitHub Pages universal relative path (works on both ags_garden_city and ags-garden-city)
+  base: './',
 
   server: {
     port: 5173,

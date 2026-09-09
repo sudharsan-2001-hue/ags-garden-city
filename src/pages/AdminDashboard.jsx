@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Propertycard from '../components/Propertycard';
 import { PROPERTIES_DATA } from '../data/propertiesData';
 import { API_ENDPOINTS } from '../utils/api';
-import agsLogo from '../assets/ags_logo.jpg';
+import { AGS_LOGO_BASE64 } from '../assets/agsLogoBase64';
 import { 
   ShieldCheck, 
   Users, 
@@ -2855,11 +2855,7 @@ function AdminDashboard({
                 <div className="dossier-brand-group">
                   <div className="dossier-logo-box">
                     <img 
-                      src={agsLogo} 
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = `${import.meta.env.BASE_URL}ags_logo.jpg`;
-                      }}
+                      src={AGS_LOGO_BASE64} 
                       alt="AGS Garden City Logo" 
                       className="dossier-logo-img" 
                     />
