@@ -209,6 +209,37 @@ function Properties({
 
   const currentCategoryInfo = CATEGORIES_DATA.find(c => c.id === activeCategory);
 
+  // Pagination & Layout states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [viewMode, setViewMode] = useState('single'); // 'single' (1 per page) or 'grid' (all in grid)
+
+  // Reset page when filter inputs change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory, selectedLocation, selectedBudget, searchTerm, sortBy]);
+
+  // If viewMode is 'single', show 1 property per page so 5 properties = 5 separate pages!
+  // If viewMode is 'grid', show 6 properties per page (or all if <= 6)
+  const pageSize = viewMode === 'single' ? 1 : 6;
+  const totalPages = Math.max(1, Math.ceil(filteredProperties.length / pageSize));
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const paginatedProperties = useMemo(() => {
+    if (viewMode === 'grid' && filteredProperties.length <= 6) {
+      return filteredProperties;
+    }
+    const start = (safeCurrentPage - 1) * pageSize;
+    return filteredProperties.slice(start, start + pageSize);
+  }, [filteredProperties, safeCurrentPage, pageSize, viewMode]);
+
+  const handlePageChange = (pageNum) => {
+    setCurrentPage(pageNum);
+    const container = document.getElementById('properties-results-anchor');
+    if (container) {
+      container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const resetAllFilters = () => {
     setActiveCategory('all');
     setSearchTerm('');
@@ -591,7 +622,8 @@ function Properties({
         )}
       </div>
 
-      {/* Properties Grid with Clear Amount */}
+      {/* Properties Grid with Clear Amount & 5-Page Pagination Controls */}
+      <div id="properties-results-anchor"></div>
       {loading ? (
         <div className="glass-panel" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '20px', margin: '20px 0' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '16px', background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', marginBottom: '16px', color: '#38bdf8' }}>
@@ -603,26 +635,293 @@ function Properties({
           </p>
         </div>
       ) : filteredProperties.length > 0 ? (
-        <div className="property-cards-grid">
-          {filteredProperties.map((property) => (
-            <div key={property.id} style={{ display: 'flex', flexDirection: 'column' }}>
-              <Propertycard 
-                property={property}
-                onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
-                onEnquire={onEnquire}
-              />
-              <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
-                <button 
-                  className="glass-btn" 
-                  style={{ width: '100%', padding: '10px', fontSize: '13px' }}
-                  onClick={() => onBookProperty && onBookProperty(property)}
+        <>
+          {/* Top Pagination & View Control Bar */}
+          {totalPages > 1 && (
+            <div 
+              className="glass-panel"
+              style={{
+                padding: '14px 18px',
+                borderRadius: '16px',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '12px',
+                border: '1px solid rgba(56, 189, 248, 0.25)',
+                background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span style={{
+                  background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+                  color: '#fff',
+                  padding: '5px 12px',
+                  borderRadius: '10px',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  letterSpacing: '0.04em'
+                }}>
+                  PAGE {safeCurrentPage} OF {totalPages}
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--text-sub)' }}>
+                  ({filteredProperties.length} Properties Available • {viewMode === 'single' ? '1 Home Per Page View' : 'Grid View'})
+                </span>
+              </div>
+
+              {/* Numbered Page Buttons [1] [2] [3] [4] [5] */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => handlePageChange(safeCurrentPage - 1)}
+                  disabled={safeCurrentPage <= 1}
+                  className="glass-btn-secondary"
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    borderRadius: '8px',
+                    opacity: safeCurrentPage <= 1 ? 0.4 : 1,
+                    cursor: safeCurrentPage <= 1 ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
                 >
-                  <DollarSign size={15} /> Book with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})
+                  <ArrowLeft size={13} /> Prev
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => {
+                  const isActive = num === safeCurrentPage;
+                  return (
+                    <button
+                      key={num}
+                      onClick={() => handlePageChange(num)}
+                      style={{
+                        minWidth: '36px',
+                        height: '36px',
+                        borderRadius: '8px',
+                        border: isActive ? '2px solid #38bdf8' : '1px solid rgba(255,255,255,0.12)',
+                        background: isActive 
+                          ? 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)' 
+                          : 'rgba(255, 255, 255, 0.05)',
+                        color: isActive ? '#fff' : 'var(--text-main)',
+                        fontWeight: isActive ? 900 : 600,
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        boxShadow: isActive ? '0 0 14px rgba(56, 189, 248, 0.45)' : 'none',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {num}
+                    </button>
+                  );
+                })}
+
+                <button
+                  onClick={() => handlePageChange(safeCurrentPage + 1)}
+                  disabled={safeCurrentPage >= totalPages}
+                  className="glass-btn-secondary"
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    borderRadius: '8px',
+                    opacity: safeCurrentPage >= totalPages ? 0.4 : 1,
+                    cursor: safeCurrentPage >= totalPages ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  Next <ArrowRight size={13} />
+                </button>
+              </div>
+
+              {/* View Mode Toggle */}
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  onClick={() => { setViewMode('single'); setCurrentPage(1); }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    border: viewMode === 'single' ? '1.5px solid #10b981' : '1px solid rgba(255,255,255,0.1)',
+                    background: viewMode === 'single' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.04)',
+                    color: viewMode === 'single' ? '#34d399' : 'var(--text-sub)'
+                  }}
+                  title="View 1 property per page with full room tour"
+                >
+                  📄 1 Per Page ({filteredProperties.length} Pages)
+                </button>
+                <button
+                  onClick={() => { setViewMode('grid'); setCurrentPage(1); }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    border: viewMode === 'grid' ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                    background: viewMode === 'grid' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.04)',
+                    color: viewMode === 'grid' ? '#38bdf8' : 'var(--text-sub)'
+                  }}
+                  title="View all properties in grid"
+                >
+                  🗂️ View All Grid
                 </button>
               </div>
             </div>
-          ))}
-        </div>
+          )}
+
+          {/* Quick Page Picker Tabs (when viewMode is 'single' and multiple pages) */}
+          {viewMode === 'single' && totalPages > 1 && (
+            <div 
+              style={{
+                display: 'flex',
+                gap: '8px',
+                overflowX: 'auto',
+                paddingBottom: '10px',
+                marginBottom: '16px',
+                scrollbarWidth: 'none'
+              }}
+            >
+              {filteredProperties.map((prop, idx) => {
+                const pageNum = idx + 1;
+                const isSelected = pageNum === safeCurrentPage;
+                return (
+                  <button
+                    key={prop.id || idx}
+                    onClick={() => handlePageChange(pageNum)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      borderRadius: '12px',
+                      border: isSelected ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                      background: isSelected ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255,255,255,0.04)',
+                      color: isSelected ? '#fff' : 'var(--text-sub)',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0,
+                      boxShadow: isSelected ? '0 0 15px rgba(56, 189, 248, 0.25)' : 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <img 
+                      src={prop.image} 
+                      alt={prop.title} 
+                      style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }}
+                    />
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 800, color: isSelected ? '#38bdf8' : '#fff' }}>
+                        Page {pageNum}: {prop.title.replace('Porur ', '')}
+                      </div>
+                      <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 700 }}>
+                        {prop.price}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Render Active Paginated Cards */}
+          <div className={viewMode === 'single' ? 'property-single-card-view' : 'property-cards-grid'} style={{ marginBottom: '20px' }}>
+            {paginatedProperties.map((property) => (
+              <div key={property.id} style={{ display: 'flex', flexDirection: 'column' }}>
+                <Propertycard 
+                  property={property}
+                  onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
+                  onEnquire={onEnquire}
+                />
+                <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                  <button 
+                    className="glass-btn" 
+                    style={{ width: '100%', padding: '10px', fontSize: '13px' }}
+                    onClick={() => onBookProperty && onBookProperty(property)}
+                  >
+                    <DollarSign size={15} /> Book with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom Pagination Bar for smooth browsing */}
+          {totalPages > 1 && (
+            <div 
+              className="glass-panel"
+              style={{
+                padding: '12px 18px',
+                borderRadius: '16px',
+                marginBottom: '28px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                gap: '8px',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}
+            >
+              <button
+                onClick={() => handlePageChange(safeCurrentPage - 1)}
+                disabled={safeCurrentPage <= 1}
+                className="glass-btn-secondary"
+                style={{
+                  padding: '6px 14px',
+                  fontSize: '12px',
+                  borderRadius: '8px',
+                  opacity: safeCurrentPage <= 1 ? 0.4 : 1,
+                  cursor: safeCurrentPage <= 1 ? 'not-allowed' : 'pointer'
+                }}
+              >
+                « Previous Page
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => {
+                const isActive = num === safeCurrentPage;
+                return (
+                  <button
+                    key={num}
+                    onClick={() => handlePageChange(num)}
+                    style={{
+                      minWidth: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      border: isActive ? '2px solid #38bdf8' : '1px solid rgba(255,255,255,0.12)',
+                      background: isActive ? 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)' : 'rgba(255,255,255,0.05)',
+                      color: isActive ? '#fff' : 'var(--text-main)',
+                      fontWeight: isActive ? 900 : 600,
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      boxShadow: isActive ? '0 0 12px rgba(56, 189, 248, 0.4)' : 'none'
+                    }}
+                  >
+                    {num}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => handlePageChange(safeCurrentPage + 1)}
+                disabled={safeCurrentPage >= totalPages}
+                className="glass-btn-secondary"
+                style={{
+                  padding: '6px 14px',
+                  fontSize: '12px',
+                  borderRadius: '8px',
+                  opacity: safeCurrentPage >= totalPages ? 0.4 : 1,
+                  cursor: safeCurrentPage >= totalPages ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Next Page »
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <div style={{ margin: '20px 0' }}>
           
