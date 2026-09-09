@@ -50,12 +50,12 @@ function PulseRingBeacon({ voiceLanguage = 'ta', onNavigate }) {
   };
 
   return (
-    <div className="pulse-ring-beacon-container" style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 940, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
+    <div className="pulse-ring-beacon-container no-print" style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 940, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
       
       {/* Quick Menu Popup */}
       {showQuickMenu && (
         <div 
-          className="glass-panel" 
+          className="glass-panel no-print" 
           style={{
             padding: '16px 20px',
             borderRadius: '20px',

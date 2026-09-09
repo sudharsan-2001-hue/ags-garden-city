@@ -70,7 +70,7 @@ function LiveActivityTicker() {
 
   return (
     <div 
-      className="live-activity-popup glass-panel"
+      className="live-activity-popup no-print"
       style={{
         position: 'fixed',
         bottom: '24px',

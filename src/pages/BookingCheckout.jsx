@@ -98,6 +98,14 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
     }, 800);
   };
 
+  const handlePrintReceipt = () => {
+    document.body.classList.add('invoice-printing-active');
+    window.print();
+    setTimeout(() => {
+      document.body.classList.remove('invoice-printing-active');
+    }, 1500);
+  };
+
   return (
     <div className="section-wrapper checkout-page-container" style={{ maxWidth: '1020px', margin: '0 auto' }}>
       
@@ -146,12 +154,12 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
           
           <div className="official-invoice-card glass-panel" style={{ borderRadius: '24px', maxWidth: '780px', margin: '0 auto', textAlign: 'left' }}>
             
-            {/* Luminous Animated Green Tick Mark (✓) */}
-            <div style={{ textAlign: 'center', marginBottom: '18px' }}>
+            {/* Luminous Animated Green Tick Mark (✓) - Screen only, hidden during print to fit on 1 A4 page */}
+            <div className="invoice-top-tick-container no-print" style={{ textAlign: 'center', marginBottom: '14px' }}>
               <div 
                 style={{
-                  width: '70px',
-                  height: '70px',
+                  width: '60px',
+                  height: '60px',
                   borderRadius: '50%',
                   background: 'rgba(16, 185, 129, 0.18)',
                   border: '3px solid #10b981',
@@ -159,24 +167,26 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  margin: '0 auto 12px',
+                  margin: '0 auto 10px',
                   color: '#10b981',
                   animation: 'pulse-glow 2s infinite ease-in-out'
                 }}
               >
-                <Check size={40} strokeWidth={3.5} />
+                <Check size={36} strokeWidth={3.5} />
               </div>
               
               <span className="section-tag" style={{ color: '#10b981', fontSize: '11px', padding: '4px 12px' }}>
                 <CheckCircle2 size={13} /> PAYMENT SUCCESSFUL & SLOT CONFIRMED
               </span>
-              
-              <h1 style={{ fontSize: '24px', fontWeight: 900, marginTop: '6px', color: '#fff' }} className="print-bold-title">
-                Booking Order Receipt
+            </div>
+
+            <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+              <h1 style={{ fontSize: '22px', fontWeight: 900, margin: '0', color: '#fff', letterSpacing: '-0.02em' }} className="print-bold-title">
+                Booking Order Receipt & GST Tax Invoice
               </h1>
               
-              <p style={{ color: 'var(--text-muted)', fontSize: '12.5px', margin: '2px 0 0' }}>
-                Booking Ref: <strong style={{ color: '#c084fc', fontSize: '14px' }} className="print-ref-id">{bookingConfirmed.bookingId}</strong> • {bookingConfirmed.date}
+              <p style={{ color: 'var(--text-muted)', fontSize: '12px', margin: '4px 0 0', fontWeight: 700 }} className="print-ref-id-sub">
+                Booking Ref: <strong style={{ color: '#c084fc', fontSize: '14px', fontWeight: 900 }} className="print-ref-id">{bookingConfirmed.bookingId}</strong> • Confirmed On: <strong style={{ color: '#fff', fontWeight: 900 }}>{bookingConfirmed.date}</strong>
               </p>
             </div>
 
@@ -232,36 +242,36 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
               </div>
 
               {/* GSTIN & SAC Code Header Bar */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.04)', padding: '6px 12px', borderRadius: '8px', marginBottom: '12px', fontSize: '11px', flexWrap: 'wrap', gap: '6px' }} className="gst-meta-bar">
-                <span>GSTIN: <strong style={{ color: '#c084fc', letterSpacing: '0.04em' }}>33AAACG2026R1ZM</strong> (Tamil Nadu)</span>
-                <span>SAC / HSN Code: <strong style={{ color: '#38bdf8' }}>997222</strong> (Real Estate Services)</span>
-                <span>Place of Supply: <strong style={{ color: '#fff' }}>Chennai (33)</strong></span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.04)', padding: '6px 12px', borderRadius: '8px', marginBottom: '12px', fontSize: '11px', flexWrap: 'wrap', gap: '6px', fontWeight: 800 }} className="gst-meta-bar">
+                <span>GSTIN: <strong style={{ color: '#c084fc', letterSpacing: '0.04em', fontWeight: 900 }}>33AAACG2026R1ZM</strong> (Tamil Nadu)</span>
+                <span>SAC / HSN Code: <strong style={{ color: '#38bdf8', fontWeight: 900 }}>997222</strong> (Real Estate Services)</span>
+                <span>Place of Supply: <strong style={{ color: '#fff', fontWeight: 900 }}>Chennai (33)</strong></span>
               </div>
 
               {/* Responsive Customer & Property Info Grid */}
-              <div className="print-text-block" style={{ marginBottom: '12px' }}>
-                <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Billed To (Customer):</span>
-                  <div style={{ fontWeight: 800 }}>{bookingConfirmed.buyerName}</div>
-                  <div style={{ fontSize: '11px', color: '#38bdf8' }}>{bookingConfirmed.buyerPhone} • {bookingConfirmed.buyerEmail}</div>
+              <div className="print-text-block" style={{ marginBottom: '12px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }} className="print-info-cell">
+                  <span style={{ color: 'var(--text-muted)', fontSize: '10.5px', display: 'block', fontWeight: 800 }}>Billed To (Customer):</span>
+                  <div style={{ fontWeight: 900, fontSize: '13px', color: '#fff' }} className="print-bold-val">{bookingConfirmed.buyerName}</div>
+                  <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800 }} className="print-sub-val">{bookingConfirmed.buyerPhone} • {bookingConfirmed.buyerEmail}</div>
                 </div>
 
-                <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Reserved Property Details:</span>
-                  <div style={{ fontWeight: 800 }}>{bookingConfirmed.propertyTitle}</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{bookingConfirmed.propertyLocation} (Valuation: {bookingConfirmed.propertyPrice})</div>
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }} className="print-info-cell">
+                  <span style={{ color: 'var(--text-muted)', fontSize: '10.5px', display: 'block', fontWeight: 800 }}>Reserved Property:</span>
+                  <div style={{ fontWeight: 900, fontSize: '13px', color: '#fff' }} className="print-bold-val">{bookingConfirmed.propertyTitle}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 800 }} className="print-sub-val">{bookingConfirmed.propertyLocation} (Val: {bookingConfirmed.propertyPrice})</div>
                 </div>
 
-                <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Site Inspection Scheduled:</span>
-                  <div style={{ fontWeight: 800 }}>{bookingConfirmed.visitDate}</div>
-                  <div style={{ fontSize: '11px', color: '#c084fc' }}>⏰ {bookingConfirmed.timeSlot} (Chauffeur Assigned)</div>
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }} className="print-info-cell">
+                  <span style={{ color: 'var(--text-muted)', fontSize: '10.5px', display: 'block', fontWeight: 800 }}>Site Visit Scheduled:</span>
+                  <div style={{ fontWeight: 900, fontSize: '13px', color: '#fff' }} className="print-bold-val">{bookingConfirmed.visitDate}</div>
+                  <div style={{ fontSize: '11px', color: '#c084fc', fontWeight: 800 }} className="print-sub-val">⏰ {bookingConfirmed.timeSlot}</div>
                 </div>
 
-                <div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Payment Mode & Auth ID:</span>
-                  <div style={{ fontWeight: 800, color: '#10b981' }}>{bookingConfirmed.paymentMethod}</div>
-                  <div style={{ fontSize: '11px', color: '#c084fc', fontFamily: 'monospace' }}>{bookingConfirmed.transactionId}</div>
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }} className="print-info-cell">
+                  <span style={{ color: 'var(--text-muted)', fontSize: '10.5px', display: 'block', fontWeight: 800 }}>Payment Method & Txn ID:</span>
+                  <div style={{ fontWeight: 900, fontSize: '13px', color: '#10b981' }} className="print-bold-val">{bookingConfirmed.paymentMethod}</div>
+                  <div style={{ fontSize: '10.5px', color: '#c084fc', fontFamily: 'monospace', fontWeight: 900 }} className="print-sub-val">{bookingConfirmed.transactionId}</div>
                 </div>
               </div>
 
@@ -272,77 +282,77 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
 
               {/* Official GST Tax Line Item Table with Horizontal Scroll Safeguard */}
               <div className="gst-table-wrapper" style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginBottom: '8px' }}>
-                <table style={{ width: '100%', minWidth: '440px', borderCollapse: 'collapse', fontSize: '11.5px', textAlign: 'left' }} className="gst-invoice-table">
+                <table style={{ width: '100%', minWidth: '440px', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'left' }} className="gst-invoice-table">
                   <thead>
                     <tr style={{ background: 'rgba(255,255,255,0.08)', borderBottom: '1.5px solid rgba(255,255,255,0.2)' }}>
-                      <th style={{ padding: '8px 8px', fontWeight: 800, width: '28px' }}>#</th>
-                      <th style={{ padding: '8px 8px', fontWeight: 800 }}>Service Description & SAC Code</th>
-                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right' }}>Taxable (₹)</th>
-                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right' }}>CGST (9%)</th>
-                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right' }}>SGST (9%)</th>
-                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right', minWidth: '85px' }}>Total (₹)</th>
+                      <th style={{ padding: '7px 8px', fontWeight: 900, width: '28px' }}>#</th>
+                      <th style={{ padding: '7px 8px', fontWeight: 900 }}>Service Description & SAC Code</th>
+                      <th style={{ padding: '7px 8px', fontWeight: 900, textAlign: 'right' }}>Taxable (₹)</th>
+                      <th style={{ padding: '7px 8px', fontWeight: 900, textAlign: 'right' }}>CGST (9%)</th>
+                      <th style={{ padding: '7px 8px', fontWeight: 900, textAlign: 'right' }}>SGST (9%)</th>
+                      <th style={{ padding: '7px 8px', fontWeight: 900, textAlign: 'right', minWidth: '85px' }}>Total (₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                      <td style={{ padding: '8px 8px', color: 'var(--text-muted)' }}>01</td>
-                      <td style={{ padding: '8px 8px' }}>
-                        <strong style={{ color: '#fff' }}>Property Token Reservation Advance</strong>
-                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                      <td style={{ padding: '7px 8px', fontWeight: 800 }}>01</td>
+                      <td style={{ padding: '7px 8px' }}>
+                        <strong style={{ color: '#fff', fontWeight: 900 }} className="print-bold-val">Property Token Reservation Advance</strong>
+                        <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 800 }} className="print-sub-val">
                           SAC: 997222 • {bookingConfirmed.propertyTitle}
                         </div>
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 700 }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 900 }}>
                         ₹{Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#f59e0b', fontWeight: 700 }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', color: '#f59e0b', fontWeight: 900 }}>
                         ₹{Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#f59e0b', fontWeight: 700 }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', color: '#f59e0b', fontWeight: 900 }}>
                         ₹{((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18) - Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2)).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 900, color: '#10b981' }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 900, color: '#10b981' }} className="print-total-amount">
                         ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
                       </td>
                     </tr>
 
                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-muted)', fontSize: '10.5px' }}>
-                      <td style={{ padding: '6px 8px' }}>02</td>
-                      <td style={{ padding: '6px 8px' }}>
+                      <td style={{ padding: '5px 8px', fontWeight: 800 }}>02</td>
+                      <td style={{ padding: '5px 8px', fontWeight: 800 }}>
                         CMDA Legal Document Verification & Patta Verification
                       </td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right', color: '#10b981', fontWeight: 700 }}>FREE (₹0)</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>₹0.00</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>₹0.00</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>₹0.00</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', color: '#10b981', fontWeight: 900 }}>FREE (₹0)</td>
                     </tr>
 
                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-muted)', fontSize: '10.5px' }}>
-                      <td style={{ padding: '6px 8px' }}>03</td>
-                      <td style={{ padding: '6px 8px' }}>
+                      <td style={{ padding: '5px 8px', fontWeight: 800 }}>03</td>
+                      <td style={{ padding: '5px 8px', fontWeight: 800 }}>
                         VIP Chauffeur Cab Pickup & Site Tour Escort
                       </td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right', color: '#10b981', fontWeight: 700 }}>FREE (₹0)</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>₹0.00</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>₹0.00</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>₹0.00</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', color: '#10b981', fontWeight: 900 }}>FREE (₹0)</td>
                     </tr>
                   </tbody>
                   <tfoot>
                     <tr style={{ borderTop: '2px solid rgba(255,255,255,0.2)', background: 'rgba(16, 185, 129, 0.08)' }}>
-                      <td colSpan={2} style={{ padding: '8px 8px', fontWeight: 900, color: '#fff' }}>
+                      <td colSpan={2} style={{ padding: '7px 8px', fontWeight: 900, color: '#fff' }}>
                         TOTAL GROSS AMOUNT PAID (INCL. 18% GST)
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 800 }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 900 }}>
                         ₹{Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 900, color: '#f59e0b' }}>
                         ₹{Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 900, color: '#f59e0b' }}>
                         ₹{((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18) - Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2)).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 900, color: '#10b981', fontSize: '14px' }} className="print-total-amount">
+                      <td style={{ padding: '7px 8px', textAlign: 'right', fontWeight: 900, color: '#10b981', fontSize: '13px' }} className="print-total-amount">
                         ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
                       </td>
                     </tr>
@@ -350,52 +360,167 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                 </table>
               </div>
 
-              {/* Prominent Responsive Gross Total Summary Banner - 100% visible on all mobile screen widths */}
+              {/* Prominent Responsive Gross Total Summary Banner */}
               <div className="invoice-total-summary-card" style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(5, 150, 105, 0.12) 100%)',
                 border: '1.5px solid #10b981',
-                borderRadius: '12px',
-                padding: '12px 16px',
-                margin: '10px 0 14px',
+                borderRadius: '10px',
+                padding: '10px 14px',
+                margin: '8px 0 10px',
                 boxSizing: 'border-box',
                 flexWrap: 'wrap',
                 gap: '8px'
               }}>
                 <div>
-                  <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block' }}>
+                  <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block' }}>
                     ✓ TOTAL GROSS PAID (INCL. 18% GST)
                   </span>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 800 }}>
                     Token Reservation & Site Inspection Advance
                   </span>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '22px', fontWeight: 900, color: '#10b981', display: 'block', lineHeight: 1.1 }} className="print-total-amount">
+                  <span style={{ fontSize: '20px', fontWeight: 900, color: '#10b981', display: 'block', lineHeight: 1.1 }} className="print-total-amount">
                     ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
                   </span>
-                  <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700 }}>
+                  <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 900 }}>
                     Official Payment Confirmed
                   </span>
                 </div>
               </div>
 
-              {/* Transaction ID & Signatory Strip */}
-              <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px dashed rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted)', flexWrap: 'wrap', gap: '8px' }}>
-                <span>Assigned Relationship Manager: <strong style={{ color: '#fff' }}>{bookingConfirmed.assignedManager}</strong></span>
-                <span>Authorized Signatory: <strong style={{ color: '#10b981' }}>AGS Garden City Finance & Accounts</strong></span>
+              {/* Official Corporate Seal & Authorized Signatory Block */}
+              <div className="invoice-seal-signature-container" style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingTop: '10px',
+                borderTop: '1.5px dashed rgba(255, 255, 255, 0.2)',
+                marginTop: '10px',
+                gap: '12px',
+                flexWrap: 'wrap'
+              }}>
+                {/* Left: Official Corporate Seal Stamp */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div className="official-corporate-seal" style={{
+                    width: '82px',
+                    height: '82px',
+                    borderRadius: '50%',
+                    border: '2px dashed #0284c7',
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '3px',
+                    textAlign: 'center',
+                    color: '#0284c7',
+                    transform: 'rotate(-4deg)',
+                    background: 'rgba(2, 132, 199, 0.05)',
+                    flexShrink: 0
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      inset: '2px',
+                      borderRadius: '50%',
+                      border: '1px solid #0284c7',
+                      pointerEvents: 'none'
+                    }} />
+                    <div style={{ fontSize: '6.5px', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1 }}>
+                      ★ AGS GARDEN CITY ★
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '2px',
+                      fontSize: '8px',
+                      fontWeight: 900,
+                      margin: '2px 0',
+                      borderTop: '1px solid #0284c7',
+                      borderBottom: '1px solid #0284c7',
+                      padding: '1px 3px'
+                    }}>
+                      <Check size={9} strokeWidth={3.5} /> SEALED
+                    </div>
+                    <div style={{ fontSize: '6px', fontWeight: 900, textTransform: 'uppercase', lineHeight: 1.1 }}>
+                      APPROVED FOR TOKEN
+                    </div>
+                    <div style={{ fontSize: '6px', fontWeight: 800, marginTop: '1px' }}>
+                      CHENNAI (33)
+                    </div>
+                  </div>
+
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: 900, color: '#fff', textTransform: 'uppercase' }} className="print-bold-title">
+                      Official Corporate Seal
+                    </div>
+                    <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 800 }}>
+                      TN RERA: <strong style={{ color: '#fff', fontWeight: 900 }}>TN/29/Building/0189/2026</strong>
+                    </div>
+                    <div style={{ fontSize: '9.5px', color: '#10b981', fontWeight: 900 }}>
+                      ✓ CMDA Legally Approved & Verified
+                    </div>
+                    <div style={{ fontSize: '8.5px', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 800 }}>
+                      Hash: SHA256-AGS-{bookingConfirmed.transactionId?.slice(-8) || 'VERIFIED'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Authorized Signatory Block */}
+                <div style={{ textAlign: 'right', minWidth: '180px' }} className="authorized-signatory-block">
+                  <div style={{
+                    fontFamily: '"Brush Script MT", "Caveat", "Segoe Script", cursive',
+                    fontSize: '22px',
+                    fontWeight: 900,
+                    color: '#38bdf8',
+                    transform: 'rotate(-2deg)',
+                    letterSpacing: '1px',
+                    lineHeight: 1
+                  }} className="print-signature-text">
+                    S. Ramanathan
+                  </div>
+                  <div style={{
+                    borderTop: '1.5px solid #64748b',
+                    marginTop: '4px',
+                    paddingTop: '3px'
+                  }}>
+                    <div style={{ fontSize: '11px', fontWeight: 900, color: '#fff' }} className="print-bold-title">
+                      Authorized Signatory
+                    </div>
+                    <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 800 }}>
+                      Chief Accounts & Finance Officer
+                    </div>
+                    <div style={{ fontSize: '9.5px', color: '#c084fc', fontWeight: 800 }}>
+                      Assigned RM: {bookingConfirmed.assignedManager}
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
 
-            {/* Digital Verification Stamp */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '10px', padding: '10px 16px', marginBottom: '18px', flexWrap: 'wrap', gap: '6px' }} className="digital-stamp">
-              <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800 }}>
-                ✓ 100% REFUND GUARANTEE • LEGAL VERIFICATION CLEARED
+            {/* Legal Guarantee & 100% Refund Assurance Banner */}
+            <div className="digital-stamp" style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1.5px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              marginBottom: '14px',
+              flexWrap: 'wrap',
+              gap: '6px'
+            }}>
+              <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 900 }}>
+                ✓ 100% REFUND GUARANTEE • 100% CLEAR PATTA & TITLE DEED • RERA REGISTERED
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                Support: +91 44 2888 9999
+              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 800 }}>
+                Chennai HQ Support: +91 44 2888 9999 • contact@agsgardencity.com
               </div>
             </div>
 
@@ -403,15 +528,15 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
             <div className="no-print" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button 
                 className="glass-btn"
-                style={{ padding: '10px 24px', fontSize: '14px', fontWeight: 800 }}
-                onClick={() => window.print()}
+                style={{ padding: '10px 24px', fontSize: '14px', fontWeight: 900 }}
+                onClick={handlePrintReceipt}
               >
                 <Printer size={16} /> 🖨️ Print 1-Page Receipt
               </button>
 
               <button 
                 className="glass-btn"
-                style={{ padding: '10px 20px', fontSize: '13px', background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)' }}
+                style={{ padding: '10px 20px', fontSize: '13px', background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)', fontWeight: 800 }}
                 onClick={() => {
                   window.location.reload();
                 }}
@@ -421,7 +546,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
 
               <button 
                 className="glass-btn-secondary"
-                style={{ padding: '10px 20px', fontSize: '13px' }}
+                style={{ padding: '10px 20px', fontSize: '13px', fontWeight: 800 }}
                 onClick={onBack}
               >
                 🏡 Back to Home

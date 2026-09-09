@@ -112,7 +112,7 @@ function Navbar({
 
   return (
     <>
-      <header className={`navbar-wrapper ${isScrolled ? 'navbar-scrolled' : ''}`}>
+      <header className={`navbar-wrapper no-print ${isScrolled ? 'navbar-scrolled' : ''}`}>
         
         {/* 24/7 Direct Contact Top Strip */}
         <div 
@@ -519,7 +519,7 @@ function Navbar({
       </header>
 
       {/* Mobile Bottom Thumb Dock Bar */}
-      <nav className="mobile-bottom-dock glass-panel">
+      <nav className="mobile-bottom-dock glass-panel no-print">
         <button 
           className={`mobile-dock-btn ${activePage === 'home' ? 'active' : ''}`}
           onClick={() => handleNavClick('home')}

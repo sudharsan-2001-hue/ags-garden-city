@@ -28,7 +28,7 @@ function Footer({ setActivePage }) {
   };
 
   return (
-    <footer className="footer-section">
+    <footer className="footer-section no-print">
       <div className="footer-glass-container glass-panel">
         <div className="footer-grid">
           {/* Brand Info */}
