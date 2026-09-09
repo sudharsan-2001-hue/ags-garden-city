@@ -23,7 +23,11 @@ import {
   ArrowRight,
   ArrowLeft,
   Loader2,
-  Database
+  Database,
+  Calendar,
+  Clock,
+  CreditCard,
+  Check
 } from 'lucide-react';
 
 const BUDGET_PILLS = [
@@ -51,6 +55,14 @@ function Properties({
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [selectedBudget, setSelectedBudget] = useState('All');
   const [sortBy, setSortBy] = useState('featured'); // 'featured', 'price-low', 'price-high', 'rating'
+
+  // Custom Slot Booking for unlisted or custom requests
+  const [customSlotDate, setCustomSlotDate] = useState(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  });
+  const [customSlotTime, setCustomSlotTime] = useState('10:00 AM - 11:30 AM (VIP Chauffeur Slot)');
 
   // Sync with prop when parent updates initialCategory
   useEffect(() => {
@@ -123,7 +135,11 @@ function Properties({
         });
 
         if (normalizedList.length > 0) {
-          setProperties(normalizedList);
+          // Merge live backend properties with full verified catalog so all corridors (Porur, OMR, etc.) are always present
+          const combinedMap = new Map();
+          PROPERTIES_DATA.forEach(p => combinedMap.set((p.title || '').toLowerCase().trim(), p));
+          normalizedList.forEach(p => combinedMap.set((p.title || '').toLowerCase().trim(), p));
+          setProperties(Array.from(combinedMap.values()));
         } else {
           setProperties(PROPERTIES_DATA);
         }
@@ -200,6 +216,73 @@ function Properties({
     setSelectedBudget('All');
     setSortBy('featured');
   };
+
+  const handleBookCustomSlot = () => {
+    const locName = selectedLocation !== 'All' ? selectedLocation : 'Porur / Chennai West';
+    const catName = activeCategory !== 'all' ? activeCategory.toUpperCase() : 'Luxury Villa';
+    const customProperty = {
+      id: `vip-slot-${Date.now()}`,
+      title: `${locName} ${catName} VIP Site Visit & Inspection Slot`,
+      price: selectedBudget !== 'All' ? `Budget Target: ${selectedBudget}` : 'Custom Budget Consultation',
+      priceVal: selectedBudget === '< 50L' ? 4650000 : 8500000,
+      tokenAmount: 20000,
+      location: `${locName}, Chennai`,
+      area: locName,
+      type: `${catName}`,
+      category: activeCategory !== 'all' ? activeCategory : 'villa',
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
+      beds: 3,
+      baths: 3,
+      sqft: '1,250',
+      visitDate: customSlotDate,
+      timeSlot: customSlotTime,
+      verified: true
+    };
+    if (onBookProperty) {
+      onBookProperty(customProperty);
+    }
+  };
+
+  // Recommended properties when a specific filter combination has no exact match
+  const suggestedProperties = useMemo(() => {
+    if (filteredProperties.length > 0) return [];
+    
+    // 1. Try matching by location
+    let recs = properties.filter(p => {
+      if (selectedLocation !== 'All') {
+        return (p.location || '').toLowerCase().includes(selectedLocation.toLowerCase()) || 
+               (p.area || '').toLowerCase().includes(selectedLocation.toLowerCase());
+      }
+      return false;
+    });
+
+    // 2. If none, try matching by category
+    if (recs.length === 0 && activeCategory !== 'all') {
+      recs = properties.filter(p => {
+        const cat = (p.category || '').toLowerCase();
+        const type = (p.type || p.propertyType || '').toLowerCase();
+        return cat === activeCategory || type.includes(activeCategory);
+      });
+    }
+
+    // 3. If none, try matching by budget
+    if (recs.length === 0 && selectedBudget !== 'All') {
+      recs = properties.filter(p => {
+        const pVal = p.priceVal || 0;
+        if (selectedBudget === '< 50L') return pVal <= 5000000;
+        if (selectedBudget === '50L - 1Cr') return pVal >= 4500000 && pVal <= 10000000;
+        if (selectedBudget === '1Cr - 2Cr') return pVal >= 10000000 && pVal <= 20000000;
+        return true;
+      });
+    }
+
+    // 4. Default fallback: first 3 properties
+    if (recs.length === 0) {
+      recs = properties.slice(0, 3);
+    }
+
+    return recs.slice(0, 3);
+  }, [filteredProperties.length, properties, selectedLocation, activeCategory, selectedBudget]);
 
   return (
     <div className="section-wrapper" style={{ maxWidth: '1320px', margin: '0 auto', textAlign: 'left', padding: '0 16px' }}>
@@ -541,20 +624,191 @@ function Properties({
           ))}
         </div>
       ) : (
-        <div className="glass-panel" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: '20px', margin: '20px 0' }}>
-          <div style={{ width: '64px', height: '64px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#ef4444' }}>
-            <Search size={32} />
+        <div style={{ margin: '20px 0' }}>
+          
+          {/* Informative Status Banner with Quick Suggestion Chips */}
+          <div className="glass-panel" style={{ padding: '30px 24px', textAlign: 'center', borderRadius: '20px', marginBottom: '24px', border: '1px solid rgba(239, 68, 68, 0.3)', background: 'linear-gradient(135deg, rgba(15, 17, 32, 0.95) 0%, rgba(30, 20, 35, 0.85) 100%)' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '18px', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#ef4444' }}>
+              <Search size={28} />
+            </div>
+            <h3 style={{ fontSize: '20px', color: '#fff', marginBottom: '6px' }}>
+              No Exact Match for {selectedLocation !== 'All' ? `"${selectedLocation}"` : 'Selected Area'} in {selectedBudget !== 'All' ? `"${selectedBudget}"` : 'Selected Budget'}
+            </h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '13px', maxWidth: '520px', margin: '0 auto 16px' }}>
+              We could not find an exact listing with this specific combination. Don't worry! You can book a direct VIP Site Inspection Slot below, or explore our top-rated handpicked recommendations.
+            </p>
+
+            {/* Quick Filter Suggestion Chips */}
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '16px' }}>
+              {selectedLocation !== 'All' && (
+                <button
+                  className="glass-btn-secondary"
+                  onClick={() => { setSelectedBudget('All'); setActiveCategory('all'); }}
+                  style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', color: '#38bdf8' }}
+                >
+                  📍 Show All in {selectedLocation}
+                </button>
+              )}
+              {activeCategory !== 'all' && (
+                <button
+                  className="glass-btn-secondary"
+                  onClick={() => { setSelectedLocation('All'); setSelectedBudget('All'); }}
+                  style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', color: '#c084fc' }}
+                >
+                  🏡 Show All {activeCategory.toUpperCase()}s in Chennai
+                </button>
+              )}
+              {selectedBudget !== 'All' && (
+                <button
+                  className="glass-btn-secondary"
+                  onClick={() => { setSelectedLocation('All'); setActiveCategory('all'); }}
+                  style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', color: '#10b981' }}
+                >
+                  💰 Show All in {selectedBudget}
+                </button>
+              )}
+              <button 
+                className="glass-btn"
+                onClick={resetAllFilters}
+                style={{ padding: '6px 16px', fontSize: '12px', borderRadius: '16px' }}
+              >
+                <RotateCcw size={14} /> View All Residences ({properties.length || PROPERTIES_DATA.length})
+              </button>
+            </div>
           </div>
-          <h3 style={{ fontSize: '20px', color: '#fff', marginBottom: '8px' }}>No Matching Properties Found for Selected Combination</h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '13px', maxWidth: '450px', margin: '0 auto 20px' }}>
-            We could not find any properties for "{selectedLocation}" in the "{selectedBudget}" bracket. Try selecting "All Locations" or clicking below to view all available listings.
-          </p>
-          <button 
-            className="glass-btn"
-            onClick={resetAllFilters}
+
+          {/* Interactive VIP Site Visit Slot Booking & Token Payment Card */}
+          <div 
+            className="glass-panel" 
+            style={{
+              padding: '24px',
+              borderRadius: '20px',
+              marginBottom: '32px',
+              border: '1.5px solid rgba(16, 185, 129, 0.4)',
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%)',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.4), 0 0 25px rgba(16, 185, 129, 0.15)'
+            }}
           >
-            <RotateCcw size={16} /> Reset All Filters & View All Residences ({properties.length || PROPERTIES_DATA.length})
-          </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
+              <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', border: '1.5px solid #10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
+                <Calendar size={22} />
+              </div>
+              <div style={{ flex: 1, minWidth: '240px' }}>
+                <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  ✓ 100% REFUNDABLE ADVANCE TOKEN • PRIORITY CHAUFFEUR TOUR
+                </div>
+                <h3 style={{ fontSize: '20px', color: '#fff', margin: '2px 0 0', fontWeight: 900 }}>
+                  Book VIP Site Visit Slot in {selectedLocation !== 'All' ? selectedLocation : 'Chennai'} & Pay Token
+                </h3>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '18px', lineHeight: 1.5 }}>
+              Looking for a specific property in <strong>{selectedLocation !== 'All' ? selectedLocation : 'Chennai'}</strong> within <strong>{selectedBudget !== 'All' ? selectedBudget : 'your budget'}</strong>? Book your private escorted inspection slot. Our Senior Relationship Manager will bring exclusive off-market verified builder options directly to your inspection tour.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+              <div>
+                <label style={{ fontSize: '11.5px', color: '#38bdf8', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                  <Calendar size={13} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Preferred Inspection Date:
+                </label>
+                <input 
+                  type="date"
+                  className="glass-input"
+                  value={customSlotDate}
+                  onChange={(e) => setCustomSlotDate(e.target.value)}
+                  style={{ width: '100%', padding: '10px 12px' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: '11.5px', color: '#c084fc', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                  <Clock size={13} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Preferred Time Slot:
+                </label>
+                <select 
+                  className="glass-input"
+                  value={customSlotTime}
+                  onChange={(e) => setCustomSlotTime(e.target.value)}
+                  style={{ width: '100%', padding: '10px 12px' }}
+                >
+                  <option value="10:00 AM - 11:30 AM (VIP Chauffeur Slot)">10:00 AM - 11:30 AM (Morning VIP)</option>
+                  <option value="02:00 PM - 03:30 PM (Afternoon Escort)">02:00 PM - 03:30 PM (Afternoon)</option>
+                  <option value="04:30 PM - 06:00 PM (Sunset Inspection)">04:30 PM - 06:00 PM (Sunset View)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '11.5px', color: '#10b981', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                  <CreditCard size={13} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Advance Token Amount:
+                </label>
+                <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '10px', padding: '9px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 900, color: '#10b981' }}>₹20,000</span>
+                  <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>100% Refund Guarantee</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ fontSize: '11px', color: '#94a3b8' }}>
+                💳 Pay securely via <strong>Razorpay (UPI, GPay, PhonePe, Cards)</strong> or select <strong>Cash on Site Visit</strong>.
+              </div>
+
+              <button 
+                className="glass-btn"
+                style={{
+                  padding: '12px 28px',
+                  fontSize: '14px',
+                  fontWeight: 900,
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  boxShadow: '0 8px 25px rgba(16, 185, 129, 0.4)'
+                }}
+                onClick={handleBookCustomSlot}
+              >
+                ⚡ Book Inspection Slot & Send Token (₹20,000) →
+              </button>
+            </div>
+          </div>
+
+          {/* Recommended Properties Grid with Full Images & Direct Booking */}
+          {suggestedProperties.length > 0 && (
+            <div>
+              <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <div>
+                  <span className="section-tag" style={{ color: '#38bdf8' }}>
+                    <Sparkles size={13} /> TOP-RATED SIMILAR RESIDENCES
+                  </span>
+                  <h3 style={{ fontSize: '20px', color: '#fff', margin: '4px 0 0' }}>
+                    Handpicked Properties You Can Reserve Right Now
+                  </h3>
+                </div>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                  Showing {suggestedProperties.length} verified listings
+                </span>
+              </div>
+
+              <div className="property-cards-grid">
+                {suggestedProperties.map((property) => (
+                  <div key={property.id} style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Propertycard 
+                      property={property}
+                      onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
+                      onEnquire={onEnquire}
+                    />
+                    <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                      <button 
+                        className="glass-btn" 
+                        style={{ width: '100%', padding: '10px', fontSize: '13px', fontWeight: 800 }}
+                        onClick={() => onBookProperty && onBookProperty(property)}
+                      >
+                        <DollarSign size={15} /> Book with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
         </div>
       )}
 
