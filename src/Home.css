@@ -1670,11 +1670,10 @@
 
   /* 6. Section Wrappers & Content Grids */
   .section-wrapper {
-    padding: 0 10px 50px !important;
+    padding: 0 10px 90px !important;
     width: 100% !important;
     max-width: 100vw !important;
     box-sizing: border-box !important;
-    overflow-x: hidden !important;
   }
 
   .section-top-header {
@@ -1873,7 +1872,10 @@
   }
 
   .section-wrapper {
-    padding: 0 8px 40px !important;
+    padding: 0 8px 95px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
   }
 
   .section-main-heading {
@@ -2237,237 +2239,7 @@
 
 
 
-/* ==========================================================================
-   OFFICIAL HIGH-CONTRAST DEEP BLACK PRINT STYLESHEET (@media print)
-   ========================================================================== */
-@media print {
-  @page {
-    size: A4 portrait;
-    margin: 8mm;
-  }
-
-  /* 1. Universal Deep Black Typography & White Background Override */
-  * {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    text-shadow: none !important;
-    box-shadow: none !important;
-    filter: none !important;
-    backdrop-filter: none !important;
-  }
-
-  html, body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif !important;
-    font-size: 13px !important;
-    line-height: 1.5 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* 2. Hide Non-Printable Elements */
-  .navbar-wrapper,
-  .navbar-container,
-  .ambient-orb,
-  .live-activity-popup,
-  .floating-robo-pill,
-  .robot-welcome-overlay,
-  .footer-glass-container,
-  .footer-bottom-strip,
-  .pulse-ring-beacon-container,
-  .no-print,
-  button,
-  .glass-btn,
-  .glass-btn-secondary,
-  .card-heart-btn,
-  .virtual-3d-badge {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* 3. Container Full-Width Clean Print Resets */
-  .main-content,
-  .app-container,
-  .section-wrapper,
-  .checkout-page-container {
-    margin: 0 !important;
-    padding: 0 !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    background: #ffffff !important;
-    border: none !important;
-    box-shadow: none !important;
-    height: auto !important;
-  }
-
-  /* 4. Headings & Titles in Deep Jet Black */
-  h1, h2, h3, h4, h5, h6,
-  .section-main-heading,
-  .property-title,
-  .brand-title,
-  .gradient-text,
-  .gradient-accent-text,
-  strong, b {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    background: none !important;
-    font-weight: 900 !important;
-  }
-
-  h1, .section-main-heading {
-    font-size: 24px !important;
-    margin-bottom: 8px !important;
-  }
-
-  h2, h3 {
-    font-size: 18px !important;
-    margin-bottom: 6px !important;
-  }
-
-  /* 5. Paragraphs, Spans & Labels in Crisp Dark Text */
-  p, span, label, div,
-  .section-subtext,
-  .field-label,
-  .price-sub,
-  .spec-item span,
-  .amenity-item span {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    font-weight: 600 !important;
-    opacity: 1 !important;
-  }
-
-  /* 6. Glass Panels converted into Crisp High-Contrast Printable Boxes */
-  .glass-panel,
-  .glass-property-card,
-  .invoice-section-box,
-  .stat-card,
-  .official-invoice-card {
-    background: #ffffff !important;
-    border: 1.5px solid #000000 !important;
-    border-radius: 8px !important;
-    padding: 12px 16px !important;
-    margin-bottom: 12px !important;
-    color: #000000 !important;
-    box-shadow: none !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Print Logo Box & Image */
-  .print-logo-box {
-    border: 1.5px solid #000000 !important;
-    background: #000000 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  .print-logo-img {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    display: block !important;
-  }
-
-  /* 7. Badges, Tags & Rates */
-  .section-tag,
-  .card-badge,
-  .verified-tag,
-  .property-type-tag,
-  .trend-growth-badge,
-  .filter-pill,
-  .print-tax-badge {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    border: 1.5px solid #000000 !important;
-    background: #f3f4f6 !important;
-    font-weight: 900 !important;
-    padding: 3px 10px !important;
-    border-radius: 4px !important;
-  }
-
-  .stat-number,
-  .stat-label,
-  .growth-positive,
-  .price-val,
-  .print-total-amount,
-  .print-ref-id {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    font-size: 16px !important;
-    font-weight: 900 !important;
-  }
-
-  /* GST Invoice Table & Meta Bar Print Styles */
-  .gst-meta-bar {
-    background: #f3f4f6 !important;
-    border: 1px solid #000000 !important;
-    color: #000000 !important;
-  }
-
-  .gst-meta-bar * {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-  }
-
-  .gst-invoice-table {
-    border: 1px solid #000000 !important;
-  }
-
-  .gst-invoice-table th {
-    background: #e5e7eb !important;
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    border: 1px solid #000000 !important;
-    font-weight: 900 !important;
-  }
-
-  .gst-invoice-table td {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    border: 1px solid #d1d5db !important;
-  }
-
-  .gst-invoice-table tfoot td {
-    background: #f3f4f6 !important;
-    border-top: 2px solid #000000 !important;
-    font-weight: 900 !important;
-  }
-
-  /* 8. Charts & Analytics Bars in Solid Dark Contrast */
-  .chart-bar,
-  .history-bar {
-    border: 1.5px solid #000000 !important;
-    background: #e5e7eb !important;
-  }
-
-  .chart-bar-active {
-    background: #000000 !important;
-    border-color: #000000 !important;
-  }
-
-  .chart-bar-active * {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-  }
-
-  /* 9. Official Invoice Digital Verification Stamp */
-  .digital-stamp {
-    border: 2px solid #000000 !important;
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    font-weight: 900 !important;
-    background: #f9fafb !important;
-    padding: 8px 14px !important;
-  }
-}
+/* Note: The Universal High-Contrast @media print stylesheet is centrally configured in index.css */
 
 
 

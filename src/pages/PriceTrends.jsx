@@ -274,7 +274,7 @@ function PriceTrends({ setActivePage, onSelectPropertyForBooking }) {
         </div>
 
         <button 
-          className="glass-btn"
+          className="glass-btn no-print"
           onClick={() => window.print()}
         >
           <Download size={16} /> Export Q3 2026 Market Report (PDF)
@@ -354,7 +354,7 @@ function PriceTrends({ setActivePage, onSelectPropertyForBooking }) {
       </div>
 
       {/* Main Locality Analytics Dashboard Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '28px', marginBottom: '40px' }}>
+      <div className="trends-layout-grid" style={{ marginBottom: '40px' }}>
         
         {/* Left Column: Historical Appreciation Graph Visualizer */}
         <div className="glass-panel" style={{ padding: '32px' }}>

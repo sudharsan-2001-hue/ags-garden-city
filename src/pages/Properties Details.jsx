@@ -156,7 +156,7 @@ function PropertyDetails({ property, onBack, onBookProperty, onEnquire }) {
       )}
 
       {/* Main Grid: Gallery & Information */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '30px', alignItems: 'start' }}>
+      <div className="property-details-layout">
         
         {/* Left Column: Multi-Room Gallery with Corner Arrows & 3D Icon */}
         <div>

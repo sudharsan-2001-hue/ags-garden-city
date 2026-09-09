@@ -1015,7 +1015,225 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* =========================================================================
-   UNIVERSAL CLEAN WHITE @MEDIA PRINT STYLESHEET (PDF & PAPER)
+   OFFICIAL BOOKING RECEIPT & GST TAX INVOICE STYLES (SCREEN & RESPONSIVE)
+   ========================================================================= */
+.official-print-invoice-wrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.official-invoice-card {
+  padding: 24px 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.invoice-section-box {
+  padding: 16px 20px;
+  box-sizing: border-box;
+}
+
+.print-text-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  font-size: 12.5px;
+  box-sizing: border-box;
+}
+
+.gst-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.gst-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+.gst-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+.gst-table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.4);
+  border-radius: 4px;
+}
+.gst-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.7);
+}
+
+.gst-invoice-table {
+  width: 100%;
+  min-width: 440px;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  text-align: left;
+}
+
+.invoice-total-summary-card {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.mobile-table-hint {
+  display: none;
+}
+
+/* =========================================================================
+   UNIVERSAL RESPONSIVE ALL-PAGES LAYOUT ALLOCATIONS
+   ========================================================================= */
+.checkout-form-grid,
+.property-details-layout,
+.enquiry-layout-grid,
+.contact-layout-grid,
+.trends-layout-grid,
+.price-drop-layout-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.trending-hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.trending-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 860px) {
+  .checkout-form-grid,
+  .property-details-layout,
+  .enquiry-layout-grid,
+  .contact-layout-grid,
+  .trends-layout-grid,
+  .price-drop-layout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-wrapper {
+    padding-bottom: 90px !important;
+  }
+
+  .official-invoice-card {
+    padding: 18px 16px !important;
+  }
+
+  .invoice-section-box {
+    padding: 14px 12px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .checkout-page-container {
+    padding: 0 8px 100px !important;
+  }
+  
+  .official-invoice-card {
+    padding: 14px 10px !important;
+    border-radius: 16px !important;
+  }
+  
+  .invoice-section-box {
+    padding: 12px 8px !important;
+    border-radius: 10px !important;
+  }
+  
+  .print-text-block {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  
+  .mobile-table-hint {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    font-size: 10.5px;
+    color: #38bdf8;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  
+  .gst-invoice-table {
+    min-width: 440px !important;
+    font-size: 10.5px !important;
+  }
+  
+  .gst-invoice-table th,
+  .gst-invoice-table td {
+    padding: 6px 5px !important;
+  }
+
+  .gst-meta-bar {
+    font-size: 10px !important;
+    padding: 6px 8px !important;
+  }
+
+  .invoice-total-summary-card {
+    padding: 10px 12px !important;
+  }
+
+  .invoice-total-summary-card .print-total-amount {
+    font-size: 18px !important;
+  }
+
+  .form-row-2col {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  
+  .trending-hero-grid,
+  .trending-features-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-wrapper {
+    padding: 0 8px 95px !important;
+  }
+
+  .checkout-page-container {
+    padding: 0 4px 105px !important;
+  }
+
+  .official-invoice-card {
+    padding: 12px 8px !important;
+  }
+
+  .gst-invoice-table {
+    min-width: 420px !important;
+    font-size: 10px !important;
+  }
+
+  .gst-invoice-table th,
+  .gst-invoice-table td {
+    padding: 5px 4px !important;
+  }
+}
+
+/* =========================================================================
+   UNIVERSAL ROCK-SOLID HIGH-CONTRAST @MEDIA PRINT STYLESHEET (PDF & PAPER)
    ========================================================================= */
 @media print {
   @page {
@@ -1023,47 +1241,301 @@ h1, h2, h3, h4, h5, h6 {
     margin: 8mm 10mm;
   }
 
-  /* Reset document root to bright pure white */
+  /* 1. Global Reset & Universal Black Typography - Overrides inline white colors */
+  *, *::before, *::after {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* 2. Document Roots & Scroll Reset - Eliminate clipping, 1-page traps & overflow scroll containers */
   html, body {
     background: #ffffff !important;
     background-image: none !important;
-    color: #0f172a !important;
+    color: #000000 !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif !important;
     font-size: 11pt !important;
+    line-height: 1.4 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Universal hide for all background interactive UI, navbar, ambient glows, buttons */
+  #root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 3. Containers reset to full-width static block flow */
+  .app-container,
+  .main-content,
+  .section-wrapper,
+  .checkout-page-container,
+  .calculator-grid {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 4. Reset all sticky / fixed positioning to static so nothing is pushed off-screen */
+  [style*="position: sticky"],
+  [style*="position: fixed"],
+  .glass-panel {
+    position: static !important;
+  }
+
+  /* 5. Universal hide for non-printable UI chrome */
   .no-print,
-  .modal-close-btn,
-  .dossier-modal-top-bar,
-  .section-top-header,
-  .section-title-group,
   .navbar,
+  .navbar-wrapper,
+  .navbar-container,
+  .mobile-bottom-dock,
+  nav,
   .footer,
+  .footer-glass-container,
+  .footer-bottom-strip,
+  footer,
   .ambient-orb,
   .live-ticker,
+  .live-activity-popup,
   .beacon-container,
+  .pulse-ring-beacon-container,
   .voice-assistant-fab,
+  .floating-robo-pill,
+  .robot-welcome-overlay,
   .robot-fab,
   button,
   .glass-btn,
   .glass-btn-secondary,
-  .stats-banner,
-  table:not(.gst-invoice-table),
-  .filter-pill,
-  .section-wrapper > *:not(.glass-modal-overlay),
-  .app-container > *:not(.section-wrapper):not(.glass-modal-overlay) {
+  .card-heart-btn,
+  .virtual-3d-badge,
+  .modal-close-btn,
+  .dossier-modal-top-bar,
+  input[type="range"],
+  .calculator-slider {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 6. Typography & Headings in Solid Jet Black - Overrides text-fill-color transparent */
+  h1, h2, h3, h4, h5, h6,
+  .section-main-heading,
+  .property-title,
+  .brand-title,
+  .print-bold-title,
+  .gradient-text,
+  .gradient-accent-text,
+  strong, b {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    background: none !important;
+    background-image: none !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+  }
+
+  /* 7. Printable Panels, Cards & Boxes */
+  .glass-panel,
+  .glass-property-card,
+  .stat-card,
+  .official-invoice-card,
+  .calculator-controls-panel,
+  .calculator-results-panel {
+    display: block !important;
+    visibility: visible !important;
+    background: #ffffff !important;
+    border: 1.5px solid #000000 !important;
+    border-radius: 8px !important;
+    padding: 14px 18px !important;
+    margin-bottom: 14px !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* 8. Total Amount, Price & EMI Values */
+  .print-total-amount,
+  .gradient-accent-text,
+  .emi-value,
+  .total-row strong,
+  .breakdown-value,
+  .stat-number {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    display: inline-block !important;
+  }
+
+  .print-tax-badge {
+    color: #047857 !important;
+    -webkit-text-fill-color: #047857 !important;
+    border: 1.5px solid #047857 !important;
+    background: #ecfdf5 !important;
+    font-weight: 900 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 9. Official Invoice (BookingCheckout.jsx) */
+  .official-print-invoice-wrapper {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .invoice-section-box {
+    display: block !important;
+    visibility: visible !important;
+    background: #ffffff !important;
+    border: 1.5px solid #000000 !important;
+    color: #000000 !important;
+    padding: 14px 16px !important;
+  }
+
+  .gst-meta-bar {
+    display: flex !important;
+    background: #f8fafc !important;
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    padding: 6px 10px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .gst-table-wrapper {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .gst-invoice-table,
+  table {
+    display: table !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 1px solid #000000 !important;
+    margin: 10px 0 !important;
+  }
+
+  .invoice-total-summary-card {
+    display: flex !important;
+    visibility: visible !important;
+    background: #f8fafc !important;
+    border: 1.5px solid #000000 !important;
+    color: #000000 !important;
+    padding: 10px 14px !important;
+    margin: 10px 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .gst-invoice-table th,
+  table th {
+    background: #f1f5f9 !important;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    border: 1px solid #000000 !important;
+    font-weight: 900 !important;
+    padding: 6px 8px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .gst-invoice-table td,
+  table td {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 8px !important;
+  }
+
+  .gst-invoice-table tfoot td,
+  table tfoot td {
+    background: #f8fafc !important;
+    border-top: 2px solid #000000 !important;
+    font-weight: 900 !important;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    padding: 8px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 10. Images & Logos */
+  img,
+  .print-logo-img,
+  .dossier-logo-img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  .print-logo-box,
+  .dossier-logo-box {
+    border: 1px solid #000000 !important;
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 11. Modal Dossier Only in Admin View */
+  body.dossier-modal-active .main-content > *:not(:has(.dossier-paper-container)):not(.dossier-paper-container),
+  body.dossier-modal-active .section-wrapper > *:not(:has(.dossier-paper-container)):not(.dossier-paper-container) {
     display: none !important;
     visibility: hidden !important;
   }
 
-  /* Modal overlay transforms into plain white wrapper without backdrop darkening */
   .glass-modal-overlay {
     position: static !important;
     display: block !important;
@@ -1091,27 +1563,26 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
-    color: #0f172a !important;
+    color: #000000 !important;
     overflow: visible !important;
   }
 
-  /* Printable Dossier Paper Container occupies standard crisp A4 */
   #printableDossier,
   .dossier-paper-container {
     visibility: visible !important;
     display: block !important;
     position: static !important;
     background: #ffffff !important;
-    color: #0f172a !important;
-    border: 2px solid #0f172a !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
     border-radius: 8px !important;
-    padding: 16px 20px !important;
+    padding: 14px 18px !important;
     margin: 0 auto !important;
     width: 100% !important;
     max-width: 100% !important;
     box-shadow: none !important;
     page-break-inside: avoid !important;
-    page-break-after: avoid !important;
+    break-inside: avoid !important;
   }
 
   #printableDossier *,
@@ -1119,30 +1590,47 @@ h1, h2, h3, h4, h5, h6 {
     visibility: visible !important;
   }
 
-  /* BookingCheckout tax invoice also prints with pure white crisp background */
-  .invoice-section-box {
-    visibility: visible !important;
-    display: block !important;
+  .dossier-card {
     background: #ffffff !important;
-    color: #0f172a !important;
-    border: 2px solid #0f172a !important;
-    border-radius: 8px !important;
-    padding: 16px 20px !important;
-    box-shadow: none !important;
-  }
-
-  .invoice-section-box * {
-    color: #0f172a !important;
-    visibility: visible !important;
-  }
-
-  .gst-invoice-table {
     border: 1px solid #cbd5e1 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
-  .gst-invoice-table th, 
-  .gst-invoice-table td {
+
+  /* 12. Stats & Analytics */
+  .stats-banner {
+    display: block !important;
+    visibility: visible !important;
+    background: #ffffff !important;
+    border: 1px solid #000000 !important;
+    margin-bottom: 16px !important;
+  }
+
+  .stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .stat-item {
     border: 1px solid #e2e8f0 !important;
-    color: #0f172a !important;
+    padding: 8px !important;
+    background: #f8fafc !important;
+  }
+
+  .stat-label {
+    color: #475569 !important;
+    -webkit-text-fill-color: #475569 !important;
+    font-size: 11px !important;
+  }
+
+  .digital-stamp {
+    border: 2px solid #000000 !important;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    font-weight: 900 !important;
+    background: #f9fafb !important;
+    padding: 8px 14px !important;
   }
 }
 

@@ -154,14 +154,12 @@ function Trending({
 
       {/* Real-Time Demand Highlights Banner */}
       <div 
-        className="glass-panel" 
+        className="glass-panel trending-hero-grid" 
         style={{ 
           padding: '20px 28px', 
           marginBottom: '32px',
           background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(168, 85, 247, 0.12) 50%, rgba(56, 189, 248, 0.1) 100%)',
           border: '1px solid rgba(239, 68, 68, 0.3)',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
           gap: '20px'
         }}
       >
@@ -455,7 +453,7 @@ function Trending({
           Discover the key infrastructure developments driving consistent 14% - 19% yearly appreciation across top corridors.
         </p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+        <div className="trending-features-grid" style={{ gap: '20px' }}>
           <div style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)' }}>
             <span style={{ color: '#ef4444', fontWeight: 800, fontSize: '13px' }}>🚇 METRO PHASE 2 CORRIDORS</span>
             <h4 style={{ fontSize: '16px', margin: '8px 0 6px', color: '#fff' }}>Unmatched Connectivity</h4>

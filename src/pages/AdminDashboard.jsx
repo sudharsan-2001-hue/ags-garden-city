@@ -386,6 +386,18 @@ function AdminDashboard({
   const [selectedBookingForView, setSelectedBookingForView] = useState(null);
   const [showAddBookingModal, setShowAddBookingModal] = useState(false);
 
+  // Manage dossier-modal-active class on body for clean print view
+  useEffect(() => {
+    if (selectedBookingForView) {
+      document.body.classList.add('dossier-modal-active');
+    } else {
+      document.body.classList.remove('dossier-modal-active');
+    }
+    return () => {
+      document.body.classList.remove('dossier-modal-active');
+    };
+  }, [selectedBookingForView]);
+
   // Property Editor Modal & Live Preview
   const [editingProperty, setEditingProperty] = useState(null);
   const [previewProperty, setPreviewProperty] = useState(null);

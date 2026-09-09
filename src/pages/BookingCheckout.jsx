@@ -99,7 +99,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
   };
 
   return (
-    <div className="section-wrapper checkout-page-container" style={{ maxWidth: '1020px', margin: '0 auto', padding: '0 16px' }}>
+    <div className="section-wrapper checkout-page-container" style={{ maxWidth: '1020px', margin: '0 auto' }}>
       
       {/* Top Customer Journey Stepper & Back Navigation */}
       {!bookingConfirmed && (
@@ -144,14 +144,14 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
       {bookingConfirmed ? (
         <div className="official-print-invoice-wrapper" style={{ animation: 'fadeIn 0.4s ease-out' }}>
           
-          <div className="official-invoice-card glass-panel" style={{ padding: '28px 32px', borderRadius: '24px', maxWidth: '780px', margin: '0 auto', textAlign: 'left' }}>
+          <div className="official-invoice-card glass-panel" style={{ borderRadius: '24px', maxWidth: '780px', margin: '0 auto', textAlign: 'left' }}>
             
             {/* Luminous Animated Green Tick Mark (✓) */}
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '18px' }}>
               <div 
                 style={{
-                  width: '76px',
-                  height: '76px',
+                  width: '70px',
+                  height: '70px',
                   borderRadius: '50%',
                   background: 'rgba(16, 185, 129, 0.18)',
                   border: '3px solid #10b981',
@@ -164,33 +164,33 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                   animation: 'pulse-glow 2s infinite ease-in-out'
                 }}
               >
-                <Check size={44} strokeWidth={3.5} />
+                <Check size={40} strokeWidth={3.5} />
               </div>
               
-              <span className="section-tag" style={{ color: '#10b981', fontSize: '12px', padding: '4px 14px' }}>
-                <CheckCircle2 size={14} /> PAYMENT SUCCESSFUL & SLOT CONFIRMED
+              <span className="section-tag" style={{ color: '#10b981', fontSize: '11px', padding: '4px 12px' }}>
+                <CheckCircle2 size={13} /> PAYMENT SUCCESSFUL & SLOT CONFIRMED
               </span>
               
-              <h1 style={{ fontSize: '26px', fontWeight: 900, marginTop: '6px', color: '#fff' }} className="print-bold-title">
+              <h1 style={{ fontSize: '24px', fontWeight: 900, marginTop: '6px', color: '#fff' }} className="print-bold-title">
                 Booking Order Receipt
               </h1>
               
-              <p style={{ color: 'var(--text-muted)', fontSize: '13px', margin: '2px 0 0' }}>
-                Booking Ref: <strong style={{ color: '#c084fc', fontSize: '15px' }} className="print-ref-id">{bookingConfirmed.bookingId}</strong> • {bookingConfirmed.date}
+              <p style={{ color: 'var(--text-muted)', fontSize: '12.5px', margin: '2px 0 0' }}>
+                Booking Ref: <strong style={{ color: '#c084fc', fontSize: '14px' }} className="print-ref-id">{bookingConfirmed.bookingId}</strong> • {bookingConfirmed.date}
               </p>
             </div>
 
-            {/* Official Tax Invoice Clean Box (Fits neatly on 1 A4 sheet) */}
-            <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '14px', padding: '18px 20px', marginBottom: '16px' }} className="invoice-section-box">
+            {/* Official Tax Invoice Clean Box (Fits neatly on all screens & 1 A4 sheet) */}
+            <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '14px', marginBottom: '16px' }} className="invoice-section-box">
               
               {/* Header Letterhead Strip with Official Logo */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: '12px', marginBottom: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: '12px', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div 
                     className="print-logo-box"
                     style={{
-                      width: '48px',
-                      height: '48px',
+                      width: '44px',
+                      height: '44px',
                       borderRadius: '12px',
                       overflow: 'hidden',
                       border: '1.5px solid rgba(56, 189, 248, 0.4)',
@@ -213,19 +213,19 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                     />
                   </div>
                   <div>
-                    <strong style={{ fontSize: '16px', color: '#fff', display: 'block', letterSpacing: '0.02em' }} className="print-bold-title">
+                    <strong style={{ fontSize: '15px', color: '#fff', display: 'block', letterSpacing: '0.02em' }} className="print-bold-title">
                       AGS GARDEN CITY
                     </strong>
-                    <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700, letterSpacing: '0.15em' }}>
+                    <span style={{ fontSize: '9.5px', color: '#38bdf8', fontWeight: 700, letterSpacing: '0.12em' }}>
                       LUXURY REAL ESTATE DEVELOPERS PVT LTD
                     </span>
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900 }} className="print-tax-badge">
+                  <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 900 }} className="print-tax-badge">
                     ✓ OFFICIAL GST TAX INVOICE
                   </div>
-                  <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block' }}>
                     TN RERA: TN/29/Building/0189/2026
                   </span>
                 </div>
@@ -238,8 +238,8 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                 <span>Place of Supply: <strong style={{ color: '#fff' }}>Chennai (33)</strong></span>
               </div>
 
-              {/* 2-Column Info Table */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '12.5px', marginBottom: '12px' }} className="print-text-block">
+              {/* Responsive Customer & Property Info Grid */}
+              <div className="print-text-block" style={{ marginBottom: '12px' }}>
                 <div>
                   <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>Billed To (Customer):</span>
                   <div style={{ fontWeight: 800 }}>{bookingConfirmed.buyerName}</div>
@@ -265,83 +265,122 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                 </div>
               </div>
 
-              {/* Official GST Tax Line Item Table */}
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left', marginBottom: '10px' }} className="gst-invoice-table">
-                <thead>
-                  <tr style={{ background: 'rgba(255,255,255,0.08)', borderBottom: '1.5px solid rgba(255,255,255,0.2)' }}>
-                    <th style={{ padding: '8px 10px', fontWeight: 800 }}>#</th>
-                    <th style={{ padding: '8px 10px', fontWeight: 800 }}>Service Description & SAC Code</th>
-                    <th style={{ padding: '8px 10px', fontWeight: 800, textAlign: 'right' }}>Taxable Base (₹)</th>
-                    <th style={{ padding: '8px 10px', fontWeight: 800, textAlign: 'right' }}>CGST (9%)</th>
-                    <th style={{ padding: '8px 10px', fontWeight: 800, textAlign: 'right' }}>SGST (9%)</th>
-                    <th style={{ padding: '8px 10px', fontWeight: 800, textAlign: 'right' }}>Total (₹)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <td style={{ padding: '8px 10px', color: 'var(--text-muted)' }}>01</td>
-                    <td style={{ padding: '8px 10px' }}>
-                      <strong style={{ color: '#fff' }}>Property Token Reservation & Inspection Advance</strong>
-                      <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
-                        SAC: 997222 • {bookingConfirmed.propertyTitle}
-                      </div>
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700 }}>
-                      ₹{Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#f59e0b', fontWeight: 700 }}>
-                      ₹{Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', color: '#f59e0b', fontWeight: 700 }}>
-                      ₹{((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18) - Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2)).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, color: '#10b981' }}>
-                      ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
-                    </td>
-                  </tr>
+              {/* Mobile Swipe Hint for Table */}
+              <div className="mobile-table-hint no-print">
+                <span>👉 Swipe table sideways to see GST breakdown & Total</span>
+              </div>
 
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-muted)', fontSize: '11px' }}>
-                    <td style={{ padding: '6px 10px' }}>02</td>
-                    <td style={{ padding: '6px 10px' }}>
-                      CMDA Legal Document Verification & Patta Verification
-                    </td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right' }}>₹0.00</td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right' }}>₹0.00</td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right' }}>₹0.00</td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right', color: '#10b981', fontWeight: 700 }}>FREE (₹0)</td>
-                  </tr>
+              {/* Official GST Tax Line Item Table with Horizontal Scroll Safeguard */}
+              <div className="gst-table-wrapper" style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginBottom: '8px' }}>
+                <table style={{ width: '100%', minWidth: '440px', borderCollapse: 'collapse', fontSize: '11.5px', textAlign: 'left' }} className="gst-invoice-table">
+                  <thead>
+                    <tr style={{ background: 'rgba(255,255,255,0.08)', borderBottom: '1.5px solid rgba(255,255,255,0.2)' }}>
+                      <th style={{ padding: '8px 8px', fontWeight: 800, width: '28px' }}>#</th>
+                      <th style={{ padding: '8px 8px', fontWeight: 800 }}>Service Description & SAC Code</th>
+                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right' }}>Taxable (₹)</th>
+                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right' }}>CGST (9%)</th>
+                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right' }}>SGST (9%)</th>
+                      <th style={{ padding: '8px 8px', fontWeight: 800, textAlign: 'right', minWidth: '85px' }}>Total (₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                      <td style={{ padding: '8px 8px', color: 'var(--text-muted)' }}>01</td>
+                      <td style={{ padding: '8px 8px' }}>
+                        <strong style={{ color: '#fff' }}>Property Token Reservation Advance</strong>
+                        <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                          SAC: 997222 • {bookingConfirmed.propertyTitle}
+                        </div>
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 700 }}>
+                        ₹{Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#f59e0b', fontWeight: 700 }}>
+                        ₹{Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', color: '#f59e0b', fontWeight: 700 }}>
+                        ₹{((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18) - Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2)).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 900, color: '#10b981' }}>
+                        ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
+                      </td>
+                    </tr>
 
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-muted)', fontSize: '11px' }}>
-                    <td style={{ padding: '6px 10px' }}>03</td>
-                    <td style={{ padding: '6px 10px' }}>
-                      VIP Chauffeur Cab Pickup & Site Tour Escort
-                    </td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right' }}>₹0.00</td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right' }}>₹0.00</td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right' }}>₹0.00</td>
-                    <td style={{ padding: '6px 10px', textAlign: 'right', color: '#10b981', fontWeight: 700 }}>FREE (₹0)</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr style={{ borderTop: '2px solid rgba(255,255,255,0.2)', background: 'rgba(16, 185, 129, 0.08)' }}>
-                    <td colSpan={2} style={{ padding: '8px 10px', fontWeight: 900, color: '#fff' }}>
-                      TOTAL GROSS AMOUNT PAID (INCL. 18% GST)
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800 }}>
-                      ₹{Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>
-                      ₹{Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>
-                      ₹{((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18) - Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2)).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, color: '#10b981', fontSize: '15px' }} className="print-total-amount">
-                      ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-muted)', fontSize: '10.5px' }}>
+                      <td style={{ padding: '6px 8px' }}>02</td>
+                      <td style={{ padding: '6px 8px' }}>
+                        CMDA Legal Document Verification & Patta Verification
+                      </td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right', color: '#10b981', fontWeight: 700 }}>FREE (₹0)</td>
+                    </tr>
+
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-muted)', fontSize: '10.5px' }}>
+                      <td style={{ padding: '6px 8px' }}>03</td>
+                      <td style={{ padding: '6px 8px' }}>
+                        VIP Chauffeur Cab Pickup & Site Tour Escort
+                      </td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right' }}>₹0.00</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right', color: '#10b981', fontWeight: 700 }}>FREE (₹0)</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr style={{ borderTop: '2px solid rgba(255,255,255,0.2)', background: 'rgba(16, 185, 129, 0.08)' }}>
+                      <td colSpan={2} style={{ padding: '8px 8px', fontWeight: 900, color: '#fff' }}>
+                        TOTAL GROSS AMOUNT PAID (INCL. 18% GST)
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        ₹{Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>
+                        ₹{Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 800, color: '#f59e0b' }}>
+                        ₹{((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18) - Math.round(((bookingConfirmed.tokenPaid || 20000) - Math.round((bookingConfirmed.tokenPaid || 20000) / 1.18)) / 2)).toLocaleString('en-IN')}
+                      </td>
+                      <td style={{ padding: '8px 8px', textAlign: 'right', fontWeight: 900, color: '#10b981', fontSize: '14px' }} className="print-total-amount">
+                        ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              {/* Prominent Responsive Gross Total Summary Banner - 100% visible on all mobile screen widths */}
+              <div className="invoice-total-summary-card" style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(5, 150, 105, 0.12) 100%)',
+                border: '1.5px solid #10b981',
+                borderRadius: '12px',
+                padding: '12px 16px',
+                margin: '10px 0 14px',
+                boxSizing: 'border-box',
+                flexWrap: 'wrap',
+                gap: '8px'
+              }}>
+                <div>
+                  <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block' }}>
+                    ✓ TOTAL GROSS PAID (INCL. 18% GST)
+                  </span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    Token Reservation & Site Inspection Advance
+                  </span>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '22px', fontWeight: 900, color: '#10b981', display: 'block', lineHeight: 1.1 }} className="print-total-amount">
+                    ₹{bookingConfirmed.tokenPaid?.toLocaleString('en-IN')}
+                  </span>
+                  <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 700 }}>
+                    Official Payment Confirmed
+                  </span>
+                </div>
+              </div>
 
               {/* Transaction ID & Signatory Strip */}
               <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px dashed rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted)', flexWrap: 'wrap', gap: '8px' }}>
@@ -351,7 +390,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
             </div>
 
             {/* Digital Verification Stamp */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '10px', padding: '10px 16px', marginBottom: '18px' }} className="digital-stamp">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '10px', padding: '10px 16px', marginBottom: '18px', flexWrap: 'wrap', gap: '6px' }} className="digital-stamp">
               <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800 }}>
                 ✓ 100% REFUND GUARANTEE • LEGAL VERIFICATION CLEARED
               </div>
@@ -394,7 +433,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
         </div>
       ) : (
         /* Booking & Checkout Form Grid */
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '30px', alignItems: 'start' }}>
+        <div className="checkout-form-grid">
           
           {/* Left Column: Payment & Buyer Form */}
           <div className="glass-panel" style={{ padding: '32px', textAlign: 'left' }}>
@@ -414,7 +453,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                 <User size={16} /> 1. Buyer & Site Visit Slot Details
               </h4>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '24px' }}>
+              <div className="form-row-2col" style={{ marginBottom: '24px' }}>
                 <div>
                   <label className="field-label" style={{ marginBottom: '6px' }}>Full Name *</label>
                   <input 
@@ -476,7 +515,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                 <CreditCard size={16} /> 2. Select Payment Method
               </h4>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+              <div className="form-row-2col" style={{ marginBottom: '20px' }}>
                 {/* Razorpay Option */}
                 <div 
                   className={`glass-panel ${paymentMethod === 'razorpay' ? 'glass-panel-active' : ''}`}

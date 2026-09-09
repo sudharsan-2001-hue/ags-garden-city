@@ -290,7 +290,7 @@ function EnquiryPage({
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div className="no-print" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button 
               className="glass-btn" 
               onClick={() => window.print()}
@@ -321,7 +321,7 @@ function EnquiryPage({
         /* =========================================================================
             MAIN 2-COLUMN INTERACTIVE ENQUIRY FORM
            ========================================================================= */
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '28px', marginBottom: '40px' }}>
+        <div className="enquiry-layout-grid" style={{ marginBottom: '40px' }}>
           
           {/* Left Column: Form & Enquiry Purpose Tabs */}
           <div className="glass-panel" style={{ padding: '32px', borderRadius: '22px' }}>
@@ -391,7 +391,7 @@ function EnquiryPage({
                 STEP 3: YOUR CONTACT & APPOINTMENT DETAILS
               </span>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+              <div className="form-row-2col" style={{ marginBottom: '14px' }}>
                 <div className="auth-field-group">
                   <label className="field-label">Your Full Name *</label>
                   <input 
@@ -419,7 +419,7 @@ function EnquiryPage({
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+              <div className="form-row-2col" style={{ marginBottom: '14px' }}>
                 <div className="auth-field-group">
                   <label className="field-label">Email Address (Optional)</label>
                   <input 
@@ -444,7 +444,7 @@ function EnquiryPage({
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+              <div className="form-row-2col" style={{ marginBottom: '14px' }}>
                 <div className="auth-field-group">
                   <label className="field-label">Preferred Time Slot</label>
                   <select 

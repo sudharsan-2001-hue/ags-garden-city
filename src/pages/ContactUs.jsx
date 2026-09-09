@@ -300,7 +300,7 @@ function ContactUs({ setActivePage }) {
 
       {/* Direct Interactive Callback & VIP Site Visit Booking Form */}
       <div id="quick-callback-form" className="glass-panel" style={{ padding: '36px 32px', borderRadius: '24px', position: 'relative' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '36px', alignItems: 'center' }}>
+        <div className="contact-layout-grid">
           
           {/* Left Column: Why Connect with AGS Garden City */}
           <div>

@@ -162,7 +162,7 @@ function PriceDropAlert({
           marginBottom: '36px'
         }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px', alignItems: 'center' }}>
+        <div className="price-drop-layout-grid">
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#f59e0b', fontSize: '12px', fontWeight: 800, marginBottom: '8px' }}>
               <Zap size={14} /> INSTANT NOTIFICATION ENGINE

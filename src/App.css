@@ -18,3 +18,19 @@
   overflow-x: hidden;
   box-sizing: border-box;
 }
+
+@media print {
+  .app-container,
+  .main-content {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    flex: none !important;
+  }
+}
