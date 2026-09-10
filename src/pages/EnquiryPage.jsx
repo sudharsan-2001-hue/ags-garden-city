@@ -159,7 +159,7 @@ function EnquiryPage({
           <Headphones size={13} /> 24/7 DEDICATED PROPERTY ENQUIRY & VIP SITE VISIT DESK
         </span>
         <h1 style={{ fontSize: '36px', fontWeight: 800, margin: '10px 0 8px', color: '#fff' }}>
-          Enquire About <span className="gradient-text">AGS Garden City Residences</span>
+          Enquire About <span className="gradient-text">AGS NEST Residences</span>
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '14px', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
           Connect directly with our senior property advisors. Request instant 2-minute callbacks, book free doorstep luxury AC cabs for family site inspections, or receive verified RERA legal title documents.
@@ -598,7 +598,7 @@ function EnquiryPage({
             {/* 24/7 Service Guarantees Card */}
             <div className="glass-panel" style={{ padding: '24px', borderRadius: '20px' }}>
               <h4 style={{ fontSize: '16px', color: '#fff', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShieldCheck size={18} color="#10b981" /> AGS Garden City Guarantees
+                <ShieldCheck size={18} color="#10b981" /> AGS NEST Guarantees
               </h4>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -643,7 +643,7 @@ function EnquiryPage({
       <div style={{ marginTop: '20px' }}>
         <GoogleMapView 
           locationName={currentSelectedProp?.location || 'Porur, Chennai'}
-          title="📍 AGS Garden City Inspection Locations on Google Maps"
+          title="📍 AGS NEST Inspection Locations on Google Maps"
           height="380px"
           showTransitDetails={true}
         />

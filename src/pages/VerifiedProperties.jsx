@@ -216,7 +216,7 @@ function VerifiedProperties({
       >
         <div>
           <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 7 of 9 in AGS Garden City Journey
+            Current Step: 7 of 9 in AGS NEST Journey
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Select any property card above to inspect Room-by-Room Multi-Angles & 3D Tour!

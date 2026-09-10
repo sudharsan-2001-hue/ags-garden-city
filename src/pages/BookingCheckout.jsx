@@ -213,14 +213,14 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                   >
                     <img 
                       src={AGS_LOGO_BASE64} 
-                      alt="AGS Garden City Logo" 
+                      alt="AGS NEST Logo" 
                       className="print-logo-img"
                       style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
                     />
                   </div>
                   <div>
                     <strong style={{ fontSize: '15px', color: '#fff', display: 'block', letterSpacing: '0.02em' }} className="print-bold-title">
-                      AGS GARDEN CITY
+                      AGS NEST
                     </strong>
                     <span style={{ fontSize: '9.5px', color: '#38bdf8', fontWeight: 700, letterSpacing: '0.12em' }}>
                       LUXURY REAL ESTATE DEVELOPERS PVT LTD
@@ -426,7 +426,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                       pointerEvents: 'none'
                     }} />
                     <div style={{ fontSize: '6.5px', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1 }}>
-                      ★ AGS GARDEN CITY ★
+                      ★ AGS NEST ★
                     </div>
                     <div style={{
                       display: 'flex',

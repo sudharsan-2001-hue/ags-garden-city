@@ -39,11 +39,11 @@ export const speakMessage = (text, lang = 'ta') => {
 export const PAGE_VOICE_SCRIPTS = {
   home: {
     ta: 'வணக்கம் மற்றும் ஏஜிஎஸ் கார்டன் சிட்டி ரியல் எஸ்டேட்டிற்கு தங்களை அன்புடன் வரவேற்கிறோம் சார்! உங்கள் கனவு இல்லத்தை கண்டறிய நாங்கள் உங்களுக்கு உதவுகிறோம்.',
-    en: 'Vanakkam and Welcome to AGS Garden City Luxury Real Estate, Sir! Let us guide you to your perfect dream residence.'
+    en: 'Vanakkam and Welcome to AGS NEST Luxury Real Estate, Sir! Let us guide you to your perfect dream residence.'
   },
   properties: {
     ta: 'ஏஜிஎஸ் கார்டன் சிட்டியின் அனைத்து சரிபார்க்கப்பட்ட ஆடம்பர அடுக்குமாடி குடியிருப்புகள் மற்றும் வில்லாக்களை பார்வையிடுங்கள் சார்.',
-    en: 'Explore all verified luxury apartments, sea view villas, and penthouses in AGS Garden City, Sir.'
+    en: 'Explore all verified luxury apartments, sea view villas, and penthouses in AGS NEST, Sir.'
   },
   'property-detail': {
     ta: 'இந்த சொத்தின் முழு விவரங்கள், படங்கள் மற்றும் முன்பதிவு தொகையை பார்வையிடுங்கள் சார்.',
@@ -55,11 +55,11 @@ export const PAGE_VOICE_SCRIPTS = {
   },
   trends: {
     ta: 'சென்னை ரியல் எஸ்டேட் விலை உயர்வு மற்றும் சந்தை வளர்ச்சி புள்ளிவிவரங்கள் இதோ சார்.',
-    en: 'Here is the detailed Chennai real estate price trends, appreciation rates, and market intelligence from AGS Garden City, Sir.'
+    en: 'Here is the detailed Chennai real estate price trends, appreciation rates, and market intelligence from AGS NEST, Sir.'
   },
   'ai-finder': {
     ta: 'செயற்கை நுண்ணறிவு மூலம் உங்கள் விருப்பத்திற்கேற்ப சிறந்த வீட்டை உடனடியாக கண்டறியுங்கள் சார்.',
-    en: 'Describe your requirements and let AGS Garden City AI Matcher find your dream property instantaneously, Sir.'
+    en: 'Describe your requirements and let AGS NEST AI Matcher find your dream property instantaneously, Sir.'
   },
   'price-drop': {
     ta: 'பிரத்யேக தள்ளுபடி விலையில் உள்ள சொத்துக்களை பார்வையிடுங்கள் சார்.',
@@ -79,6 +79,6 @@ export const PAGE_VOICE_SCRIPTS = {
   },
   admin: {
     ta: 'ஏஜிஎஸ் கார்டன் சிட்டி நிர்வாக மேலாண்மை மற்றும் வாடிக்கையாளர் முன்பதிவு பக்கத்திற்கு வரவேற்கிறோம் சார்.',
-    en: 'Welcome to AGS Garden City Admin Management Portal. Manage all customer site visits and token bookings, Sir.'
+    en: 'Welcome to AGS NEST Admin Management Portal. Manage all customer site visits and token bookings, Sir.'
   }
 };

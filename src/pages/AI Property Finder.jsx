@@ -260,7 +260,7 @@ function AIPropertyFinder({ onSelectProperty, onEnquire, onBookProperty, onBack,
       >
         <div>
           <div style={{ fontSize: '11px', color: '#c084fc', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 3 of 9 in AGS Garden City Journey
+            Current Step: 3 of 9 in AGS NEST Journey
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Check exclusive flash price drops and limited-time discounts!

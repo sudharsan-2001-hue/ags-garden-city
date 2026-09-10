@@ -1134,7 +1134,7 @@ function Properties({
       >
         <div>
           <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 2 of 9 in AGS Garden City Journey
+            Current Step: 2 of 9 in AGS NEST  Journey
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Want AI to match your exact customized requirements?

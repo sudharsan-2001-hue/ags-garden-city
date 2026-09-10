@@ -220,7 +220,7 @@ function SavedProperties({
       >
         <div>
           <div style={{ fontSize: '11px', color: '#ec4899', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 6 of 9 in AGS Garden City Journey
+            Current Step: 6 of 9 in AGS NEST Journey
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Ready to inspect 100% CMDA & RERA Approved Properties?

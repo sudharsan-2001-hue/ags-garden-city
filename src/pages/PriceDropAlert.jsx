@@ -315,7 +315,7 @@ function PriceDropAlert({
       >
         <div>
           <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 4 of 9 in AGS Garden City Journey
+            Current Step: 4 of 9 in AGS NEST Journey
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Ready to explore Chennai's 2026 Price Growth Trends?

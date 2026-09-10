@@ -149,7 +149,7 @@ function Navbar({
               href="mailto:AGSGARDENCITY@gmail.com" 
               className="desktop-only-item"
               style={{ color: '#c084fc', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-              title="Click to Email AGS Garden City"
+              title="Click to Email AGS NEST"
             >
               <Mail size={12} /> AGSGARDENCITY@gmail.com
             </a>
@@ -273,13 +273,13 @@ function Navbar({
               >
                 <img 
                   src={AGS_LOGO_BASE64} 
-                  alt="AGS Garden City Logo" 
+                  alt="AGS NEST Logo" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 />
               </div>
               <div className="brand-text">
                 <span className="brand-title gradient-text">
-                  AGS GARDEN CITY
+                  AGS NEST
                 </span>
                 <span className="brand-subtitle">
                   LUXURY REAL ESTATE

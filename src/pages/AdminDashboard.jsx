@@ -766,7 +766,7 @@ function AdminDashboard({
       <div className="section-top-header" style={{ marginBottom: '24px' }}>
         <div className="section-title-group">
           <span className="section-tag" style={{ color: '#10b981' }}>
-            <ShieldCheck size={14} /> AGS GARDEN CITY CENTRAL ADMIN CONTROL
+            <ShieldCheck size={14} /> AGS NEST CENTRAL ADMIN CONTROL
           </span>
           <h1 className="section-main-heading" style={{ fontSize: '34px' }}>
             Admin Dashboard & <span className="gradient-text">Management Hub</span>
@@ -2856,12 +2856,12 @@ function AdminDashboard({
                   <div className="dossier-logo-box">
                     <img 
                       src={AGS_LOGO_BASE64} 
-                      alt="AGS Garden City Logo" 
+                      alt="AGS NEST Logo" 
                       className="dossier-logo-img" 
                     />
                   </div>
                   <div>
-                    <h1 className="dossier-main-title">AGS GARDEN CITY</h1>
+                    <h1 className="dossier-main-title">AGS NEST</h1>
                     <div className="dossier-sub-tag">PREMIER LUXURY REAL ESTATE DEVELOPERS & RESIDENCES</div>
                     <div className="dossier-meta-text">
                       OMR & ECR Coastal Corridor, Chennai, Tamil Nadu • Desk: +91 73971 35792 • support@agsgarden.com
@@ -3008,7 +3008,7 @@ function AdminDashboard({
 
                 <div className="dossier-stamp-box">
                   <div className="dossier-stamp-seal">
-                    <span>AGS GARDEN CITY</span>
+                    <span>AGS NEST</span>
                     <strong>OFFICIALLY SEALED</strong>
                     <span>CHENNAI • 2026</span>
                   </div>
@@ -3027,7 +3027,7 @@ function AdminDashboard({
                   ||||| | |||| ||||| |||| || ||||| |||||| ||||| ||||||| {selectedBookingForView.bookingId} |||||
                 </div>
                 <p>
-                  This computer-generated Dossier & Token Receipt is an authentic proof of reservation under AGS Garden City Real Estate protocols. 
+                  This computer-generated Dossier & Token Receipt is an authentic proof of reservation under AGS NEST Real Estate protocols. 
                   Reconciled and stored in MongoDB "realestate" database.
                 </p>
               </div>

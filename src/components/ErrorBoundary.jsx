@@ -65,7 +65,7 @@ class ErrorBoundary extends React.Component {
             </div>
 
             <h2 style={{ fontSize: '22px', marginBottom: '8px', color: '#fff' }}>
-              AGS Garden City High-Speed Engine Protected
+              AGS NEST High-Speed Engine Protected
             </h2>
             <p style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '13px', lineHeight: 1.6, marginBottom: '24px' }}>
               Our high-traffic concurrency shield safely recovered your session. Click below to continue browsing verified residences smoothly.

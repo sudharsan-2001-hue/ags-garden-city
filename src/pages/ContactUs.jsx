@@ -105,7 +105,7 @@ function ContactUs({ setActivePage }) {
             <Headphones size={14} /> 24 HOURS ROUND-THE-CLOCK VIP ASSISTANCE
           </span>
           <h1 className="section-main-heading" style={{ fontSize: '38px' }}>
-            Connect with <span className="gradient-text">AGS Garden City</span>
+            Connect with <span className="gradient-text">AGS NEST</span>
           </h1>
           <p className="section-subtext" style={{ fontSize: '16px', maxWidth: '800px' }}>
             Our expert property advisors are available <strong>24 Hours a Day, 7 Days a Week</strong> to arrange instant site visits, free cab pickups, video walkthroughs, and customized property consultations.
@@ -278,7 +278,7 @@ function ContactUs({ setActivePage }) {
           </div>
           <h3 style={{ fontSize: '20px', margin: '0 0 6px', color: '#fff' }}>Central Experience Hub</h3>
           <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '14px' }}>
-            AGS Garden City Towers, Mount-Poonamallee Highway, Porur Junction, Chennai - 600116.
+            AGS NEST Towers, Mount-Poonamallee Highway, Porur Junction, Chennai - 600116.
           </p>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fcd34d', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Car size={16} /> Free AC Cab Pickup from Airport & Railway Station
@@ -302,7 +302,7 @@ function ContactUs({ setActivePage }) {
       <div id="quick-callback-form" className="glass-panel" style={{ padding: '36px 32px', borderRadius: '24px', position: 'relative' }}>
         <div className="contact-layout-grid">
           
-          {/* Left Column: Why Connect with AGS Garden City */}
+          {/* Left Column: Why Connect with AGS NEST */}
           <div>
             <span className="section-tag" style={{ color: '#38bdf8' }}>
               <Zap size={13} /> 24/7 GUARANTEED VIP SERVICE
@@ -472,7 +472,7 @@ function ContactUs({ setActivePage }) {
       <div style={{ marginTop: '30px' }}>
         <GoogleMapView 
           locationName="Porur, Chennai"
-          title="📍 AGS Garden City Corporate Experience Gallery on Google Maps"
+          title="📍 AGS NEST Corporate Experience Gallery on Google Maps"
           height="420px"
           showTransitDetails={true}
         />
