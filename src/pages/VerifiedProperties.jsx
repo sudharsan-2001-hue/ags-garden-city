@@ -179,21 +179,49 @@ function VerifiedProperties({
       </div>
 
       {/* Property Cards Grid */}
-      <div className="property-cards-grid" style={{ marginBottom: '48px' }}>
+      <div 
+        className="property-cards-grid" 
+        style={{ 
+          marginBottom: '48px',
+          width: '100%',
+          maxWidth: '100%',
+          minWidth: 0,
+          boxSizing: 'border-box'
+        }}
+      >
         {filteredListings.map(property => (
-          <div key={property.id} style={{ display: 'flex', flexDirection: 'column' }}>
+          <div 
+            key={property.id} 
+            style={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              width: '100%',
+              maxWidth: '100%',
+              minWidth: 0,
+              boxSizing: 'border-box'
+            }}
+          >
             <Propertycard 
               property={property}
               onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
               onEnquire={onEnquire}
             />
-            <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+            <div style={{ marginTop: '8px', display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
               <button 
                 className="glass-btn" 
-                style={{ width: '100%', padding: '10px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)' }}
+                style={{ 
+                  width: '100%', 
+                  padding: '10px', 
+                  fontSize: '13px', 
+                  background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)',
+                  boxSizing: 'border-box',
+                  whiteSpace: 'normal',
+                  textAlign: 'center'
+                }}
                 onClick={() => onBookProperty && onBookProperty(property)}
               >
-                <DollarSign size={15} /> Book Slot with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})
+                <DollarSign size={15} style={{ flexShrink: 0 }} /> 
+                <span>Book Slot with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})</span>
               </button>
             </div>
           </div>

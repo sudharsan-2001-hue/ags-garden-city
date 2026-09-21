@@ -37,44 +37,20 @@ function VoiceAssistant({ activePage, voiceLanguage = 'ta', setVoiceLanguage, vo
   return (
     <div 
       className="voice-assistant-bar glass-panel" 
-      style={{ 
-        display: 'inline-flex', 
-        alignItems: 'center', 
-        gap: '5px', 
-        padding: '3px 8px', 
-        borderRadius: '20px',
-        flexShrink: 0,
-        background: 'rgba(15, 23, 42, 0.75)',
-        border: '1px solid rgba(255, 255, 255, 0.15)'
-      }}
     >
       {/* Mic / Speak Button */}
       <button 
         className={`voice-mic-btn ${isSpeaking ? 'voice-speaking-active' : ''}`}
         onClick={handleManualSpeak}
         title={voiceLanguage === 'ta' ? 'குரல் வழிகாட்டியை இயக்கவும்' : 'Speak Voice Greeting'}
-        style={{
-          background: isSpeaking ? 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)' : 'rgba(255,255,255,0.08)',
-          border: '1px solid rgba(255,255,255,0.2)',
-          color: '#fff',
-          borderRadius: '50%',
-          width: '24px',
-          height: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          boxShadow: isSpeaking ? '0 0 12px rgba(236, 72, 153, 0.6)' : 'none',
-          transition: 'all 0.2s ease',
-          padding: 0
-        }}
+        aria-label="Voice Assistant"
       >
-        <Mic size={13} />
+        <Mic className="voice-mic-icon" size={13} />
       </button>
 
       {/* Audio Wave Visualizer Animation */}
       {isSpeaking && (
-        <div className="audio-wave-container" style={{ display: 'flex', alignItems: 'center', gap: '2px', height: '12px' }}>
+        <div className="audio-wave-container">
           <div className="audio-bar bar-1"></div>
           <div className="audio-bar bar-2"></div>
           <div className="audio-bar bar-3"></div>
@@ -83,38 +59,16 @@ function VoiceAssistant({ activePage, voiceLanguage = 'ta', setVoiceLanguage, vo
       )}
 
       {/* Language Switcher */}
-      <div style={{ display: 'flex', gap: '2px', background: 'rgba(0,0,0,0.4)', padding: '2px', borderRadius: '16px' }}>
+      <div className="voice-lang-wrapper">
         <button
-          className="voice-lang-btn"
+          className={`voice-lang-btn ${voiceLanguage === 'ta' ? 'voice-lang-active' : ''}`}
           onClick={() => setVoiceLanguage && setVoiceLanguage('ta')}
-          style={{
-            background: voiceLanguage === 'ta' ? 'var(--gradient-primary)' : 'transparent',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '12px',
-            padding: '2px 6px',
-            fontSize: '10px',
-            fontWeight: 700,
-            cursor: 'pointer',
-            lineHeight: 1.2
-          }}
         >
           <span className="desktop-only-item">🇮🇳 </span>தமிழ்
         </button>
         <button
-          className="voice-lang-btn"
+          className={`voice-lang-btn ${voiceLanguage === 'en' ? 'voice-lang-active' : ''}`}
           onClick={() => setVoiceLanguage && setVoiceLanguage('en')}
-          style={{
-            background: voiceLanguage === 'en' ? 'var(--gradient-primary)' : 'transparent',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '12px',
-            padding: '2px 6px',
-            fontSize: '10px',
-            fontWeight: 700,
-            cursor: 'pointer',
-            lineHeight: 1.2
-          }}
         >
           ENG
         </button>
@@ -122,6 +76,7 @@ function VoiceAssistant({ activePage, voiceLanguage = 'ta', setVoiceLanguage, vo
 
       {/* Mute Toggle */}
       <button
+        className="voice-vol-btn"
         onClick={() => {
           if (voiceEnabled) {
             window.speechSynthesis && window.speechSynthesis.cancel();
@@ -129,17 +84,9 @@ function VoiceAssistant({ activePage, voiceLanguage = 'ta', setVoiceLanguage, vo
           if (setVoiceEnabled) setVoiceEnabled(!voiceEnabled);
         }}
         title={voiceEnabled ? 'Mute AI Voice' : 'Unmute AI Voice'}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: voiceEnabled ? '#10b981' : 'var(--text-muted)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '2px'
-        }}
+        aria-label="Toggle Voice Mute"
       >
-        {voiceEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+        {voiceEnabled ? <Volume2 size={13} /> : <VolumeX size={13} />}
       </button>
     </div>
   );

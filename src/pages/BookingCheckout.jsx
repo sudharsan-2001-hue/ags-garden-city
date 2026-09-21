@@ -388,22 +388,66 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                 </div>
               </div>
 
-              {/* Official Corporate Seal & Authorized Signatory Block */}
+              {/* Official Signatures & Corporate Seal Block: Left (Customer Sign) | Center (Corporate Seal) | Right (Authorized Signatory) */}
               <div className="invoice-seal-signature-container" style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                paddingTop: '10px',
+                paddingTop: '8px',
                 borderTop: '1.5px dashed rgba(255, 255, 255, 0.2)',
-                marginTop: '10px',
-                gap: '12px',
-                flexWrap: 'wrap'
+                marginTop: '8px',
+                gap: '10px',
+                flexWrap: 'nowrap'
               }}>
-                {/* Left: Official Corporate Seal Stamp */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* 1. Left: Customer / Buyer Signature (Sudharsan) */}
+                <div style={{ textAlign: 'left', minWidth: '150px', flex: '1 1 auto' }} className="customer-signatory-block">
+                  <div style={{ height: '34px', display: 'flex', alignItems: 'center' }}>
+                    <svg width="140" height="34" viewBox="0 0 140 34" style={{ overflow: 'visible' }}>
+                      <text 
+                        x="2" 
+                        y="23" 
+                        fontFamily="'Brush Script MT', 'Segoe Script', 'Caveat', 'Dancing Script', 'Great Vibes', cursive" 
+                        fontSize="22" 
+                        fontStyle="italic" 
+                        fontWeight="700" 
+                        fill="#1d4ed8"
+                        className="print-customer-sig"
+                        style={{ letterSpacing: '0.02em' }}
+                      >
+                        {bookingConfirmed.buyerName?.trim() || buyerName?.trim() || 'Sudharsan G'}
+                      </text>
+                      <path 
+                        d="M4 27 Q 45 34 125 25" 
+                        fill="none" 
+                        stroke="#1d4ed8" 
+                        strokeWidth="1.8" 
+                        strokeLinecap="round" 
+                        className="print-customer-sig-stroke"
+                      />
+                    </svg>
+                  </div>
+                  <div style={{
+                    borderTop: '1.5px solid #64748b',
+                    marginTop: '3px',
+                    paddingTop: '2px'
+                  }}>
+                    <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#fff' }} className="print-bold-title">
+                      Customer / Buyer Signature
+                    </div>
+                    <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 800 }}>
+                      Name: <strong style={{ color: '#38bdf8' }} className="print-customer-name">{bookingConfirmed.buyerName || buyerName || 'Sudharsan G'}</strong>
+                    </div>
+                    <div style={{ fontSize: '8.5px', color: '#10b981', fontWeight: 800 }}>
+                      ✓ Digitally Verified & Accepted
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Center: Official Corporate Seal Stamp */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', flex: '0 0 auto' }} className="corporate-seal-block">
                   <div className="official-corporate-seal" style={{
-                    width: '82px',
-                    height: '82px',
+                    width: '74px',
+                    height: '74px',
                     borderRadius: '50%',
                     border: '2px dashed #0284c7',
                     position: 'relative',
@@ -411,10 +455,10 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '3px',
+                    padding: '2px',
                     textAlign: 'center',
                     color: '#0284c7',
-                    transform: 'rotate(-4deg)',
+                    transform: 'rotate(-3deg)',
                     background: 'rgba(2, 132, 199, 0.05)',
                     flexShrink: 0
                   }}>
@@ -425,7 +469,7 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                       border: '1px solid #0284c7',
                       pointerEvents: 'none'
                     }} />
-                    <div style={{ fontSize: '6.5px', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1 }}>
+                    <div style={{ fontSize: '6px', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1 }}>
                       ★ AGS NEST ★
                     </div>
                     <div style={{
@@ -433,64 +477,65 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '2px',
-                      fontSize: '8px',
+                      fontSize: '7.5px',
                       fontWeight: 900,
-                      margin: '2px 0',
+                      margin: '1px 0',
                       borderTop: '1px solid #0284c7',
                       borderBottom: '1px solid #0284c7',
                       padding: '1px 3px'
                     }}>
-                      <Check size={9} strokeWidth={3.5} /> SEALED
+                      <Check size={8} strokeWidth={3.5} /> SEALED
                     </div>
-                    <div style={{ fontSize: '6px', fontWeight: 900, textTransform: 'uppercase', lineHeight: 1.1 }}>
+                    <div style={{ fontSize: '5.5px', fontWeight: 900, textTransform: 'uppercase', lineHeight: 1 }}>
                       APPROVED FOR TOKEN
                     </div>
-                    <div style={{ fontSize: '6px', fontWeight: 800, marginTop: '1px' }}>
+                    <div style={{ fontSize: '5.5px', fontWeight: 800, marginTop: '1px' }}>
                       CHENNAI (33)
                     </div>
                   </div>
 
-                  <div>
-                    <div style={{ fontSize: '11px', fontWeight: 900, color: '#fff', textTransform: 'uppercase' }} className="print-bold-title">
-                      Official Corporate Seal
+                  <div className="seal-details-text">
+                    <div style={{ fontSize: '10px', fontWeight: 900, color: '#fff', textTransform: 'uppercase' }} className="print-bold-title">
+                      Corporate Seal
                     </div>
-                    <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 800 }}>
-                      TN RERA: <strong style={{ color: '#fff', fontWeight: 900 }}>TN/29/Building/0189/2026</strong>
+                    <div style={{ fontSize: '8.5px', color: 'var(--text-muted)', fontWeight: 800 }}>
+                      TN RERA: <strong style={{ color: '#fff', fontWeight: 900 }}>TN/29/0189/2026</strong>
                     </div>
-                    <div style={{ fontSize: '9.5px', color: '#10b981', fontWeight: 900 }}>
-                      ✓ CMDA Legally Approved & Verified
-                    </div>
-                    <div style={{ fontSize: '8.5px', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 800 }}>
-                      Hash: SHA256-AGS-{bookingConfirmed.transactionId?.slice(-8) || 'VERIFIED'}
+                    <div style={{ fontSize: '8.5px', color: '#10b981', fontWeight: 900 }}>
+                      ✓ CMDA Approved
                     </div>
                   </div>
                 </div>
 
-                {/* Right: Authorized Signatory Block */}
-                <div style={{ textAlign: 'right', minWidth: '180px' }} className="authorized-signatory-block">
+                {/* 3. Right: Authorized Signatory Block */}
+                <div style={{ textAlign: 'right', minWidth: '150px', flex: '1 1 auto' }} className="authorized-signatory-block">
                   <div style={{
                     fontFamily: '"Brush Script MT", "Caveat", "Segoe Script", cursive',
-                    fontSize: '22px',
+                    fontSize: '21px',
                     fontWeight: 900,
                     color: '#38bdf8',
                     transform: 'rotate(-2deg)',
                     letterSpacing: '1px',
-                    lineHeight: 1
+                    lineHeight: 1,
+                    height: '34px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end'
                   }} className="print-signature-text">
                     S. Ramanathan
                   </div>
                   <div style={{
                     borderTop: '1.5px solid #64748b',
-                    marginTop: '4px',
-                    paddingTop: '3px'
+                    marginTop: '3px',
+                    paddingTop: '2px'
                   }}>
-                    <div style={{ fontSize: '11px', fontWeight: 900, color: '#fff' }} className="print-bold-title">
+                    <div style={{ fontSize: '10.5px', fontWeight: 900, color: '#fff' }} className="print-bold-title">
                       Authorized Signatory
                     </div>
-                    <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 800 }}>
-                      Chief Accounts & Finance Officer
+                    <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 800 }}>
+                      Chief Accounts & Finance
                     </div>
-                    <div style={{ fontSize: '9.5px', color: '#c084fc', fontWeight: 800 }}>
+                    <div style={{ fontSize: '8.5px', color: '#c084fc', fontWeight: 800 }}>
                       Assigned RM: {bookingConfirmed.assignedManager}
                     </div>
                   </div>

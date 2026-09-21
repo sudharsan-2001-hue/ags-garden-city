@@ -48,7 +48,12 @@ import {
   Lock,
   Key,
   RefreshCw,
-  ArrowLeft
+  ArrowLeft,
+  ArrowUpRight,
+  Send,
+  MessageCircle,
+  ExternalLink,
+  Inbox
 } from 'lucide-react';
 import safeStorage from '../utils/safeStorage';
 
@@ -236,7 +241,9 @@ function AdminDashboard({
   onUpdateBookings, 
   propertiesList = PROPERTIES_DATA, 
   onUpdateProperties,
-  onLogoutAdmin 
+  onLogoutAdmin,
+  onSelectProperty,
+  onBookProperty
 }) {
   // 'hub' (Real Estate Modular Cards Grid), 'visit_alerts', 'bookings', 'properties_manager', 'change_password', 'view_replies', 'payments'
   const [activeTab, setActiveTab] = useState('hub'); 
@@ -308,8 +315,18 @@ function AdminDashboard({
     customerPhone: '',
     subject: '',
     message: '',
-    replyText: ''
+    replyText: '',
+    channel: 'WhatsApp & SMS',
+    status: 'Resolved & Dispatched'
   });
+  const [replySearch, setReplySearch] = useState('');
+  const [replyStatusFilter, setReplyStatusFilter] = useState('all');
+  const [replyToast, setReplyToast] = useState(null);
+
+  const showReplyNotification = (msg) => {
+    setReplyToast(msg);
+    setTimeout(() => setReplyToast(null), 4000);
+  };
 
   const handleSendReply = (e) => {
     e.preventDefault();
@@ -321,14 +338,43 @@ function AdminDashboard({
       subject: newReplyForm.subject || 'General Property Inquiry',
       message: newReplyForm.message || 'Direct customer request via web portal',
       reply: newReplyForm.replyText,
-      status: 'Resolved & Dispatched',
-      date: new Date().toLocaleString()
+      status: newReplyForm.status || 'Resolved & Dispatched',
+      channel: newReplyForm.channel || 'WhatsApp & SMS',
+      date: new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
     };
     const updated = [newEntry, ...repliesList];
     setRepliesList(updated);
     safeStorage.setItem('agsgarden_admin_replies', updated);
-    setNewReplyForm({ customerName: '', customerPhone: '', subject: '', message: '', replyText: '' });
-    alert('Reply and notification dispatched to customer!');
+    setNewReplyForm({ customerName: '', customerPhone: '', subject: '', message: '', replyText: '', channel: 'WhatsApp & SMS', status: 'Resolved & Dispatched' });
+    showReplyNotification(`✓ Reply successfully dispatched to ${newEntry.customerName} via ${newEntry.channel}!`);
+  };
+
+  const handleUpdateTicketStatus = (id, newStatus) => {
+    const updated = repliesList.map(rep => rep.id === id ? { ...rep, status: newStatus } : rep);
+    setRepliesList(updated);
+    safeStorage.setItem('agsgarden_admin_replies', updated);
+    showReplyNotification(`✓ Ticket #${id} status marked as "${newStatus}"`);
+  };
+
+  const handleDeleteTicket = (id) => {
+    if (!window.confirm(`Delete customer ticket #${id}?`)) return;
+    const updated = repliesList.filter(rep => rep.id !== id);
+    setRepliesList(updated);
+    safeStorage.setItem('agsgarden_admin_replies', updated);
+    showReplyNotification(`✓ Ticket #${id} deleted.`);
+  };
+
+  const handleLoadTicketIntoForm = (rep) => {
+    setNewReplyForm({
+      customerName: rep.customerName,
+      customerPhone: rep.customerPhone,
+      subject: `Re: ${rep.subject}`,
+      message: rep.message,
+      replyText: `Dear ${rep.customerName.split('(')[0].trim()},\n\nThank you for reaching out regarding ${rep.subject}.\n`,
+      channel: 'WhatsApp & SMS',
+      status: 'Resolved & Dispatched'
+    });
+    window.scrollTo({ top: 380, behavior: 'smooth' });
   };
 
   // Live Client Visit Alerts state (Concurrency-Safe)
@@ -340,19 +386,39 @@ function AdminDashboard({
     return INITIAL_VISIT_ALERTS;
   });
 
+  const [confirmSlotToast, setConfirmSlotToast] = useState(null);
+
   const syncVisitAlerts = (updated) => {
     setVisitAlerts(updated);
     safeStorage.setItem('agsgarden_visit_alerts', updated);
   };
 
   const handleDismissAlert = (alertId) => {
-    const updated = visitAlerts.filter(a => a.alertId !== alertId);
+    const updated = visitAlerts.filter(a => (a.alertId !== alertId && a.id !== alertId && a._id !== alertId));
     syncVisitAlerts(updated);
   };
 
   const handleConfirmVisit = (alertId) => {
-    const updated = visitAlerts.map(a => a.alertId === alertId ? { ...a, status: '✅ VISIT CONFIRMED', statusType: 'confirmed' } : a);
+    const updated = visitAlerts.map(a => 
+      (a.alertId === alertId || a.id === alertId || a._id === alertId) 
+        ? { ...a, status: '✅ CONFIRM SLOT SUCCESSFULLY', statusType: 'confirmed', slotConfirmed: true } 
+        : a
+    );
     syncVisitAlerts(updated);
+
+    const target = visitAlerts.find(a => (a.alertId === alertId || a.id === alertId || a._id === alertId));
+    const clientName = target?.customerName || 'Client';
+    const apartment = target?.apartmentTitle || 'Apartment';
+
+    setConfirmSlotToast({
+      title: 'Confirm Slot Successfully! 🎉',
+      detail: `Inspection visit slot for ${clientName} (${apartment}) is confirmed & recorded.`,
+      client: clientName
+    });
+
+    setTimeout(() => {
+      setConfirmSlotToast(null);
+    }, 4500);
   };
 
   const handleDispatchCab = (alertId) => {
@@ -760,24 +826,68 @@ function AdminDashboard({
   }
 
   return (
-    <div className="section-wrapper" style={{ maxWidth: '1360px', margin: '0 auto', textAlign: 'left', padding: '40px 20px 80px' }}>
+    <div className="section-wrapper admin-dashboard-wrapper" style={{ maxWidth: '1360px', margin: '0 auto', textAlign: 'left', width: '100%', boxSizing: 'border-box' }}>
       
+      {/* Toast Notification for Confirm Slot Successfully */}
+      {confirmSlotToast && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '16px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 99999,
+            background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+            color: '#fff',
+            padding: '12px 18px',
+            borderRadius: '16px',
+            boxShadow: '0 12px 35px rgba(16, 185, 129, 0.55), 0 0 20px rgba(52, 211, 153, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            width: 'calc(100% - 32px)',
+            maxWidth: '420px',
+            boxSizing: 'border-box',
+            border: '1.5px solid #6ee7b7',
+            animation: 'fadeIn 0.2s ease-out'
+          }}
+        >
+          <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <CheckCircle2 size={20} color="#fff" />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <strong style={{ fontSize: '13.5px', display: 'block', letterSpacing: '0.02em', color: '#fff' }}>
+              {confirmSlotToast.title}
+            </strong>
+            <span style={{ fontSize: '11.5px', opacity: 0.95, display: 'block', lineHeight: 1.3, color: '#ecfdf5' }}>
+              {confirmSlotToast.detail}
+            </span>
+          </div>
+          <button 
+            onClick={() => setConfirmSlotToast(null)}
+            style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: '4px', fontSize: '16px', opacity: 0.85, flexShrink: 0 }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Top Header */}
-      <div className="section-top-header" style={{ marginBottom: '24px' }}>
+      <div className="section-top-header" style={{ marginBottom: '20px' }}>
         <div className="section-title-group">
-          <span className="section-tag" style={{ color: '#10b981' }}>
-            <ShieldCheck size={14} /> AGS NEST CENTRAL ADMIN CONTROL
+          <span className="section-tag" style={{ color: '#10b981', fontSize: '11px' }}>
+            <ShieldCheck size={13} /> AGS NEST CENTRAL ADMIN CONTROL
           </span>
-          <h1 className="section-main-heading" style={{ fontSize: '34px' }}>
+          <h1 className="section-main-heading" style={{ fontSize: 'clamp(20px, 4vw, 32px)', margin: '6px 0 4px' }}>
             Admin Dashboard & <span className="gradient-text">Management Hub</span>
           </h1>
-          <p className="section-subtext">
+          <p className="section-subtext" style={{ fontSize: '12.5px' }}>
             Modular Real Estate control center with separate views for Properties, Orders, Security, Enquiries & Customer Replies.
           </p>
         </div>
 
         {/* Top Main Tab Switcher & Logout */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="admin-tabs-scroll" style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%', boxSizing: 'border-box', flexWrap: 'wrap' }}>
           
           {/* Hub Overview Button */}
           <button 
@@ -786,7 +896,10 @@ function AdminDashboard({
               background: activeTab === 'hub' 
                 ? 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' 
                 : 'rgba(255, 255, 255, 0.05)',
-              fontWeight: 800
+              fontWeight: 800,
+              fontSize: '11.5px',
+              padding: '6px 12px',
+              whiteSpace: 'nowrap'
             }}
             onClick={() => setActiveTab('hub')}
           >
@@ -802,14 +915,17 @@ function AdminDashboard({
                 : 'rgba(168, 85, 247, 0.15)',
               border: activeTab === 'registered_users' ? '1px solid #a855f7' : '1px solid rgba(168, 85, 247, 0.4)',
               color: '#fff',
-              fontWeight: 800
+              fontWeight: 800,
+              fontSize: '11.5px',
+              padding: '6px 12px',
+              whiteSpace: 'nowrap'
             }}
             onClick={() => {
               setActiveTab('registered_users');
               fetchRegisteredUsers();
             }}
           >
-            <Users size={15} /> Registered Users ({registeredUsers.length})
+            <Users size={14} /> Registered ({registeredUsers.length})
           </button>
 
           {/* 🔴 Live Client Visit Alerts Tab */}
@@ -821,48 +937,54 @@ function AdminDashboard({
                 : 'rgba(239, 68, 68, 0.15)',
               border: activeTab === 'visit_alerts' ? '1px solid #ef4444' : '1px solid rgba(239, 68, 68, 0.4)',
               color: '#fff',
-              fontWeight: 800
+              fontWeight: 800,
+              fontSize: '11.5px',
+              padding: '6px 12px',
+              whiteSpace: 'nowrap'
             }}
             onClick={() => setActiveTab('visit_alerts')}
           >
-            <Bell size={15} /> Alerts ({visitAlerts.length})
+            <Bell size={14} /> Alerts ({visitAlerts.length})
           </button>
 
           <button 
             className={`glass-btn ${activeTab === 'bookings' ? '' : 'glass-btn-secondary'}`}
+            style={{ fontSize: '11.5px', padding: '6px 12px', whiteSpace: 'nowrap' }}
             onClick={() => setActiveTab('bookings')}
           >
-            <Calendar size={15} /> Bookings ({allBookings.length})
+            <Calendar size={14} /> Bookings ({allBookings.length})
           </button>
 
           <button 
             className={`glass-btn ${activeTab === 'properties_manager' ? '' : 'glass-btn-secondary'}`}
+            style={{ fontSize: '11.5px', padding: '6px 12px', whiteSpace: 'nowrap' }}
             onClick={() => setActiveTab('properties_manager')}
           >
-            <Building2 size={15} /> Properties ({adminProperties.length})
+            <Building2 size={14} /> Properties ({adminProperties.length})
           </button>
 
           <button 
             className={`glass-btn ${activeTab === 'change_password' ? '' : 'glass-btn-secondary'}`}
+            style={{ fontSize: '11.5px', padding: '6px 12px', whiteSpace: 'nowrap' }}
             onClick={() => setActiveTab('change_password')}
           >
-            <Lock size={15} /> Password
+            <Lock size={14} /> Password
           </button>
 
           <button 
             className={`glass-btn ${activeTab === 'view_replies' ? '' : 'glass-btn-secondary'}`}
+            style={{ fontSize: '11.5px', padding: '6px 12px', whiteSpace: 'nowrap' }}
             onClick={() => setActiveTab('view_replies')}
           >
-            <MessageSquare size={15} /> Replies ({repliesList.length})
+            <MessageSquare size={14} /> Replies ({repliesList.length})
           </button>
 
           {onLogoutAdmin && (
             <button 
               className="glass-btn"
-              style={{ background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.5)', color: '#f87171' }}
+              style={{ background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.5)', color: '#f87171', fontSize: '11.5px', padding: '6px 12px', whiteSpace: 'nowrap' }}
               onClick={onLogoutAdmin}
             >
-              <Trash2 size={15} style={{ display: 'none' }} />
               <span>🚪 Logout</span>
             </button>
           )}
@@ -878,8 +1000,8 @@ function AdminDashboard({
           <div 
             style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-              gap: '20px', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', 
+              gap: '16px', 
               marginTop: '10px' 
             }}
           >
@@ -1097,6 +1219,41 @@ function AdminDashboard({
               </div>
             </div>
 
+            {/* 7. Customer Inquiries & Feedback Desk */}
+            <div 
+              className="glass-panel"
+              onClick={() => { setActiveTab('view_replies'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              style={{
+                background: 'rgba(30, 41, 59, 0.75)',
+                border: '1px solid rgba(255, 255, 255, 0.09)',
+                borderRadius: '22px',
+                padding: '28px 24px',
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.borderColor = '#06b6d4'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.09)'; }}
+            >
+              <div>
+                <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: '#06b6d4', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '18px', boxShadow: '0 6px 16px rgba(6, 182, 212, 0.4)' }}>
+                  <MessageSquare size={24} />
+                </div>
+                <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>
+                  Customer Replies & Desk
+                </h3>
+                <p style={{ color: '#94a3b8', fontSize: '13.5px', lineHeight: 1.6, margin: '0 0 20px' }}>
+                  Manage customer inquiries, complaints, and dispatch official multi-channel responses directly.
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#06b6d4', fontSize: '14px', fontWeight: 800 }}>
+                <span>View Replies ({repliesList.length}) →</span>
+              </div>
+            </div>
+
           </div>
         </div>
       )}
@@ -1133,7 +1290,7 @@ function AdminDashboard({
 
           {/* KPI Stats */}
           <div className="stats-banner glass-panel" style={{ margin: '0 0 24px', padding: '20px 24px', background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(56, 189, 248, 0.15) 100%)', border: '1px solid rgba(168, 85, 247, 0.4)' }}>
-            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))' }}>
               
               <div className="stat-item">
                 <div className="stat-icon-wrapper" style={{ color: '#c084fc', background: 'rgba(168, 85, 247, 0.2)' }}>
@@ -1198,7 +1355,7 @@ function AdminDashboard({
                 </p>
               </div>
             ) : (
-              <div style={{ overflowX: 'auto' }}>
+              <div className="admin-table-container">
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: '#94a3b8', textAlign: 'left' }}>
@@ -1289,7 +1446,7 @@ function AdminDashboard({
             </span>
           </div>
           <div className="stats-banner glass-panel" style={{ margin: '0 0 24px', padding: '20px 24px', background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%)', border: '1px solid rgba(239, 68, 68, 0.4)' }}>
-            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))' }}>
               
               <div className="stat-item">
                 <div className="stat-icon-wrapper" style={{ color: '#ef4444', background: 'rgba(239, 68, 68, 0.2)' }}>
@@ -1346,7 +1503,7 @@ function AdminDashboard({
             </div>
 
             {/* Keyword Search */}
-            <div style={{ width: '320px' }}>
+            <div style={{ width: '100%', maxWidth: '320px' }}>
               <input 
                 type="text" 
                 placeholder="Search Client Name, Phone, Apartment..." 
@@ -1359,7 +1516,7 @@ function AdminDashboard({
           </div>
 
           {/* Live Alerts Cards Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px, 100%), 1fr))', gap: '16px' }}>
             {visitAlerts
               .filter(alert => {
                 if (!searchTerm.trim()) return true;
@@ -1372,9 +1529,9 @@ function AdminDashboard({
                   alert.apartmentLocation?.toLowerCase().includes(term)
                 );
               })
-              .map((alert) => (
+              .map((alert, idx) => (
                 <div 
-                  key={alert.alertId}
+                  key={alert.alertId || alert.id || alert._id || `alert-${idx}`}
                   className="glass-panel"
                   style={{
                     padding: '24px',
@@ -1437,7 +1594,7 @@ function AdminDashboard({
                       </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '13px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '13px' }}>
                       <div>
                         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Phone Number:</span>
                         <div style={{ fontWeight: 700, color: '#38bdf8' }}>{alert.customerPhone}</div>
@@ -1476,7 +1633,7 @@ function AdminDashboard({
                   </div>
 
                   {/* Action Buttons Bar */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: 'auto' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '8px', marginTop: 'auto' }}>
                     <a 
                       href={`tel:${alert.customerPhone}`}
                       className="glass-btn-secondary"
@@ -1505,10 +1662,34 @@ function AdminDashboard({
 
                     <button 
                       className="glass-btn"
-                      style={{ padding: '8px 12px', fontSize: '12px', borderRadius: '10px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
-                      onClick={() => handleConfirmVisit(alert.alertId)}
+                      style={{ 
+                        padding: '8px 12px', 
+                        fontSize: '12px', 
+                        borderRadius: '10px', 
+                        background: (alert.statusType === 'confirmed' || alert.slotConfirmed || alert.status?.includes('CONFIRMED'))
+                          ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' 
+                          : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        border: (alert.statusType === 'confirmed' || alert.slotConfirmed || alert.status?.includes('CONFIRMED'))
+                          ? '1.5px solid #34d399'
+                          : '1px solid rgba(16, 185, 129, 0.4)',
+                        boxShadow: (alert.statusType === 'confirmed' || alert.slotConfirmed || alert.status?.includes('CONFIRMED'))
+                          ? '0 0 15px rgba(16, 185, 129, 0.5)'
+                          : 'none',
+                        color: '#fff',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px'
+                      }}
+                      onClick={() => handleConfirmVisit(alert.alertId || alert.id || alert._id)}
                     >
-                      <CheckCircle2 size={14} /> Confirm Slot
+                      <CheckCircle2 size={14} /> 
+                      {(alert.statusType === 'confirmed' || alert.slotConfirmed || alert.status?.includes('CONFIRMED')) 
+                        ? 'Confirm Slot Successfully ✓' 
+                        : 'Confirm Slot'}
                     </button>
                   </div>
 
@@ -1558,7 +1739,7 @@ function AdminDashboard({
 
           {/* Top KPI Metrics */}
           <div className="stats-banner glass-panel" style={{ margin: '0 0 24px', padding: '18px 24px' }}>
-            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))' }}>
               <div 
                 className="stat-item" 
                 style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}
@@ -1770,7 +1951,7 @@ function AdminDashboard({
               VIEW 1: RAZORPAY DEDICATED VIEW TABLE
              ===================================================================== */}
           {activeStatusSubView === 'RAZORPAY_STATUS' && (
-            <div className="glass-panel" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px', border: '1px solid rgba(168, 85, 247, 0.4)' }}>
+            <div className="glass-panel admin-table-container" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px', border: '1px solid rgba(168, 85, 247, 0.4)' }}>
               <div style={{ padding: '14px 20px', background: 'rgba(168, 85, 247, 0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <strong style={{ fontSize: '14px', color: '#c084fc' }}>
                   💳 RAZORPAY GATEWAY PAYMENT VERIFICATION LOGS
@@ -1842,7 +2023,7 @@ function AdminDashboard({
               VIEW 2: CASH ON HAND / CASH ON VISIT DEDICATED VIEW TABLE
              ===================================================================== */}
           {activeStatusSubView === 'CASH_STATUS' && (
-            <div className="glass-panel" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
+            <div className="glass-panel admin-table-container" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
               <div style={{ padding: '14px 20px', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <strong style={{ fontSize: '14px', color: '#10b981' }}>
                   💵 CASH ON SITE INSPECTION LEDGER
@@ -1927,7 +2108,7 @@ function AdminDashboard({
               VIEW 3: STANDARD STATUS FILTERED TABLE (ALL, CONFIRMED, SCHEDULED...)
              ===================================================================== */}
           {activeStatusSubView !== 'RAZORPAY_STATUS' && activeStatusSubView !== 'CASH_STATUS' && (
-            <div className="glass-panel" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
+            <div className="glass-panel admin-table-container" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
                 <thead>
                   <tr style={{ background: 'rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.12)', color: 'var(--text-muted)' }}>
@@ -2072,7 +2253,7 @@ function AdminDashboard({
             </div>
           </div>
 
-          <div className="glass-panel" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
+          <div className="glass-panel admin-table-container" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.12)', color: 'var(--text-muted)' }}>
@@ -2132,6 +2313,15 @@ function AdminDashboard({
 
                     <td style={{ padding: '16px 20px', verticalAlign: 'middle', textAlign: 'center' }}>
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                        <button 
+                          className="glass-btn-secondary" 
+                          style={{ padding: '6px 10px', fontSize: '12px', color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.4)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                          onClick={() => onSelectProperty && onSelectProperty(prop)}
+                          title="Open Full Property Details & Offer Page"
+                        >
+                          <ArrowUpRight size={13} /> Details
+                        </button>
+
                         <button 
                           className="glass-btn-secondary" 
                           style={{ padding: '6px 12px', fontSize: '12px' }}
@@ -2296,6 +2486,40 @@ function AdminDashboard({
          ========================================================================= */}
       {activeTab === 'view_replies' && (
         <div style={{ marginBottom: '40px' }}>
+          
+          {/* Floating Live Dispatch Toast */}
+          {replyToast && (
+            <div 
+              style={{
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                zIndex: 9999,
+                background: 'rgba(15, 23, 42, 0.96)',
+                border: '1px solid #10b981',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(16, 185, 129, 0.3)',
+                color: '#6ee7b7',
+                padding: '12px 20px',
+                borderRadius: '12px',
+                fontWeight: 700,
+                fontSize: '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                backdropFilter: 'blur(10px)'
+              }}
+            >
+              <CheckCircle2 size={18} color="#10b981" style={{ flexShrink: 0 }} />
+              <span>{replyToast}</span>
+              <button 
+                onClick={() => setReplyToast(null)} 
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', marginLeft: '8px', fontSize: '14px' }}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           {/* Back to Control Hub Bar */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
             <button 
@@ -2305,69 +2529,412 @@ function AdminDashboard({
             >
               <ArrowLeft size={14} /> ← Back to Admin Control Hub
             </button>
-            <span style={{ fontSize: '12px', color: '#06b6d4', fontWeight: 800 }}>
-              🛡️ CUSTOMER REPLIES, INQUIRIES & COMPLAINTS DESK
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '12px', color: '#06b6d4', fontWeight: 800 }}>
+                🛡️ CUSTOMER REPLIES, INQUIRIES & COMPLAINTS DESK
+              </span>
+              <span style={{ background: 'rgba(6, 182, 212, 0.15)', color: '#38bdf8', padding: '3px 10px', borderRadius: '10px', fontSize: '11px', fontWeight: 800 }}>
+                ● Omni-Channel Live
+              </span>
+            </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px' }}>
-            {/* Left: Replies List */}
-            <div className="glass-panel" style={{ padding: '24px', borderRadius: '20px' }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <MessageSquare size={18} color="#06b6d4" /> Recent Customer Tickets & Responses ({repliesList.length})
-              </h3>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                {repliesList.map((rep) => (
-                  <div 
-                    key={rep.id} 
-                    style={{
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      borderRadius: '16px',
-                      padding: '18px'
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <div>
-                        <strong style={{ color: '#fff', fontSize: '14px' }}>{rep.customerName}</strong>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '12px', marginLeft: '8px' }}>{rep.customerPhone}</span>
-                      </div>
-                      <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 800 }}>
-                        {rep.status}
-                      </span>
-                    </div>
-
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#38bdf8', marginBottom: '6px' }}>
-                      {rep.subject}
-                    </div>
-
-                    <p style={{ color: 'var(--text-muted)', fontSize: '12.5px', lineHeight: 1.5, margin: '0 0 10px', background: 'rgba(0,0,0,0.25)', padding: '10px', borderRadius: '10px' }}>
-                      "{rep.message}"
-                    </p>
-
-                    <div style={{ background: 'rgba(6, 182, 212, 0.08)', borderLeft: '3px solid #06b6d4', padding: '8px 12px', borderRadius: '0 8px 8px 0', fontSize: '12px', color: '#e2e8f0' }}>
-                      <strong style={{ color: '#06b6d4', display: 'block', fontSize: '11px', marginBottom: '2px' }}>Admin Response:</strong>
-                      {rep.reply}
-                    </div>
-
-                    <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', marginTop: '8px', textAlign: 'right' }}>
-                      {rep.date}
-                    </div>
-                  </div>
-                ))}
+          {/* Top KPI Stat Banners */}
+          <div 
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
+              gap: '12px', 
+              marginBottom: '20px' 
+            }}
+          >
+            <div className="glass-panel" style={{ padding: '14px', borderRadius: '14px', textAlign: 'center', background: 'rgba(30, 41, 59, 0.7)' }}>
+              <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                Total Tickets
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: 900, color: '#38bdf8' }}>
+                {repliesList.length}
               </div>
             </div>
 
-            {/* Right: Dispatch New Reply Form */}
+            <div className="glass-panel" style={{ padding: '14px', borderRadius: '14px', textAlign: 'center', background: 'rgba(30, 41, 59, 0.7)' }}>
+              <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                Resolved & Dispatched
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: 900, color: '#10b981' }}>
+                {repliesList.filter(r => r.status && r.status.includes('Resolved')).length}
+              </div>
+            </div>
+
+            <div className="glass-panel" style={{ padding: '14px', borderRadius: '14px', textAlign: 'center', background: 'rgba(30, 41, 59, 0.7)' }}>
+              <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                Pending Review
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: 900, color: '#f59e0b' }}>
+                {repliesList.filter(r => !r.status || !r.status.includes('Resolved')).length}
+              </div>
+            </div>
+
+            <div className="glass-panel" style={{ padding: '14px', borderRadius: '14px', textAlign: 'center', background: 'rgba(30, 41, 59, 0.7)' }}>
+              <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                Avg SLA Response
+              </div>
+              <div style={{ fontSize: '20px', fontWeight: 900, color: '#a855f7' }}>
+                &lt; 10 Mins
+              </div>
+            </div>
+          </div>
+
+          {/* Search, Filter & Quick-Leads Toolbar */}
+          <div className="glass-panel" style={{ padding: '16px 20px', borderRadius: '16px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+              
+              {/* Search input */}
+              <div style={{ position: 'relative', flex: 1, minWidth: '220px', maxWidth: '380px' }}>
+                <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <input 
+                  type="text"
+                  placeholder="Search customer, phone, subject..."
+                  className="glass-input"
+                  value={replySearch}
+                  onChange={(e) => setReplySearch(e.target.value)}
+                  style={{ width: '100%', paddingLeft: '36px', fontSize: '12.5px' }}
+                />
+              </div>
+
+              {/* Status Filter Tabs */}
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                <button 
+                  className={`glass-btn ${replyStatusFilter === 'all' ? '' : 'glass-btn-secondary'}`}
+                  style={{ fontSize: '11.5px', padding: '6px 12px' }}
+                  onClick={() => setReplyStatusFilter('all')}
+                >
+                  All ({repliesList.length})
+                </button>
+                <button 
+                  className={`glass-btn ${replyStatusFilter === 'resolved' ? '' : 'glass-btn-secondary'}`}
+                  style={{ fontSize: '11.5px', padding: '6px 12px', color: '#10b981' }}
+                  onClick={() => setReplyStatusFilter('resolved')}
+                >
+                  Resolved ({repliesList.filter(r => r.status && r.status.includes('Resolved')).length})
+                </button>
+                <button 
+                  className={`glass-btn ${replyStatusFilter === 'pending' ? '' : 'glass-btn-secondary'}`}
+                  style={{ fontSize: '11.5px', padding: '6px 12px', color: '#f59e0b' }}
+                  onClick={() => setReplyStatusFilter('pending')}
+                >
+                  Pending ({repliesList.filter(r => !r.status || !r.status.includes('Resolved')).length})
+                </button>
+              </div>
+
+            </div>
+
+            {/* Quick Pick Leads from Recent Site Visits */}
+            {visitAlerts && visitAlerts.length > 0 && (
+              <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700 }}>
+                  ⚡ Quick Pick from Site Visits:
+                </span>
+                {visitAlerts.slice(0, 4).map((va, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className="glass-btn-secondary"
+                    style={{ fontSize: '11px', padding: '3px 9px', borderRadius: '10px', color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.3)' }}
+                    onClick={() => {
+                      setNewReplyForm({
+                        customerName: va.customerName,
+                        customerPhone: va.customerPhone,
+                        subject: `${va.apartmentTitle} - Inspection Follow-up`,
+                        message: `Site visit scheduled for ${va.visitDate} (${va.timeSlot}). ${va.notes || ''}`,
+                        replyText: `Dear ${va.customerName.split(' ')[0]},\n\nRegarding your site visit for ${va.apartmentTitle}:\nYour chauffeur cab has been arranged. Our Relationship Manager will receive you on site.`,
+                        channel: 'WhatsApp & SMS',
+                        status: 'Resolved & Dispatched'
+                      });
+                      window.scrollTo({ top: 380, behavior: 'smooth' });
+                    }}
+                  >
+                    + {va.customerName.split(' ')[0]} ({va.apartmentTitle.split(' ')[0]})
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Main 2-Column Responsive Workspace */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '20px' }}>
+            
+            {/* Left Column: Replies & Inquiries Stream */}
             <div className="glass-panel" style={{ padding: '24px', borderRadius: '20px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', marginBottom: '16px' }}>
-                Dispatch New Customer Reply
-              </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <MessageSquare size={18} color="#06b6d4" /> 
+                  Customer Tickets & History 
+                  <span style={{ fontSize: '12px', color: '#06b6d4', background: 'rgba(6, 182, 212, 0.15)', padding: '2px 8px', borderRadius: '10px' }}>
+                    {repliesList.filter(rep => {
+                      const matchesSearch = !replySearch.trim() || 
+                        rep.customerName?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                        rep.customerPhone?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                        rep.subject?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                        rep.message?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                        rep.id?.toLowerCase().includes(replySearch.toLowerCase());
+                      const matchesStatus = replyStatusFilter === 'all' || 
+                        (replyStatusFilter === 'resolved' && rep.status?.includes('Resolved')) || 
+                        (replyStatusFilter === 'pending' && !rep.status?.includes('Resolved'));
+                      return matchesSearch && matchesStatus;
+                    }).length}
+                  </span>
+                </h3>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {repliesList
+                  .filter(rep => {
+                    const matchesSearch = !replySearch.trim() || 
+                      rep.customerName?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                      rep.customerPhone?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                      rep.subject?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                      rep.message?.toLowerCase().includes(replySearch.toLowerCase()) || 
+                      rep.id?.toLowerCase().includes(replySearch.toLowerCase());
+                    const matchesStatus = replyStatusFilter === 'all' || 
+                      (replyStatusFilter === 'resolved' && rep.status?.includes('Resolved')) || 
+                      (replyStatusFilter === 'pending' && !rep.status?.includes('Resolved'));
+                    return matchesSearch && matchesStatus;
+                  })
+                  .map((rep) => {
+                    const isResolved = rep.status && rep.status.includes('Resolved');
+                    const cleanPhone = (rep.customerPhone || '').replace(/\D/g, '');
+                    return (
+                      <div 
+                        key={rep.id} 
+                        style={{
+                          background: 'rgba(255,255,255,0.03)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          borderRadius: '16px',
+                          padding: '18px',
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 4px 16px rgba(0,0,0,0.25)'
+                        }}
+                      >
+                        {/* Ticket Top Row: Customer Info + Status */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px', gap: '8px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div 
+                              style={{ 
+                                width: '36px', 
+                                height: '36px', 
+                                borderRadius: '50%', 
+                                background: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                color: '#fff', 
+                                fontWeight: 800, 
+                                fontSize: '13px',
+                                flexShrink: 0
+                              }}
+                            >
+                              {rep.customerName ? rep.customerName.charAt(0).toUpperCase() : 'C'}
+                            </div>
+                            <div>
+                              <strong style={{ color: '#fff', fontSize: '14px', display: 'block' }}>
+                                {rep.customerName}
+                              </strong>
+                              <span style={{ color: '#94a3b8', fontSize: '11.5px' }}>
+                                {rep.customerPhone || '+91 Contact Verified'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                            <span 
+                              style={{ 
+                                background: isResolved ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)', 
+                                border: isResolved ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)',
+                                color: isResolved ? '#10b981' : '#f59e0b', 
+                                padding: '2px 8px', 
+                                borderRadius: '8px', 
+                                fontSize: '10.5px', 
+                                fontWeight: 800,
+                                whiteSpace: 'nowrap'
+                              }}
+                            >
+                              {rep.status || 'Active Ticket'}
+                            </span>
+                            <span style={{ fontSize: '10px', color: '#64748b' }}>
+                              #{rep.id}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Subject */}
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#38bdf8', marginBottom: '8px' }}>
+                          {rep.subject}
+                        </div>
+
+                        {/* Original Customer Message Bubble */}
+                        <div style={{ color: '#cbd5e1', fontSize: '12px', lineHeight: 1.5, margin: '0 0 10px', background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '10px', borderLeft: '3px solid #64748b' }}>
+                          <span style={{ color: '#94a3b8', fontSize: '10.5px', fontWeight: 700, display: 'block', marginBottom: '2px' }}>
+                            Customer Inquiry:
+                          </span>
+                          "{rep.message}"
+                        </div>
+
+                        {/* Official Admin Response */}
+                        <div style={{ background: 'rgba(6, 182, 212, 0.08)', borderLeft: '3px solid #06b6d4', padding: '10px 12px', borderRadius: '0 10px 10px 0', fontSize: '12px', color: '#e2e8f0', marginBottom: '12px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                            <strong style={{ color: '#06b6d4', fontSize: '11px' }}>
+                              ✓ Official Admin Response ({rep.channel || 'WhatsApp & SMS'}):
+                            </strong>
+                            <span style={{ fontSize: '10px', color: '#94a3b8' }}>
+                              {rep.date}
+                            </span>
+                          </div>
+                          <div style={{ whiteSpace: 'pre-line', lineHeight: 1.45 }}>
+                            {rep.reply}
+                          </div>
+                        </div>
+
+                        {/* Action Buttons Strip */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            {cleanPhone && (
+                              <a
+                                href={`https://wa.me/${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}?text=${encodeURIComponent(`Hello ${rep.customerName},\nRegarding your inquiry at AGS NEST:\n${rep.reply}`)}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="glass-btn-secondary"
+                                style={{ padding: '4px 10px', fontSize: '11px', color: '#10b981', borderColor: 'rgba(16, 185, 129, 0.3)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                              >
+                                <MessageCircle size={12} /> WhatsApp
+                              </a>
+                            )}
+                            {cleanPhone && (
+                              <a
+                                href={`tel:${rep.customerPhone}`}
+                                className="glass-btn-secondary"
+                                style={{ padding: '4px 10px', fontSize: '11px', color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.3)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                              >
+                                <Phone size={12} /> Call
+                              </a>
+                            )}
+                          </div>
+
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <button
+                              type="button"
+                              className="glass-btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: '11px', color: '#e2e8f0' }}
+                              onClick={() => handleLoadTicketIntoForm(rep)}
+                            >
+                              ✍️ Follow Up
+                            </button>
+
+                            <button
+                              type="button"
+                              className="glass-btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: '11px', color: isResolved ? '#f59e0b' : '#10b981' }}
+                              onClick={() => handleUpdateTicketStatus(rep.id, isResolved ? 'Pending Action' : 'Resolved & Dispatched')}
+                            >
+                              {isResolved ? 'Mark Pending' : 'Mark Resolved'}
+                            </button>
+
+                            <button
+                              type="button"
+                              className="glass-btn-secondary"
+                              style={{ padding: '4px 8px', fontSize: '11px', color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                              onClick={() => handleDeleteTicket(rep.id)}
+                              title="Delete Ticket"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+                    );
+                  })}
+
+                {repliesList.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8' }}>
+                    <Inbox size={36} style={{ marginBottom: '12px', opacity: 0.5 }} />
+                    <p style={{ margin: 0, fontSize: '14px' }}>No customer inquiries yet. Use the form on the right to dispatch a response.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Column: Dispatch New Reply Form */}
+            <div className="glass-panel" style={{ padding: '24px', borderRadius: '20px' }}>
+              <div style={{ marginBottom: '16px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Send size={18} color="#06b6d4" /> Dispatch Customer Reply & Notification
+                </h3>
+                <p style={{ color: '#94a3b8', fontSize: '12px', margin: 0 }}>
+                  Official responses are logged to database and dispatched via live SMS & WhatsApp.
+                </p>
+              </div>
+
+              {/* Quick Preset Templates Strip */}
+              <div style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 700, display: 'block', marginBottom: '8px' }}>
+                  ⚡ Quick Response Presets (Click to insert):
+                </span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  <button
+                    type="button"
+                    className="glass-btn-secondary"
+                    style={{ fontSize: '10.5px', padding: '3px 8px' }}
+                    onClick={() => setNewReplyForm(prev => ({ 
+                      ...prev, 
+                      subject: prev.subject || 'Verified CMDA & Patta Documents',
+                      replyText: 'Verified CMDA and Patta approval documents have been dispatched to your WhatsApp and registered email. Please check and let us know if you need any legal assistance.' 
+                    }))}
+                  >
+                    📄 Documents Sent
+                  </button>
+                  <button
+                    type="button"
+                    className="glass-btn-secondary"
+                    style={{ fontSize: '10.5px', padding: '3px 8px' }}
+                    onClick={() => setNewReplyForm(prev => ({ 
+                      ...prev, 
+                      subject: prev.subject || 'Site Inspection Cab Confirmation',
+                      replyText: 'Your complimentary private chauffeur cab pickup has been confirmed for your requested site inspection slot. Driver details will be sent 1 hour prior.' 
+                    }))}
+                  >
+                    🚗 Cab Confirmed
+                  </button>
+                  <button
+                    type="button"
+                    className="glass-btn-secondary"
+                    style={{ fontSize: '10.5px', padding: '3px 8px' }}
+                    onClick={() => setNewReplyForm(prev => ({ 
+                      ...prev, 
+                      subject: prev.subject || 'Festival Token Discount Offer',
+                      replyText: 'We are pleased to offer you a special festival token discount of ₹50,000 for immediate booking confirmation on this residence.' 
+                    }))}
+                  >
+                    💰 ₹50K Token Offer
+                  </button>
+                  <button
+                    type="button"
+                    className="glass-btn-secondary"
+                    style={{ fontSize: '10.5px', padding: '3px 8px' }}
+                    onClick={() => setNewReplyForm(prev => ({ 
+                      ...prev, 
+                      subject: prev.subject || 'Dedicated Relationship Manager Assigned',
+                      replyText: 'Our Senior Relationship Manager has been assigned to assist you and will connect with you via call within 15 minutes.' 
+                    }))}
+                  >
+                    📞 15-Min Callback
+                  </button>
+                </div>
+              </div>
 
               <form onSubmit={handleSendReply}>
                 <div className="auth-field-group" style={{ marginBottom: '12px' }}>
-                  <label className="field-label">Customer Name</label>
+                  <label className="field-label">Customer Name *</label>
                   <input 
                     type="text" 
                     placeholder="e.g. Anand Kumar"
@@ -2383,7 +2950,7 @@ function AdminDashboard({
                   <label className="field-label">Customer Phone (+91)</label>
                   <input 
                     type="tel" 
-                    placeholder="e.g. 98401 23456"
+                    placeholder="e.g. +91 98401 23456"
                     className="glass-input"
                     value={newReplyForm.customerPhone}
                     onChange={(e) => setNewReplyForm({ ...newReplyForm, customerPhone: e.target.value })}
@@ -2395,7 +2962,7 @@ function AdminDashboard({
                   <label className="field-label">Subject / Property Reference</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. Azure Bay Villa Price Inquiry"
+                    placeholder="e.g. Emerald Luxe 3 BHK Token Inquiry"
                     className="glass-input"
                     value={newReplyForm.subject}
                     onChange={(e) => setNewReplyForm({ ...newReplyForm, subject: e.target.value })}
@@ -2404,7 +2971,7 @@ function AdminDashboard({
                 </div>
 
                 <div className="auth-field-group" style={{ marginBottom: '12px' }}>
-                  <label className="field-label">Customer Message Summary</label>
+                  <label className="field-label">Customer Inquiry Summary</label>
                   <input 
                     type="text" 
                     placeholder="e.g. Customer asked for Saturday inspection schedule"
@@ -2415,26 +2982,61 @@ function AdminDashboard({
                   />
                 </div>
 
-                <div className="auth-field-group" style={{ marginBottom: '18px' }}>
-                  <label className="field-label" style={{ color: '#06b6d4' }}>Admin Reply Content</label>
+                <div className="auth-field-group" style={{ marginBottom: '14px' }}>
+                  <label className="field-label" style={{ color: '#06b6d4' }}>
+                    Official Admin Reply Content *
+                  </label>
                   <textarea 
                     rows={4}
                     placeholder="Type official admin reply to be dispatched to customer's WhatsApp & SMS..."
                     className="glass-input"
                     value={newReplyForm.replyText}
                     onChange={(e) => setNewReplyForm({ ...newReplyForm, replyText: e.target.value })}
-                    style={{ width: '100%', resize: 'none' }}
+                    style={{ width: '100%', resize: 'none', lineHeight: 1.4 }}
                     required
                   ></textarea>
                 </div>
 
-                <button 
-                  type="submit" 
-                  className="glass-btn"
-                  style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #06b6d4 0%, #0284c7 100%)', fontWeight: 800 }}
-                >
-                  <Send size={15} /> Dispatch Reply Notification
-                </button>
+                {/* Dispatch Channel Selector */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label className="field-label" style={{ marginBottom: '6px', display: 'block' }}>
+                    Dispatch Channels:
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {['WhatsApp & SMS', 'WhatsApp Only', 'SMS Only'].map((ch) => (
+                      <button
+                        key={ch}
+                        type="button"
+                        className={`glass-btn ${newReplyForm.channel === ch ? '' : 'glass-btn-secondary'}`}
+                        style={{ fontSize: '11px', padding: '5px 10px' }}
+                        onClick={() => setNewReplyForm({ ...newReplyForm, channel: ch })}
+                      >
+                        {ch}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button 
+                    type="button"
+                    className="glass-btn-secondary"
+                    style={{ flex: 1, padding: '12px', fontSize: '13px' }}
+                    onClick={() => setNewReplyForm({ customerName: '', customerPhone: '', subject: '', message: '', replyText: '', channel: 'WhatsApp & SMS', status: 'Resolved & Dispatched' })}
+                  >
+                    Clear
+                  </button>
+
+                  <button 
+                    type="submit" 
+                    className="glass-btn"
+                    style={{ flex: 2, padding: '12px', background: 'linear-gradient(135deg, #06b6d4 0%, #0284c7 100%)', fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                  >
+                    <Send size={15} /> Dispatch Reply Notification
+                  </button>
+                </div>
+
               </form>
             </div>
           </div>
@@ -2603,7 +3205,7 @@ function AdminDashboard({
               </div>
 
               {/* Basic Information */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: '12px' }}>
                 <div>
                   <label className="field-label">Property Title *</label>
                   <input 
@@ -2631,7 +3233,7 @@ function AdminDashboard({
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
                 <div>
                   <label className="field-label">Location</label>
                   <input 
@@ -2677,7 +3279,7 @@ function AdminDashboard({
                   <Flame size={16} /> 2. Special Offer Pricing & Highlight Note
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '12px' }}>
                   <div>
                     <label className="field-label">Original Price (Strikethrough)</label>
                     <input 
@@ -2754,15 +3356,57 @@ function AdminDashboard({
               <X size={20} />
             </button>
 
-            <span className="section-tag" style={{ color: '#10b981' }}>
-              <Eye size={14} /> LIVE CUSTOMER VIEW PREVIEW
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginBottom: '6px' }}>
+              <span className="section-tag" style={{ color: '#10b981' }}>
+                <Eye size={14} /> LIVE CUSTOMER VIEW PREVIEW
+              </span>
+              <span style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <PhoneCall size={12} /> Tap Phone Icon to View Numbers
+              </span>
+            </div>
             <h3 style={{ fontSize: '18px', margin: '4px 0 16px' }}>This is how customers will see your property:</h3>
 
-            <Propertycard property={previewProperty} />
+            <Propertycard 
+              property={previewProperty} 
+              onSelectProperty={(p) => {
+                const target = p || previewProperty;
+                setPreviewProperty(null);
+                if (onSelectProperty) {
+                  onSelectProperty(target);
+                }
+              }}
+              onEnquire={(p) => {
+                const target = p || previewProperty;
+                setPreviewProperty(null);
+                if (onBookProperty) {
+                  onBookProperty(target);
+                }
+              }}
+            />
 
-            <div style={{ marginTop: '18px', textAlign: 'center' }}>
-              <button className="glass-btn" onClick={() => setPreviewProperty(null)}>
+            <div style={{ marginTop: '18px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button 
+                className="glass-btn" 
+                onClick={() => {
+                  const target = previewProperty;
+                  setPreviewProperty(null);
+                  if (onSelectProperty) {
+                    onSelectProperty(target);
+                  }
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
+                }}
+              >
+                <ArrowUpRight size={16} /> View Full Details & Offer Page ↗
+              </button>
+
+              <button className="glass-btn-secondary" onClick={() => setPreviewProperty(null)}>
                 Looks Great! Close Preview
               </button>
             </div>
@@ -3000,12 +3644,38 @@ function AdminDashboard({
 
               {/* Official Signatures, Seal & Barcode Bar */}
               <div className="dossier-seal-section">
-                <div className="dossier-sign-block">
+                
+                {/* Left: Customer / Buyer Signature */}
+                <div className="dossier-sign-block dossier-sign-left">
+                  <div className="dossier-signature-img-box customer-sig-box">
+                    <svg width="150" height="38" viewBox="0 0 150 38" style={{ overflow: 'visible' }}>
+                      <text 
+                        x="5" 
+                        y="26" 
+                        fontFamily="'Brush Script MT', 'Segoe Script', 'Caveat', 'Dancing Script', 'Great Vibes', cursive" 
+                        fontSize="23" 
+                        fontStyle="italic" 
+                        fontWeight="600" 
+                        fill="#1d4ed8"
+                        style={{ letterSpacing: '0.02em' }}
+                      >
+                        {selectedBookingForView.buyerName || 'Arun Kumar'}
+                      </text>
+                      <path 
+                        d="M6 30 Q 55 36 135 28" 
+                        fill="none" 
+                        stroke="#1d4ed8" 
+                        strokeWidth="1.8" 
+                        strokeLinecap="round" 
+                      />
+                    </svg>
+                  </div>
                   <div className="dossier-sign-line"></div>
                   <div className="dossier-sign-title">Customer / Buyer Signature</div>
                   <div className="dossier-sign-sub">{selectedBookingForView.buyerName}</div>
                 </div>
 
+                {/* Center: Official AGS NEST Corporate Stamp Seal */}
                 <div className="dossier-stamp-box">
                   <div className="dossier-stamp-seal">
                     <span>AGS NEST</span>
@@ -3014,11 +3684,37 @@ function AdminDashboard({
                   </div>
                 </div>
 
-                <div className="dossier-sign-block">
+                {/* Right: Authorized Director Signature */}
+                <div className="dossier-sign-block dossier-sign-right">
+                  <div className="dossier-signature-img-box director-sig-box">
+                    <svg width="160" height="38" viewBox="0 0 160 38" style={{ overflow: 'visible' }}>
+                      <text 
+                        x="15" 
+                        y="25" 
+                        fontFamily="'Brush Script MT', 'Segoe Script', 'Caveat', 'Dancing Script', 'Great Vibes', cursive" 
+                        fontSize="22" 
+                        fontStyle="italic" 
+                        fontWeight="700" 
+                        fill="#0f172a"
+                        style={{ letterSpacing: '0.03em' }}
+                      >
+                        S. Rajendran
+                      </text>
+                      <path 
+                        d="M14 28 Q 70 36 148 27 C 154 25, 156 18, 144 22" 
+                        fill="none" 
+                        stroke="#0f172a" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                      />
+                    </svg>
+                  </div>
                   <div className="dossier-sign-line"></div>
                   <div className="dossier-sign-title">Authorized Director Signature</div>
                   <div className="dossier-sign-sub">AGS Real Estate Developers Pvt Ltd</div>
                 </div>
+
               </div>
 
               {/* Disclaimer & Verification Footnote */}

@@ -222,68 +222,44 @@ function Navbar({
 
         <div className="navbar-container glass-panel">
           
-          {/* Left Section: Back Button + Brand Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            
-            {/* Universal Top Corner Back Button with Arrow Symbol (shown when navigated away from home) */}
-            {activePage !== 'home' && (
-              <button 
-                className="glass-btn-secondary" 
-                onClick={handleBackClick}
-                style={{
-                  padding: '6px 12px',
-                  fontSize: '11px',
-                  borderRadius: '16px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.22)',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                  whiteSpace: 'nowrap'
-                }}
-                title="Go Back"
-              >
-                <ArrowLeft size={14} color="#38bdf8" />
-                <span style={{ fontWeight: 700 }}>Back</span>
-              </button>
-            )}
+          {/* Left Corner Section: Back Arrow (Left-most) + Brand Logo & Title */}
+          <div className="navbar-left-corner">
+            {/* Universal Top Left Back Arrow Button - Always Present on Left Corner */}
+            <button 
+              className="glass-btn-secondary navbar-back-btn" 
+              onClick={handleBackClick}
+              title="Go Back to Previous Page"
+              aria-label="Go Back"
+            >
+              <ArrowLeft className="navbar-back-icon" size={13} color="#38bdf8" />
+              <span className="navbar-back-text">Back</span>
+            </button>
 
-            {/* Brand Logo & Title (Trending Real Estate Branding) */}
+            {/* Brand Logo & Title */}
             <div 
               className="navbar-brand" 
               onClick={() => handleNavClick('home')}
-              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+              title="AGS NEST - Go to Home"
             >
-              <div 
-                className="brand-icon-box"
-                style={{
-                  overflow: 'hidden',
-                  boxShadow: '0 0 16px rgba(16, 185, 129, 0.4), 0 0 8px rgba(6, 182, 212, 0.3)',
-                  border: '1.5px solid rgba(56, 189, 248, 0.4)',
-                  background: '#0a0f1d',
-                  flexShrink: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
+              <div className="brand-icon-box">
                 <img 
                   src={AGS_LOGO_BASE64} 
                   alt="AGS NEST Logo" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 />
               </div>
-              <div className="brand-text">
-                <span className="brand-title gradient-text">
-                  AGS NEST
-                </span>
-                <span className="brand-subtitle">
-                  LUXURY REAL ESTATE
-                </span>
+
+              <div className="brand-text-column">
+                <div className="brand-straight-row">
+                  <span className="brand-title">
+                    AGS NEST
+                  </span>
+                  <span className="brand-straight-tag">
+                    ★ LUXURY
+                  </span>
+                </div>
+                {/* Glowing Horizontal Straight Line Accent */}
+                <div className="brand-straight-line" />
               </div>
             </div>
           </div>
@@ -324,7 +300,7 @@ function Navbar({
           </nav>
 
           {/* Right Action Area (Fits 100% inside container box) */}
-          <div className="navbar-actions" style={{ gap: '6px', position: 'relative', display: 'flex', alignItems: 'center', flexShrink: 0, paddingRight: '2px' }}>
+          <div className="navbar-actions">
             
             {/* AI Voice Assistant Bar */}
             <VoiceAssistant 
@@ -337,29 +313,19 @@ function Navbar({
 
             {/* Customer Profile Pill or Sign In Button */}
             {currentUser ? (
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+              <div className="nav-user-container" style={{ position: 'relative', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                 <button 
-                  className="glass-btn"
-                  style={{ 
-                    padding: '4px 8px', 
-                    fontSize: '11px', 
-                    borderRadius: '20px',
-                    background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(168, 85, 247, 0.4)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    whiteSpace: 'nowrap'
-                  }}
+                  className="glass-btn nav-user-profile-btn"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  title={currentUser.name || 'VIP User Profile'}
                 >
-                  <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'linear-gradient(135deg, #a855f7, #ec4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 800 }}>
+                  <div className="nav-user-avatar">
                     {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
                   </div>
-                  <span className="desktop-only-item" style={{ maxWidth: '65px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span className="desktop-only-item nav-user-name">
                     {currentUser.name || 'VIP'}
                   </span>
-                  <ChevronDown size={11} />
+                  <ChevronDown size={11} className="nav-profile-chevron" />
                 </button>
 
                 {/* User Dropdown */}
@@ -430,11 +396,10 @@ function Navbar({
             ) : (
               <button 
                 className="glass-btn nav-signin-btn"
-                style={{ padding: '5px 10px', fontSize: '12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}
                 onClick={() => onOpenAuthModal && onOpenAuthModal('customer')}
                 title="Sign In / Register"
               >
-                <User size={13} />
+                <User size={12} />
                 <span className="desktop-only-item">Sign In</span>
               </button>
             )}
@@ -443,16 +408,10 @@ function Navbar({
             <button 
               className="mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '8px',
-                padding: '6px',
-                color: '#fff',
-                cursor: 'pointer'
-              }}
+              title="Toggle Navigation Menu"
+              aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+              {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
           </div>
 

@@ -142,7 +142,7 @@ function AdminLogin({ onLoginSuccess, onSwitchToCustomer, onCancel }) {
       <div 
         className="glass-panel" 
         style={{ 
-          padding: '40px 32px', 
+          padding: 'clamp(24px, 5vw, 40px) clamp(16px, 4vw, 32px)', 
           borderRadius: '24px', 
           border: '1px solid rgba(168, 85, 247, 0.4)',
           background: 'linear-gradient(145deg, rgba(15, 17, 32, 0.98) 0%, rgba(30, 27, 75, 0.9) 100%)',

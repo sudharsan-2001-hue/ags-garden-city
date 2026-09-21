@@ -62,7 +62,8 @@ function PulseRingBeacon({ voiceLanguage = 'ta', onNavigate }) {
             background: 'rgba(15, 17, 32, 0.95)',
             border: '1px solid rgba(168, 85, 247, 0.4)',
             boxShadow: '0 15px 40px rgba(0,0,0,0.6), 0 0 25px rgba(168, 85, 247, 0.3)',
-            maxWidth: '280px',
+            maxWidth: 'min(280px, calc(100vw - 28px))',
+            boxSizing: 'border-box',
             textAlign: 'left',
             animation: 'fadeIn 0.3s ease-out',
             marginBottom: '6px'

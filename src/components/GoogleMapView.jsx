@@ -142,24 +142,24 @@ function GoogleMapView({
   const directMapsUrl = `https://www.google.com/maps/search/?api=1&query=${embedQuery}`;
 
   return (
-    <div className="google-map-container glass-panel" style={{ padding: '24px', borderRadius: '22px', marginBottom: '28px' }}>
+    <div className="google-map-container glass-panel" style={{ padding: 'clamp(14px, 3vw, 24px)', borderRadius: '20px', marginBottom: '24px', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
       
       {/* Top Header Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
-        <div>
-          <span className="section-tag" style={{ color: '#10b981', borderColor: '#10b981' }}>
-            <MapPin size={13} /> LIVE GOOGLE MAPS SATELLITE & TRANSIT
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '16px', width: '100%', boxSizing: 'border-box' }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <span className="section-tag" style={{ color: '#10b981', borderColor: '#10b981', fontSize: '10.5px' }}>
+            <MapPin size={12} /> LIVE MAPS & TRANSIT
           </span>
-          <h3 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '6px 0 2px' }}>
+          <h3 style={{ fontSize: 'clamp(17px, 3.5vw, 22px)', fontWeight: 800, color: '#fff', margin: '6px 0 2px' }}>
             {title}
           </h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '13px', margin: 0 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '12px', margin: 0, lineHeight: 1.4 }}>
             {activeData.description}
           </p>
         </div>
 
         {/* Map Type Switcher & External Directions Button */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
           <div style={{ background: 'rgba(255,255,255,0.06)', padding: '3px', borderRadius: '10px', display: 'flex', gap: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
             <button
               type="button"
@@ -168,7 +168,7 @@ function GoogleMapView({
                 background: mapType === 'roadmap' ? '#38bdf8' : 'transparent',
                 color: mapType === 'roadmap' ? '#0f172a' : '#94a3b8',
                 border: 'none',
-                padding: '4px 10px',
+                padding: '4px 8px',
                 borderRadius: '8px',
                 fontSize: '11px',
                 fontWeight: 800,
@@ -184,7 +184,7 @@ function GoogleMapView({
                 background: mapType === 'satellite' ? '#10b981' : 'transparent',
                 color: mapType === 'satellite' ? '#0f172a' : '#94a3b8',
                 border: 'none',
-                padding: '4px 10px',
+                padding: '4px 8px',
                 borderRadius: '8px',
                 fontSize: '11px',
                 fontWeight: 800,
@@ -200,17 +200,17 @@ function GoogleMapView({
             target="_blank"
             rel="noopener noreferrer"
             className="glass-btn"
-            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '12px', textDecoration: 'none', gap: '6px' }}
+            style={{ padding: '6px 12px', fontSize: '11.5px', borderRadius: '10px', textDecoration: 'none', gap: '5px', whiteSpace: 'nowrap' }}
           >
-            <Navigation size={13} />
-            <span>Open in Google Maps Directions</span>
-            <ExternalLink size={12} />
+            <Navigation size={12} />
+            <span>Open in Maps</span>
+            <ExternalLink size={11} />
           </a>
         </div>
       </div>
 
       {/* Chennai Micro-Market Quick Locality Chips */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: '10px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', paddingBottom: '8px', marginBottom: '14px', width: '100%', maxWidth: '100%', minWidth: 0, boxSizing: 'border-box' }}>
         {Object.keys(CHENNAI_LOCATIONS).map((key) => {
           const loc = CHENNAI_LOCATIONS[key];
           const isSelected = activeKey === key;
@@ -220,10 +220,10 @@ function GoogleMapView({
               type="button"
               onClick={() => setActiveKey(key)}
               style={{
-                padding: '6px 12px',
-                fontSize: '12px',
+                padding: '5px 10px',
+                fontSize: '11.5px',
                 fontWeight: isSelected ? 800 : 500,
-                borderRadius: '12px',
+                borderRadius: '10px',
                 background: isSelected ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(56, 189, 248, 0.3) 100%)' : 'rgba(255,255,255,0.04)',
                 border: isSelected ? '1.5px solid #10b981' : '1px solid rgba(255,255,255,0.1)',
                 color: isSelected ? '#fff' : '#cbd5e1',
@@ -232,10 +232,11 @@ function GoogleMapView({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '5px',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                flexShrink: 0
               }}
             >
-              <MapPin size={12} color={isSelected ? '#10b981' : '#94a3b8'} />
+              <MapPin size={11} color={isSelected ? '#10b981' : '#94a3b8'} />
               <span>{loc.name.split('(')[0]}</span>
             </button>
           );
@@ -297,7 +298,7 @@ function GoogleMapView({
           <span style={{ fontSize: '11.5px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '10px' }}>
             ⚡ Key Transit & Landmark Distances from {activeData.name.split('(')[0]}:
           </span>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: '10px', width: '100%', boxSizing: 'border-box' }}>
             {activeData.transit.map((tr, idx) => {
               const Icon = tr.icon;
               return (
@@ -305,24 +306,44 @@ function GoogleMapView({
                   key={idx}
                   style={{
                     background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.09)',
                     borderRadius: '12px',
-                    padding: '10px 14px',
+                    padding: '10px 12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    gap: '8px'
+                    gap: '10px',
+                    boxSizing: 'border-box',
+                    minWidth: 0,
+                    overflow: 'hidden'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ color: '#38bdf8', display: 'flex' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: 1 }}>
+                    <div style={{ color: '#38bdf8', display: 'flex', flexShrink: 0 }}>
                       <Icon size={16} />
                     </div>
-                    <span style={{ fontSize: '12px', color: '#e2e8f0', fontWeight: 600 }}>
+                    <span style={{ fontSize: '12px', color: '#e2e8f0', fontWeight: 600, lineHeight: 1.25, wordBreak: 'break-word' }}>
                       {tr.label}
                     </span>
                   </div>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#10b981', background: 'rgba(16, 185, 129, 0.15)', padding: '2px 8px', borderRadius: '8px' }}>
+                  <span 
+                    style={{ 
+                      fontSize: '11px', 
+                      fontWeight: 800, 
+                      color: '#10b981', 
+                      background: 'rgba(16, 185, 129, 0.16)', 
+                      border: '1px solid rgba(16, 185, 129, 0.35)', 
+                      padding: '3px 8px', 
+                      borderRadius: '8px',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0,
+                      marginLeft: 'auto',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxSizing: 'border-box'
+                    }}
+                  >
                     {tr.time}
                   </span>
                 </div>

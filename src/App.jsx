@@ -4,7 +4,6 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LiveActivityTicker from './components/LiveActivityTicker';
-import PulseRingBeacon from './components/PulseRingBeacon';
 import UnifiedAuthPortal from './components/UnifiedAuthPortal';
 
 import Home from './pages/HomePage';
@@ -32,6 +31,7 @@ function App() {
   // MAIN ACTIVE PAGE
   // ==========================================
   const [activePage, setActivePage] = useState('home');
+  const [pageHistory, setPageHistory] = useState([]);
 
 
   // ==========================================
@@ -110,6 +110,8 @@ function App() {
       propertiesList[0] ||
       PROPERTIES_DATA[0]
     );
+
+  const [returnPage, setReturnPage] = useState('properties');
 
 
   const [authModal, setAuthModal] =
@@ -278,9 +280,11 @@ function App() {
   // ==========================================
   // SELECT PROPERTY
   // ==========================================
-  const handleSelectProperty = (prop) => {
+  const handleSelectProperty = (prop, sourcePage = null) => {
 
     setSelectedProperty(prop);
+
+    setReturnPage(sourcePage || activePage || 'properties');
 
     setActivePage(
       'property-detail'
@@ -645,21 +649,7 @@ function App() {
       )}
 
 
-      {/* VOICE BEACON */}
-      <PulseRingBeacon
-        voiceLanguage={voiceLanguage}
 
-        onNavigate={(page) => {
-
-          setActivePage(page);
-
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-
-        }}
-      />
 
 
       {/* LIVE ACTIVITY */}
@@ -672,47 +662,39 @@ function App() {
         activePage={activePage}
 
         setActivePage={(page) => {
-
+          if (page !== activePage) {
+            setPageHistory((prev) => [...prev.slice(-15), activePage]);
+          }
           setActivePage(page);
-
           window.scrollTo({
             top: 0,
             behavior: 'smooth'
           });
-
         }}
 
-
         onBack={() => {
-
-          if (
-            activePage === 'checkout'
-          ) {
-
-            setActivePage(
-              'property-detail'
-            );
-
-          } else if (
-            activePage === 'property-detail'
-          ) {
-
-            setActivePage(
-              'properties'
-            );
-
-          } else {
-
+          if (pageHistory.length > 0) {
+            const prevPage = pageHistory[pageHistory.length - 1];
+            setPageHistory((prev) => prev.slice(0, -1));
+            setActivePage(prevPage);
+          } else if (activePage === 'checkout') {
+            setActivePage('property-detail');
+          } else if (activePage === 'property-detail') {
+            setActivePage('properties');
+          } else if (activePage !== 'home') {
             setActivePage('home');
-
+          } else {
+            if (window.history.length > 1) {
+              window.history.back();
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
           }
-
 
           window.scrollTo({
             top: 0,
             behavior: 'smooth'
           });
-
         }}
 
 
@@ -872,7 +854,7 @@ function App() {
             onBack={() => {
 
               setActivePage(
-                'properties'
+                returnPage || 'properties'
               );
 
               window.scrollTo({
@@ -1189,6 +1171,14 @@ function App() {
 
               onLogoutAdmin={
                 handleAdminLogout
+              }
+
+              onSelectProperty={(prop) =>
+                handleSelectProperty(prop, 'admin')
+              }
+
+              onBookProperty={
+                handleBookProperty
               }
 
             />

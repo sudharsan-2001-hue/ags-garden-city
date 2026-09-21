@@ -45,7 +45,7 @@ function SavedProperties({
   };
 
   return (
-    <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px' }}>
+    <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px', width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
       
       {/* Top 9-Step Workflow Breadcrumb */}
       <div 
@@ -174,25 +174,25 @@ function SavedProperties({
           </button>
         </div>
       ) : (
-        <div className="property-cards-grid" style={{ marginBottom: '48px' }}>
+        <div className="property-cards-grid" style={{ marginBottom: '48px', width: '100%', boxSizing: 'border-box' }}>
           {savedListings.map(property => (
-            <div key={property.id} style={{ display: 'flex', flexDirection: 'column' }}>
+            <div key={property.id} style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
               <Propertycard 
                 property={property}
                 onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
                 onEnquire={onEnquire}
               />
-              <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+              <div style={{ marginTop: '8px', display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
                 <button 
                   className="glass-btn" 
-                  style={{ flex: 1, padding: '10px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)' }}
+                  style={{ flex: 1, padding: '10px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)', whiteSpace: 'nowrap' }}
                   onClick={() => onBookProperty && onBookProperty(property)}
                 >
                   <DollarSign size={15} /> Book Slot (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})
                 </button>
                 <button 
                   className="glass-btn-secondary" 
-                  style={{ padding: '10px 14px', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                  style={{ padding: '10px 14px', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)', flexShrink: 0 }}
                   onClick={(e) => handleRemoveSaved(property.id, e)}
                   title="Remove from saved"
                 >

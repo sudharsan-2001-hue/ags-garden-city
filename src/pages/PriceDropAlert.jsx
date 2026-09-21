@@ -79,7 +79,7 @@ function PriceDropAlert({
   };
 
   return (
-    <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px' }}>
+    <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px', width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
       
       {/* Top 9-Step Workflow Breadcrumb */}
       <div 
@@ -92,7 +92,10 @@ function PriceDropAlert({
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '10px',
-          background: 'rgba(15, 17, 32, 0.9)'
+          background: 'rgba(15, 17, 32, 0.9)',
+          width: '100%',
+          maxWidth: '100%',
+          boxSizing: 'border-box'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', flexWrap: 'wrap' }}>
@@ -159,7 +162,10 @@ function PriceDropAlert({
           background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(245, 158, 11, 0.12) 50%, rgba(15, 17, 32, 0.95) 100%)',
           border: '1px solid rgba(239, 68, 68, 0.35)',
           boxShadow: '0 10px 30px rgba(239, 68, 68, 0.15)',
-          marginBottom: '36px'
+          marginBottom: '36px',
+          width: '100%',
+          maxWidth: '100%',
+          boxSizing: 'border-box'
         }}
       >
         <div className="price-drop-layout-grid">
@@ -248,7 +254,22 @@ function PriceDropAlert({
       </div>
 
       {/* Filter Tabs */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '24px' }}>
+      <div 
+        className="hide-scrollbar"
+        style={{ 
+          display: 'flex', 
+          gap: '8px', 
+          overflowX: 'auto', 
+          paddingBottom: '8px', 
+          marginBottom: '24px',
+          width: '100%',
+          maxWidth: '100%',
+          boxSizing: 'border-box',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch'
+        }}
+      >
         {[
           { id: 'all', label: '🔥 All Price Cuts' },
           { id: 'apartment', label: '🏢 Apartments' },
@@ -278,21 +299,49 @@ function PriceDropAlert({
       </div>
 
       {/* Property Cards Grid */}
-      <div className="property-cards-grid" style={{ marginBottom: '48px' }}>
+      <div 
+        className="property-cards-grid" 
+        style={{ 
+          marginBottom: '48px',
+          width: '100%',
+          maxWidth: '100%',
+          minWidth: 0,
+          boxSizing: 'border-box'
+        }}
+      >
         {filteredItems.map(property => (
-          <div key={property.id} style={{ display: 'flex', flexDirection: 'column' }}>
+          <div 
+            key={property.id} 
+            style={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              width: '100%',
+              maxWidth: '100%',
+              minWidth: 0,
+              boxSizing: 'border-box'
+            }}
+          >
             <Propertycard 
               property={property}
               onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
               onEnquire={onEnquire}
             />
-            <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+            <div style={{ marginTop: '8px', display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
               <button 
                 className="glass-btn" 
-                style={{ width: '100%', padding: '10px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)' }}
+                style={{ 
+                  width: '100%', 
+                  padding: '10px', 
+                  fontSize: '13px', 
+                  background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)',
+                  boxSizing: 'border-box',
+                  whiteSpace: 'normal',
+                  textAlign: 'center'
+                }}
                 onClick={() => onBookProperty && onBookProperty(property)}
               >
-                <DollarSign size={15} /> Lock Discount with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})
+                <DollarSign size={15} style={{ flexShrink: 0 }} /> 
+                <span>Lock Discount with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})</span>
               </button>
             </div>
           </div>

@@ -222,21 +222,50 @@ function AIPropertyFinder({ onSelectProperty, onEnquire, onBookProperty, onBack,
           </span>
         </div>
 
-        <div className="property-cards-grid">
+        <div 
+          className="property-cards-grid"
+          style={{
+            width: '100%',
+            maxWidth: '100%',
+            minWidth: 0,
+            boxSizing: 'border-box'
+          }}
+        >
           {matchedList.map(property => (
-            <div key={property.id} style={{ display: 'flex', flexDirection: 'column' }}>
+            <div 
+              key={property.id} 
+              style={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                width: '100%',
+                maxWidth: '100%',
+                minWidth: 0,
+                boxSizing: 'border-box'
+              }}
+            >
               <Propertycard 
                 property={property}
                 onSelectProperty={onSelectProperty}
                 onEnquire={onEnquire}
               />
-              <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+              <div style={{ marginTop: '8px', display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
                 <button 
                   className="glass-btn" 
-                  style={{ width: '100%', padding: '10px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)', cursor: 'pointer', fontWeight: 800 }}
+                  style={{ 
+                    width: '100%', 
+                    padding: '10px', 
+                    fontSize: '13px', 
+                    background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)', 
+                    cursor: 'pointer', 
+                    fontWeight: 800,
+                    boxSizing: 'border-box',
+                    whiteSpace: 'normal',
+                    textAlign: 'center'
+                  }}
                   onClick={() => handleBookPropertyAction(property)}
                 >
-                  <DollarSign size={15} /> Book Slot with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})
+                  <DollarSign size={15} style={{ flexShrink: 0 }} /> 
+                  <span>Book Slot with Token (₹{property.tokenAmount?.toLocaleString('en-IN') || '25,000'})</span>
                 </button>
               </div>
             </div>
