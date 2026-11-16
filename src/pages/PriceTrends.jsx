@@ -15,6 +15,7 @@ import {
   Layers, 
   Compass, 
   ArrowRight,
+  ArrowLeft,
   Flame,
   CheckCircle2,
   DollarSign

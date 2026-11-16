@@ -67,13 +67,13 @@ export default function FrontLoginPage({
       {/* Main Glass Container Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
         gap: '24px',
-        alignItems: 'start'
+        alignItems: 'stretch'
       }}>
         
         {/* Left Column: HR Fast Track & Project Highlights */}
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Card 1: HR 1-Click Fast Track Card (Specially for Interviewers) */}
           <div 
             className="glass-panel"
@@ -82,8 +82,7 @@ export default function FrontLoginPage({
               borderRadius: '24px',
               background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(99, 102, 241, 0.15) 50%, rgba(56, 189, 248, 0.15) 100%)',
               border: '1.5px solid rgba(168, 85, 247, 0.4)',
-              boxShadow: '0 12px 35px rgba(168, 85, 247, 0.2)',
-              marginBottom: '20px'
+              boxShadow: '0 12px 35px rgba(168, 85, 247, 0.2)'
             }}
           >
             <div style={{
@@ -217,6 +216,9 @@ export default function FrontLoginPage({
                 <span>• 5. 📈 Market Price Appreciation Analytics</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>• 6. ❤️ Saved Shortlisted Properties</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span>• 7. 🛡️ 100% Legal Title RERA Verification</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -236,22 +238,109 @@ export default function FrontLoginPage({
                 onClick={handleGuestBypass}
                 style={{ width: '100%', padding: '10px', fontSize: '13px', fontWeight: 800 }}
               >
-                🚀 Continue as Guest to Step 2: Properties →
+                🚀 Continue as Guest to Step 2: Home →
               </button>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Embedded Unified Glass Auth Portal */}
-        <div>
-          <UnifiedAuthPortal 
-            initialRole="customer"
-            onCustomerSuccess={onCustomerSuccess}
-            onAdminSuccess={onAdminSuccess}
-            onGuestAccess={handleGuestBypass}
-            onClose={handleGuestBypass}
-            isModal={false}
-          />
+        {/* Right Column: Embedded Unified Glass Auth Portal OR Active Session Card */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {currentUser ? (
+            <div 
+              className="glass-panel" 
+              style={{ 
+                padding: '36px 30px', 
+                borderRadius: '24px', 
+                textAlign: 'center', 
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)', 
+                border: '1.5px solid rgba(16, 185, 129, 0.4)',
+                boxShadow: '0 12px 35px rgba(16, 185, 129, 0.2)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                boxSizing: 'border-box'
+              }}
+            >
+              <div style={{ 
+                width: '68px', 
+                height: '68px', 
+                borderRadius: '50%', 
+                background: 'rgba(16, 185, 129, 0.2)', 
+                border: '2px solid #10b981', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                margin: '0 auto 16px', 
+                color: '#10b981',
+                boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)'
+              }}>
+                <UserCheck size={34} />
+              </div>
+
+              <span style={{ 
+                display: 'inline-block',
+                fontSize: '11px', 
+                fontWeight: 900, 
+                color: '#10b981', 
+                letterSpacing: '0.08em', 
+                textTransform: 'uppercase', 
+                background: 'rgba(16, 185, 129, 0.15)', 
+                padding: '4px 12px', 
+                borderRadius: '12px',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                margin: '0 auto 12px'
+              }}>
+                ✓ Active Verified Customer Session
+              </span>
+
+              <h2 style={{ fontSize: '24px', color: '#fff', margin: '0 0 6px', fontWeight: 900 }}>
+                {currentUser.name || 'Verified Client'}
+              </h2>
+
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '0 0 24px' }}>
+                {currentUser.email || currentUser.phone || 'client@agsgarden.com'}
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: 'auto' }}>
+                <button
+                  className="glass-btn"
+                  onClick={() => { setActivePage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  style={{ 
+                    padding: '14px', 
+                    fontSize: '14.5px', 
+                    fontWeight: 900, 
+                    background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    gap: '8px',
+                    borderRadius: '16px'
+                  }}
+                >
+                  <span>Proceed to Step 2: Home & Categories</span> <ArrowRight size={16} />
+                </button>
+
+                <button
+                  className="glass-btn-secondary"
+                  onClick={() => { setActivePage('properties'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  style={{ padding: '12px', fontSize: '13px', fontWeight: 800, borderRadius: '14px' }}
+                >
+                  <span>Jump to Step 3: Properties Catalog →</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <UnifiedAuthPortal 
+              initialRole="customer"
+              onCustomerSuccess={onCustomerSuccess}
+              onAdminSuccess={onAdminSuccess}
+              onGuestAccess={handleGuestBypass}
+              onClose={handleGuestBypass}
+              isModal={false}
+            />
+          )}
         </div>
 
       </div>

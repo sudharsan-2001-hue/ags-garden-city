@@ -537,7 +537,7 @@ function UnifiedAuthPortal({
         zIndex: isModal ? 100000 : 1,
         background: isModal ? 'rgba(5, 7, 15, 0.92)' : undefined,
         backdropFilter: isModal ? 'blur(16px)' : undefined,
-        padding: isModal ? '20px 10px' : '20px 0'
+        padding: isModal ? '20px 10px' : 0
       }}
       onClick={() => isModal && onClose && onClose()}
     >

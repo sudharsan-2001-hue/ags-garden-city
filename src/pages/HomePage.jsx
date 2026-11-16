@@ -14,6 +14,7 @@ import {
   Users,
   Award,
   ArrowRight,
+  ArrowLeft,
   CheckCircle2,
   Bed,
   Bath,
