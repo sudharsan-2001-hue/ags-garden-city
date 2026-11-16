@@ -105,16 +105,28 @@ function Trending({
           <span style={{ color: 'var(--text-muted)' }}>4. Confirmed Invoice</span>
         </div>
 
-        <button 
-          className="glass-btn-secondary" 
-          onClick={() => {
-            if (setActivePage) setActivePage('home');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px' }}
-        >
-          ← Back to Home
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button 
+            className="glass-btn-secondary" 
+            onClick={() => {
+              if (setActivePage) setActivePage('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px' }}
+          >
+            ← Back to Home
+          </button>
+          <button 
+            className="glass-btn" 
+            onClick={() => {
+              if (setActivePage) setActivePage('properties');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)' }}
+          >
+            All 26 Properties →
+          </button>
+        </div>
       </div>
 
       {/* Top Banner Header */}
@@ -477,6 +489,56 @@ function Trending({
               Multinational tech companies expanding operations creating record high rental occupancy and 6.2% annual rental yields.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Bottom Step-by-Step Orderly Navigation Bar */}
+      <div 
+        className="glass-panel"
+        style={{
+          marginTop: '28px',
+          marginBottom: '20px',
+          padding: '24px',
+          borderRadius: '20px',
+          background: 'linear-gradient(135deg, rgba(15, 17, 32, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}
+      >
+        <div>
+          <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Chennai High-Demand Property Index
+          </div>
+          <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
+            Explore full verified catalog or consult our property advisors!
+          </h3>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button 
+            className="glass-btn-secondary" 
+            onClick={() => {
+              if (setActivePage) setActivePage('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+          >
+            ← Back to Home
+          </button>
+
+          <button 
+            className="glass-btn" 
+            onClick={() => {
+              if (setActivePage) setActivePage('properties');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)' }}
+          >
+            <span>Explore All Properties →</span>
+          </button>
         </div>
       </div>
 

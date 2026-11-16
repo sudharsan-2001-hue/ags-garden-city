@@ -67,9 +67,27 @@ class ErrorBoundary extends React.Component {
             <h2 style={{ fontSize: '22px', marginBottom: '8px', color: '#fff' }}>
               AGS NEST High-Speed Engine Protected
             </h2>
-            <p style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '13px', lineHeight: 1.6, marginBottom: '24px' }}>
+            <p style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '13px', lineHeight: 1.6, marginBottom: '20px' }}>
               Our high-traffic concurrency shield safely recovered your session. Click below to continue browsing verified residences smoothly.
             </p>
+
+            {this.state.error && (
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.4)',
+                borderRadius: '10px',
+                padding: '10px 14px',
+                marginBottom: '20px',
+                fontSize: '11.5px',
+                color: '#fca5a5',
+                textAlign: 'left',
+                fontFamily: 'monospace',
+                overflowX: 'auto',
+                whiteSpace: 'pre-wrap'
+              }}>
+                <strong>Debug Info:</strong> {this.state.error?.message || String(this.state.error)}
+              </div>
+            )}
 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button 
@@ -78,6 +96,19 @@ class ErrorBoundary extends React.Component {
                 style={{ padding: '12px 24px', fontSize: '14px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
               >
                 <RefreshCw size={16} /> ⚡ Fast Re-sync & Continue
+              </button>
+
+              <button 
+                onClick={() => {
+                  try {
+                    localStorage.removeItem('agsgarden_custom_properties');
+                  } catch (e) {}
+                  window.location.href = '/';
+                }}
+                className="glass-btn-secondary"
+                style={{ padding: '12px 20px', fontSize: '13px', borderRadius: '12px', cursor: 'pointer' }}
+              >
+                🏠 Return to Front Login
               </button>
             </div>
           </div>

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Propertycard from '../components/Propertycard';
 import { PROPERTIES_DATA } from '../data/propertiesData';
+import GlassStepBar from '../components/GlassStepBar';
 
 function VerifiedProperties({ 
   setActivePage, 
@@ -34,61 +35,25 @@ function VerifiedProperties({
     : verifiedListings.filter(p => p.category === selectedCategory);
 
   return (
-    <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px' }}>
+    <div className="section-wrapper verified-properties-page" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px' }}>
       
-      {/* Top 9-Step Workflow Breadcrumb */}
-      <div 
-        className="glass-panel"
-        style={{
-          padding: '12px 18px',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px',
-          background: 'rgba(15, 17, 32, 0.9)'
+      {/* Universal Glassmorphic 10-Step Progress Stepper */}
+      <GlassStepBar 
+        currentStepId="verified"
+        setActivePage={setActivePage}
+        onPrev={() => {
+          setActivePage('saved');
+          window.scrollTo(0, 0);
         }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', flexWrap: 'wrap' }}>
-          <button onClick={() => { setActivePage('home'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            1. 🏠 Home
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { setActivePage('properties'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            2. 🏘️ Properties
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { setActivePage('saved'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            6. ❤️ Saved
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: '#10b981', fontWeight: 800, background: 'rgba(16, 185, 129, 0.15)', padding: '2px 8px', borderRadius: '10px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-            7.  Verified Properties (Active)
-          </span>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { setActivePage('property-detail'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            9. 🏡 Details
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button 
-            className="glass-btn-secondary" 
-            onClick={() => { setActivePage('saved'); window.scrollTo(0, 0); }}
-            style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '16px' }}
-          >
-            <ArrowLeft size={13} /> Step 6: Saved
-          </button>
-          <button 
-            className="glass-btn" 
-            onClick={() => { setActivePage('home'); window.scrollTo(0, 0); }}
-            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' }}
-          >
-            Go to Details / Home →
-          </button>
-        </div>
-      </div>
+        prevLabel="Step 6: Saved Properties"
+        onNext={() => {
+          const firstProp = verifiedListings[0];
+          if (onSelectProperty && firstProp) onSelectProperty(firstProp);
+          setActivePage('property-detail');
+          window.scrollTo(0, 0);
+        }}
+        nextLabel="Step 8: Details & 3D Tour"
+      />
 
       {/* Main Header */}
       <div className="section-top-header" style={{ marginBottom: '28px' }}>
@@ -151,7 +116,7 @@ function VerifiedProperties({
       {/* Category Pills */}
       <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '24px' }}>
         {[
-          { id: 'all', label: ' All Verified ({verifiedListings.length})' },
+          { id: 'all', label: `✅ All Verified (${verifiedListings.length})` },
           { id: 'apartment', label: '🏢 Apartments' },
           { id: 'villa', label: '🏡 Luxury Villas' },
           { id: 'sea-view', label: '🌊 Sea View' },
@@ -205,6 +170,9 @@ function VerifiedProperties({
               property={property}
               onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
               onEnquire={onEnquire}
+              onBookProperty={onBookProperty}
+              showLegalDocuments={true}
+              maxRoomImages={5}
             />
             <div style={{ marginTop: '8px', display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
               <button 
@@ -244,7 +212,7 @@ function VerifiedProperties({
       >
         <div>
           <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 7 of 9 in AGS NEST Journey
+            Current Step: 7 of 10 in AGS NEST Process
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Select any property card above to inspect Room-by-Room Multi-Angles & 3D Tour!
@@ -255,9 +223,9 @@ function VerifiedProperties({
           <button 
             className="glass-btn-secondary" 
             onClick={() => { setActivePage('saved'); window.scrollTo(0, 0); }}
-            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <ArrowLeft size={15} /> Previous: 6. ❤️ Saved
+            <ArrowLeft size={15} /> <span>Previous: Step 6. Saved Properties</span>
           </button>
 
           <button 
@@ -265,12 +233,12 @@ function VerifiedProperties({
             onClick={() => { 
               const firstProp = verifiedListings[0];
               if (onSelectProperty && firstProp) onSelectProperty(firstProp);
-              else setActivePage('properties');
+              else setActivePage('property-detail');
               window.scrollTo(0, 0);
             }}
             style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' }}
           >
-            <span>Next: 9. 🏡 Property Details & Tour →</span>
+            <span>Next: Step 8. Property Details & Tour →</span>
           </button>
         </div>
       </div>

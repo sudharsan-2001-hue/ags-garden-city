@@ -24,7 +24,8 @@ import {
   Mail, 
   MessageSquare,
   Bell,
-  Heart
+  Heart,
+  Award
 } from 'lucide-react';
 
 function Navbar({ 
@@ -57,25 +58,22 @@ function Navbar({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Exact 9-Step Sequence Requested by User Screenshot (Concise labels for perfect container fit)
+  // Exact 10-Step Customer Pipeline Starting with 1. Login to 10. HR Showcase
   const navItems = [
-    { id: 'home', label: '1. Home', icon: Home },
-    { id: 'properties', label: '2. Properties', icon: Compass },
-    { id: 'ai-finder', label: '3. AI Match', icon: Sparkles, badge: 'AI' },
-    { id: 'price-drop', label: '4. Price Drop', icon: Bell, badge: 'HOT' },
+    { id: 'auth', label: '1. Login', icon: Lock, badge: 'START' },
+    { id: 'home', label: '2. Home', icon: Home },
+    { id: 'properties', label: '3. Properties', icon: Compass },
+    { id: 'ai-finder', label: '4. AI Match', icon: Sparkles, badge: 'AI' },
     { id: 'trends', label: '5. Trends', icon: TrendingUp },
     { id: 'saved', label: '6. Saved', icon: Heart },
     { id: 'verified', label: '7. Verified', icon: CheckCircle2, badge: 'RERA' },
-    { id: 'auth', label: '8. Login', icon: Lock },
-    { id: 'property-detail', label: '9. Details', icon: Building2 }
+    { id: 'property-detail', label: '8. Details', icon: Building2 },
+    { id: 'checkout', label: '9. Booking', icon: ShieldAlert },
+    { id: 'conclusion', label: '10. HR Showcase', icon: Award, badge: 'HR' }
   ];
 
   const handleNavClick = (pageId) => {
-    if (pageId === 'auth') {
-      if (onOpenAuthModal) onOpenAuthModal('customer');
-    } else {
-      setActivePage(pageId);
-    }
+    setActivePage(pageId);
     setMobileMenuOpen(false);
     setUserDropdownOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -85,26 +83,26 @@ function Navbar({
     if (onBack) {
       onBack();
     } else {
-      if (activePage === 'property-detail') {
-        setActivePage('properties');
+      if (activePage === 'conclusion') {
+        setActivePage('checkout');
       } else if (activePage === 'checkout') {
         setActivePage('property-detail');
+      } else if (activePage === 'property-detail') {
+        setActivePage('verified');
       } else if (activePage === 'verified') {
         setActivePage('saved');
       } else if (activePage === 'saved') {
         setActivePage('trends');
       } else if (activePage === 'trends') {
-        setActivePage('price-drop');
-      } else if (activePage === 'price-drop') {
         setActivePage('ai-finder');
       } else if (activePage === 'ai-finder') {
         setActivePage('properties');
       } else if (activePage === 'properties') {
         setActivePage('home');
       } else if (activePage === 'home') {
-        if (onLogoutCustomer) onLogoutCustomer();
+        setActivePage('auth');
       } else {
-        setActivePage('home');
+        setActivePage('auth');
       }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -394,14 +392,37 @@ function Navbar({
                 )}
               </div>
             ) : (
-              <button 
-                className="glass-btn nav-signin-btn"
-                onClick={() => onOpenAuthModal && onOpenAuthModal('customer')}
-                title="Sign In / Register"
-              >
-                <User size={12} />
-                <span className="desktop-only-item">Sign In</span>
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <button 
+                  className="glass-btn"
+                  onClick={() => handleNavClick('conclusion')}
+                  title="View HR Showcase & Java Architecture"
+                  style={{
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+                    padding: '5px 10px',
+                    fontSize: '11px',
+                    fontWeight: 900,
+                    borderRadius: '12px',
+                    border: 'none',
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <Award size={12} />
+                  <span>HR VIP</span>
+                </button>
+
+                <button 
+                  className="glass-btn nav-signin-btn"
+                  onClick={() => handleNavClick('auth')}
+                  title="Sign In / Register Portal"
+                >
+                  <User size={12} />
+                  <span className="desktop-only-item">1. Login</span>
+                </button>
+              </div>
             )}
 
             {/* Mobile Menu Toggle */}

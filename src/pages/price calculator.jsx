@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Calculator, DollarSign, PieChart, ShieldCheck, ArrowLeft } from 'lucide-react';
 
-function PriceCalculator({ onBack }) {
+function PriceCalculator({ onBack, setActivePage }) {
   const [loanAmount, setLoanAmount] = useState(6000000);
   const [interestRate, setInterestRate] = useState(8.5);
   const [tenure, setTenure] = useState(20);
@@ -22,7 +22,7 @@ function PriceCalculator({ onBack }) {
   }, [loanAmount, interestRate, tenure]);
 
   return (
-    <div className="section-wrapper" style={{ maxWidth: '1080px', margin: '0 auto', textAlign: 'left', padding: '0 16px' }}>
+    <div className="section-wrapper" style={{ maxWidth: '1080px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px' }}>
       
       {/* Customer Journey Stepper Progress Bar */}
       <div 
@@ -41,22 +41,37 @@ function PriceCalculator({ onBack }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', flexWrap: 'wrap' }}>
           <span style={{ color: '#10b981', fontWeight: 800 }}>🧮 EMI & Loan Calculator (Current)</span>
           <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: 'var(--text-muted)' }}>2. Browse Properties</span>
+          <button 
+            onClick={() => { if (setActivePage) setActivePage('properties'); }}
+            style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600, padding: 0 }}
+          >
+            2. Browse Properties
+          </button>
           <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: 'var(--text-muted)' }}>3. Book Slot & Payment</span>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: 'var(--text-muted)' }}>4. Confirmed Invoice</span>
+          <button 
+            onClick={() => { if (setActivePage) setActivePage('checkout'); }}
+            style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600, padding: 0 }}
+          >
+            3. Book Slot & Payment
+          </button>
         </div>
 
-        {onBack && (
+        <div style={{ display: 'flex', gap: '8px' }}>
           <button 
             className="glass-btn-secondary" 
-            onClick={onBack}
+            onClick={() => { if (onBack) onBack(); else if (setActivePage) setActivePage('home'); }}
             style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px' }}
           >
             ← Back to Home
           </button>
-        )}
+          <button 
+            className="glass-btn" 
+            onClick={() => { if (setActivePage) setActivePage('properties'); }}
+            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
+          >
+            Browse Properties →
+          </button>
+        </div>
       </div>
 
       <div className="section-top-header">
@@ -137,6 +152,49 @@ function PriceCalculator({ onBack }) {
               <strong className="gradient-accent-text">₹{calculations.totalAmount.toLocaleString('en-IN')}</strong>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Bottom Step-by-Step Orderly Navigation Bar */}
+      <div 
+        className="glass-panel"
+        style={{
+          marginTop: '28px',
+          padding: '24px',
+          borderRadius: '20px',
+          background: 'linear-gradient(135deg, rgba(15, 17, 32, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}
+      >
+        <div>
+          <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Instant Loan & Mortgage Pre-Approval Support
+          </div>
+          <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
+            Ready to find properties matching your calculated budget?
+          </h3>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button 
+            className="glass-btn-secondary" 
+            onClick={() => { if (onBack) onBack(); else if (setActivePage) setActivePage('home'); }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+          >
+            ← Back to Home
+          </button>
+
+          <button 
+            className="glass-btn" 
+            onClick={() => { if (setActivePage) setActivePage('properties'); }}
+            style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
+          >
+            <span>Browse Matching Properties →</span>
+          </button>
         </div>
       </div>
     </div>

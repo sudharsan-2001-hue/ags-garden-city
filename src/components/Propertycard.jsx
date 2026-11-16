@@ -21,13 +21,15 @@ import {
 } from 'lucide-react';
 import Virtual3DTourModal from './Virtual3DTourModal';
 import DirectCallModal from './DirectCallModal';
+import LegalDocumentModal from './LegalDocumentModal';
 import { getPropertyRoomList } from '../utils/propertyRooms';
 
-function Propertycard({ property, onSelectProperty, onEnquire, onBookProperty }) {
+function Propertycard({ property, onSelectProperty, onEnquire, onBookProperty, showLegalDocuments = false, maxRoomImages }) {
   const [isSaved, setIsSaved] = useState(false);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
   const [show3DTour, setShow3DTour] = useState(false);
   const [showCallModal, setShowCallModal] = useState(false);
+  const [activeLegalDoc, setActiveLegalDoc] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
@@ -61,8 +63,8 @@ function Propertycard({ property, onSelectProperty, onEnquire, onBookProperty })
 
   // Build guaranteed 6-room suite: 1. Elevation -> 2. Living Hall -> 3. Master Bed -> 4. Kitchen -> 5. Bath -> 6. Balcony
   const roomItems = React.useMemo(() => {
-    return getPropertyRoomList(property);
-  }, [property]);
+    return getPropertyRoomList(property, { maxRooms: maxRoomImages });
+  }, [property, maxRoomImages]);
 
   const safeIdx = (currentImageIdx >= 0 && currentImageIdx < roomItems.length) ? currentImageIdx : 0;
   const currentRoom = roomItems[safeIdx] || roomItems[0] || { 
@@ -132,6 +134,14 @@ function Propertycard({ property, onSelectProperty, onEnquire, onBookProperty })
           property={property}
           onClose={() => setShowCallModal(false)}
           onScheduleInspection={onEnquire}
+        />
+      )}
+
+      {activeLegalDoc && (
+        <LegalDocumentModal
+          property={property}
+          docType={activeLegalDoc}
+          onClose={() => setActiveLegalDoc(null)}
         />
       )}
 
@@ -464,6 +474,33 @@ function Propertycard({ property, onSelectProperty, onEnquire, onBookProperty })
             <span>{sqft} sq.ft</span>
           </div>
         </div>
+
+        {showLegalDocuments && (
+          <div className="legal-docs-strip">
+            <button
+              type="button"
+              className="legal-doc-chip legal-doc-patta"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveLegalDoc('patta');
+              }}
+            >
+              📄 e-Patta
+              <span className="legal-doc-hint">Tap to View • VAO Sealed</span>
+            </button>
+            <button
+              type="button"
+              className="legal-doc-chip legal-doc-dtcp"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveLegalDoc('dtcp');
+              }}
+            >
+              🏛️ DTCP Approval
+              <span className="legal-doc-hint">Tap to View • VAO Signed</span>
+            </button>
+          </div>
+        )}
 
         {/* Card Footer Actions - Compact 1-Row Responsive Layout */}
         <div className="property-card-actions" style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '100%', boxSizing: 'border-box' }}>

@@ -60,8 +60,10 @@ function getSeedIndex(seedStr, max) {
   return Math.abs(hash) % max;
 }
 
-export function getPropertyRoomList(property) {
+export function getPropertyRoomList(property, options = {}) {
   if (!property) return [];
+
+  const maxRooms = options.maxRooms ?? property?.maxRoomCount ?? null;
 
   const mainImage = property.image || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80';
   const type = (property.type || property.propertyType || '').toLowerCase();
@@ -93,7 +95,7 @@ export function getPropertyRoomList(property) {
     });
 
     if (list.length >= 3) {
-      return list;
+      return maxRooms ? list.slice(0, maxRooms) : list;
     }
   }
 
@@ -105,7 +107,7 @@ export function getPropertyRoomList(property) {
   const balcIdx = getSeedIndex(seed + '-balc', STANDARD_ROOM_ASSETS.balcony.length);
 
   if (isPlot) {
-    return [
+    const plotList = [
       {
         name: 'Main Plot Frontage',
         tag: '🌳 Plot Frontage',
@@ -137,10 +139,11 @@ export function getPropertyRoomList(property) {
         desc: 'Close connectivity to metro station, IT parks and arterial highways'
       }
     ];
+    return maxRooms ? plotList.slice(0, maxRooms) : plotList;
   }
 
   // Standard Residential (Apartment, Villa, House, Penthouse)
-  return [
+  const residentialList = [
     {
       name: 'Exterior Elevation',
       tag: '🏢 Main Elevation',
@@ -178,4 +181,5 @@ export function getPropertyRoomList(property) {
       desc: 'Open scenic balcony with panoramic outdoor view & fresh breeze'
     }
   ];
+  return maxRooms ? residentialList.slice(0, maxRooms) : residentialList;
 }

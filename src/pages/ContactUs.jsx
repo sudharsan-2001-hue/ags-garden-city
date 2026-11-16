@@ -86,16 +86,28 @@ function ContactUs({ setActivePage }) {
           <span style={{ color: '#c084fc' }}>Email: AGSGARDENCITY@gmail.com</span>
         </div>
 
-        <button 
-          className="glass-btn-secondary" 
-          onClick={() => {
-            if (setActivePage) setActivePage('home');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px' }}
-        >
-          <ArrowLeft size={14} /> Back to Home
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button 
+            className="glass-btn-secondary" 
+            onClick={() => {
+              if (setActivePage) setActivePage('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px' }}
+          >
+            <ArrowLeft size={14} /> Back to Home
+          </button>
+          <button 
+            className="glass-btn" 
+            onClick={() => {
+              if (setActivePage) setActivePage('properties');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)' }}
+          >
+            Properties →
+          </button>
+        </div>
       </div>
 
       {/* Main Header */}
@@ -476,6 +488,55 @@ function ContactUs({ setActivePage }) {
           height="420px"
           showTransitDetails={true}
         />
+      </div>
+
+      {/* Bottom Step-by-Step Orderly Navigation Bar */}
+      <div 
+        className="glass-panel"
+        style={{
+          marginTop: '28px',
+          padding: '24px',
+          borderRadius: '20px',
+          background: 'linear-gradient(135deg, rgba(15, 17, 32, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}
+      >
+        <div>
+          <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            24/7 Corporate Relationship Desk
+          </div>
+          <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
+            Ready to explore our luxury properties or book a private site visit?
+          </h3>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button 
+            className="glass-btn-secondary" 
+            onClick={() => {
+              if (setActivePage) setActivePage('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+          >
+            ← Back to Home
+          </button>
+
+          <button 
+            className="glass-btn" 
+            onClick={() => {
+              if (setActivePage) setActivePage('properties');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)' }}
+          >
+            <span>Browse All Properties →</span>
+          </button>
+        </div>
       </div>
 
     </div>

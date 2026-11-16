@@ -19,13 +19,13 @@ import {
   Printer, 
   Clock,
   Building2,
-  Award,
   Check
 } from 'lucide-react';
+import GlassStepBar from '../components/GlassStepBar';
 
 import safeStorage from '../utils/safeStorage';
 
-function BookingCheckout({ property, onBack, onBookingComplete }) {
+function BookingCheckout({ property, onBack, onBookingComplete, setActivePage }) {
   const [paymentMethod, setPaymentMethod] = useState('razorpay'); // 'razorpay', 'cash_on_visit'
   const [razorpaySubMethod, setRazorpaySubMethod] = useState('upi'); // 'upi', 'card', 'netbanking'
   const [upiId, setUpiId] = useState('');
@@ -109,42 +109,24 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
   return (
     <div className="section-wrapper checkout-page-container" style={{ maxWidth: '1020px', margin: '0 auto' }}>
       
-      {/* Top Customer Journey Stepper & Back Navigation */}
-      {!bookingConfirmed && (
-        <div className="no-print">
-          <div 
-            className="glass-panel"
-            style={{
-              padding: '12px 20px',
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '10px',
-              background: 'rgba(15, 17, 32, 0.9)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', flexWrap: 'wrap' }}>
-              <span style={{ color: '#10b981', fontWeight: 600 }}>✓ 1. Properties</span>
-              <span style={{ color: 'var(--text-muted)' }}>➔</span>
-              <span style={{ color: '#10b981', fontWeight: 600 }}>✓ 2. Property Details</span>
-              <span style={{ color: 'var(--text-muted)' }}>➔</span>
-              <span style={{ color: '#c084fc', fontWeight: 800 }}>3. Pick Slot & Pay Token (Current)</span>
-              <span style={{ color: 'var(--text-muted)' }}>➔</span>
-              <span style={{ color: 'var(--text-muted)' }}>4. Confirmed Invoice</span>
-            </div>
-
-            <button 
-              className="glass-btn-secondary" 
-              onClick={onBack}
-              style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}
-            >
-              <ArrowLeft size={14} /> Back to Details
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Universal Glassmorphic 10-Step Progress Stepper */}
+      <div className="no-print">
+        <GlassStepBar 
+          currentStepId="checkout"
+          setActivePage={setActivePage}
+          onPrev={() => {
+            if (onBack) onBack();
+            else if (setActivePage) setActivePage('property-detail');
+            window.scrollTo(0, 0);
+          }}
+          prevLabel="Step 8: Details & 3D Tour"
+          onNext={() => {
+            if (setActivePage) setActivePage('conclusion');
+            window.scrollTo(0, 0);
+          }}
+          nextLabel="Step 10: HR Showcase & Conclusion"
+        />
+      </div>
 
       {/* =========================================================================
           CLEAN SINGLE PAYMENT SUCCESSFUL PAGE WITH ANIMATED GREEN TICK (✓)
@@ -577,20 +559,30 @@ function BookingCheckout({ property, onBack, onBookingComplete }) {
 
               <button 
                 className="glass-btn"
-                style={{ padding: '10px 20px', fontSize: '13px', background: 'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)', fontWeight: 800 }}
+                style={{ padding: '10px 24px', fontSize: '14px', background: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #0284c7 100%)', fontWeight: 900 }}
                 onClick={() => {
-                  window.location.reload();
+                  if (setActivePage) {
+                    setActivePage('conclusion');
+                  }
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               >
-                <span>🔥 Browse Trending Properties →</span>
+                <span>🎯 Next: Step 10: HR Showcase & Conclusion →</span>
               </button>
 
               <button 
                 className="glass-btn-secondary"
                 style={{ padding: '10px 20px', fontSize: '13px', fontWeight: 800 }}
-                onClick={onBack}
+                onClick={() => {
+                  if (setActivePage) {
+                    setActivePage('properties');
+                  } else if (onBack) {
+                    onBack();
+                  }
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               >
-                🏡 Back to Home
+                🔍 Explore More Properties
               </button>
             </div>
 

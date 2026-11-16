@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Propertycard from '../components/Propertycard';
 import { CATEGORIES_DATA, PROPERTIES_DATA } from '../data/propertiesData';
 import { API_ENDPOINTS } from '../utils/api';
+import { buildLocationSlotListing, hasActiveLocationSearch } from '../utils/locationListing';
+import GlassStepBar from '../components/GlassStepBar';
 
 import { 
   Search, 
@@ -218,11 +220,33 @@ function Properties({
   }, [properties, activeCategory, selectedLocation, selectedBudget, searchTerm, sortBy]);
 
   const currentCategoryInfo = CATEGORIES_DATA.find(c => c.id === activeCategory);
+  const locationSearchActive = hasActiveLocationSearch(selectedLocation, searchTerm);
+
+  const locationSlotListing = useMemo(() => {
+    if (!locationSearchActive) return null;
+    return buildLocationSlotListing({
+      location: selectedLocation,
+      category: activeCategory,
+      budget: selectedBudget,
+      searchTerm
+    });
+  }, [locationSearchActive, selectedLocation, activeCategory, selectedBudget, searchTerm]);
 
   // Smart fallback when strict intersection has 0 properties (never show an empty page!)
   const { displayList, isFallback, fallbackMessage } = useMemo(() => {
+    const withLocationSlot = (list) => {
+      if (!locationSlotListing) return list;
+      const slotId = locationSlotListing.id;
+      const withoutDuplicate = list.filter(p => p.id !== slotId && !p.isLocationSlot);
+      return [locationSlotListing, ...withoutDuplicate.map(p => ({ ...p, maxRoomCount: 5 }))];
+    };
+
     if (filteredProperties.length > 0) {
-      return { displayList: filteredProperties, isFallback: false, fallbackMessage: null };
+      return {
+        displayList: withLocationSlot(filteredProperties.map(p => ({ ...p, maxRoomCount: locationSearchActive ? 5 : p.maxRoomCount }))),
+        isFallback: false,
+        fallbackMessage: null
+      };
     }
 
     let fallback = [];
@@ -304,8 +328,12 @@ function Properties({
       message = `Showing top-rated handpicked residences across Chennai (${fallback.length} available)`;
     }
 
-    return { displayList: fallback, isFallback: true, fallbackMessage: message };
-  }, [filteredProperties, properties, selectedLocation, activeCategory, selectedBudget, searchTerm, currentCategoryInfo]);
+    return {
+      displayList: withLocationSlot(fallback),
+      isFallback: true,
+      fallbackMessage: message || (locationSlotListing ? `Verified slot available in ${locationSlotListing.area} with 5 room photos` : null)
+    };
+  }, [filteredProperties, properties, selectedLocation, activeCategory, selectedBudget, searchTerm, currentCategoryInfo, locationSlotListing, locationSearchActive]);
 
   // Pagination & Layout states
   const [currentPage, setCurrentPage] = useState(1);
@@ -420,66 +448,22 @@ function Properties({
   return (
     <div className="section-wrapper" style={{ maxWidth: '1320px', margin: '0 auto', textAlign: 'left', padding: '0 16px' }}>
       
-      {/* Top 9-Step Workflow Breadcrumb */}
-      <div 
-        className="glass-panel"
-        style={{
-          padding: '12px 18px',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px',
-          background: 'rgba(15, 17, 32, 0.9)'
+      {/* Universal Glassmorphic 10-Step Progress Stepper */}
+      <GlassStepBar 
+        currentStepId="properties"
+        setActivePage={setActivePage}
+        onPrev={() => {
+          if (setActivePage) setActivePage('home');
+          else if (onBack) onBack();
+          window.scrollTo(0, 0);
         }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', flexWrap: 'wrap' }}>
-          <button onClick={() => { if (setActivePage) setActivePage('home'); else if (onBack) onBack(); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            1. 🏠 Home
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: '#38bdf8', fontWeight: 800, background: 'rgba(56, 189, 248, 0.15)', padding: '2px 8px', borderRadius: '10px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-            2. 🏘️ Properties ({filteredProperties.length}) (Active)
-          </span>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { if (setActivePage) setActivePage('ai-finder'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            3. 🤖 AI Finder
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { if (setActivePage) setActivePage('price-drop'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            4. 🔔 Price Drop
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { if (setActivePage) setActivePage('trends'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            5. 📈 Trends
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button 
-            className="glass-btn-secondary" 
-            onClick={() => {
-              if (onBack) onBack();
-              else if (setActivePage) setActivePage('home');
-              window.scrollTo(0, 0);
-            }}
-            style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '16px' }}
-          >
-            ← Step 1: Home
-          </button>
-          <button 
-            className="glass-btn" 
-            onClick={() => {
-              if (setActivePage) setActivePage('ai-finder');
-              window.scrollTo(0, 0);
-            }}
-            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', background: 'linear-gradient(135deg, #a855f7 0%, #6366f1 100%)' }}
-          >
-            Step 3: AI Finder →
-          </button>
-        </div>
-      </div>
+        prevLabel="Step 2: Home Page"
+        onNext={() => {
+          if (setActivePage) setActivePage('ai-finder');
+          window.scrollTo(0, 0);
+        }}
+        nextLabel="Step 4: AI Matcher"
+      />
 
       {/* Category Hero / Header */}
       <div className="section-top-header" style={{ marginBottom: '20px' }}>
@@ -977,6 +961,7 @@ function Properties({
                 onSelectProperty={(p) => onSelectProperty && onSelectProperty(p)}
                 onEnquire={onEnquire}
                 onBookProperty={(p) => onBookProperty && onBookProperty(p)}
+                maxRoomImages={locationSearchActive ? 5 : undefined}
               />
             ))}
           </div>
@@ -1185,7 +1170,7 @@ function Properties({
       >
         <div>
           <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 2 of 9 in AGS NEST  Journey
+            Current Step: 3 of 10 in AGS NEST Process
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Want AI to match your exact customized requirements?
@@ -1200,9 +1185,9 @@ function Properties({
               else if (setActivePage) setActivePage('home');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <ArrowLeft size={15} /> Previous: 1. 🏠 Home
+            <ArrowLeft size={15} /> <span>Previous: Step 2. Home</span>
           </button>
 
           <button 
@@ -1213,7 +1198,7 @@ function Properties({
             }}
             style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' }}
           >
-            <span>Next: 3. 🤖 AI Property Finder →</span>
+            <span>Next: Step 4. AI Property Finder →</span>
           </button>
         </div>
       </div>

@@ -25,6 +25,7 @@ import {
   Check
 } from 'lucide-react';
 import GoogleMapView from '../components/GoogleMapView';
+import GlassStepBar from '../components/GlassStepBar';
 
 function Home({
   setActivePage,
@@ -81,36 +82,18 @@ function Home({
     });
   };
 
-  // Dynamic filtered properties on Home page based on selectedType
-  const displayedProperties = React.useMemo(() => {
-    if (selectedType === 'All') {
-      return PROPERTIES_DATA.slice(0, 6);
-    }
-
-    const typeMap = {
-      'Apartment': 'apartment',
-      'Luxury Villa': 'villa',
-      'Penthouse': 'penthouse',
-      'Commercial': 'commercial',
-      'Commercial Office': 'commercial',
-      'Residential Plot': 'plot'
-    };
-
-    const targetCategory = typeMap[selectedType];
-
-    const filtered = PROPERTIES_DATA.filter(
-      (p) =>
-        p.category === targetCategory ||
-        p.type === selectedType
-    );
-
-    return filtered.length > 0
-      ? filtered
-      : PROPERTIES_DATA.slice(0, 6);
-  }, [selectedType]);
-
   return (
     <div className="home-glass-wrapper">
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 16px' }}>
+        <GlassStepBar 
+          currentStepId="home"
+          setActivePage={setActivePage}
+          onPrev={() => setActivePage('auth')}
+          prevLabel="Step 1: Front Login"
+          onNext={() => setActivePage('properties')}
+          nextLabel="Step 3: Properties Catalog"
+        />
+      </div>
 
       {/* =========================================================================
           HERO SECTION (GLASS SEARCH MATRIX)
@@ -639,695 +622,246 @@ function Home({
       </section>
 
       {/* =========================================================================
-          DYNAMIC RESIDENCES SHOWCASE
+          NEXT STEPS GATEWAY CARDS (ORDERLY 1-BY-1 PROCESS PREVIEW)
          ========================================================================= */}
       <section className="section-wrapper">
-
-        <div className="section-top-header">
-
+        <div className="section-top-header" style={{ marginBottom: '20px' }}>
           <div className="section-title-group">
-
-            <span className="section-tag">
-
-              <Award size={14} />
-
-              {selectedType !== 'All'
-                ? `SHOWING: ${selectedType.toUpperCase()}`
-                : 'HANDPICKED FOR YOU'}
-
+            <span className="section-tag" style={{ color: '#38bdf8' }}>
+              <Compass size={14} /> DEDICATED ONE-BY-ONE RESIDENCE PROCESS
             </span>
-
             <h2 className="section-main-heading">
-
-              {selectedType !== 'All'
-                ? `${selectedType} `
-                : 'Trending '}
-
-              <span className="gradient-text">
-                Properties
-              </span>
-
+              Your Next Process <span className="gradient-text">Milestones</span>
             </h2>
-
             <p className="section-subtext">
-
-              {selectedType !== 'All'
-                ? `Showing ${displayedProperties.length} verified ${selectedType} listings with unique architecture and dedicated specifications.`
-                : 'High-demand residences available for instant reservation with verified RERA documentation.'}
-
+              Each stage in AGS NEST is a dedicated step. Move forward one by one to find, inspect, analyze, and book your dream home.
             </p>
-
           </div>
+        </div>
 
-          <div
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+          marginBottom: '30px'
+        }}>
+          {/* Card 1: Step 3 Properties */}
+          <div 
+            className="glass-panel glass-panel-hover"
             style={{
+              padding: '24px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%)',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
               display: 'flex',
-              gap: '10px',
-              flexWrap: 'wrap'
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}
           >
-
-            <button
-              className="glass-btn"
-              style={{
-                background:
-                  'linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)'
-              }}
-              onClick={() => {
-
-                setActivePage('trending');
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                });
-
-              }}
-            >
-              <span>
-                🔥 View All Trending Deals
-              </span>
-
-              <ArrowRight size={16} />
-
-            </button>
-
-            <button
-              className="glass-btn-secondary"
-              onClick={() => {
-
-                setActivePage('properties');
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                });
-
-              }}
-            >
-              <span>
-                All Listings ({PROPERTIES_DATA.length})
-              </span>
-            </button>
-
-          </div>
-
-        </div>
-
-        <div className="property-cards-grid">
-
-          {displayedProperties.map((property) => (
-
-            <div
-              key={property.id}
-              style={{
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
-
-              <Propertycard
-                property={property}
-                onSelectProperty={(p) =>
-                  onSelectProperty &&
-                  onSelectProperty(p)
-                }
-                onEnquire={onEnquire}
-              />
-
-              <div
-                style={{
-                  marginTop: '8px',
-                  display: 'flex',
-                  gap: '8px'
-                }}
-              >
-
-                <button
-                  className="glass-btn"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    fontSize: '13px'
-                  }}
-                  onClick={() =>
-                    onBookProperty &&
-                    onBookProperty(property)
-                  }
-                >
-
-                  <DollarSign size={15} />
-
-                  Book with Token
-                  {' '}
-                  (₹
-                  {property.tokenAmount?.toLocaleString(
-                    'en-IN'
-                  ) || '25,000'}
-                  )
-
-                </button>
-
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </section>
-
-      {/* =========================================================================
-          STANDALONE PRICE TRENDS TEASER
-         ========================================================================= */}
-      <section className="section-wrapper">
-
-        <div
-          className="ai-finder-box glass-panel"
-          style={{
-            background:
-              'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(56, 189, 248, 0.1) 100%)',
-            border:
-              '1px solid rgba(16, 185, 129, 0.3)'
-          }}
-        >
-
-          <div className="trends-teaser-grid">
-
             <div>
-
-              <span
-                className="section-tag"
-                style={{ color: '#10b981' }}
-              >
-                <TrendingUp size={14} />
-                DEDICATED MARKET INTELLIGENCE
-              </span>
-
-              <h2
-                style={{
-                  fontSize: '32px',
-                  margin: '8px 0 12px'
-                }}
-              >
-                Chennai Real Estate{' '}
-                <span className="gradient-text">
-                  Price Index & Trends
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 900, color: '#38bdf8', background: 'rgba(56, 189, 248, 0.15)', padding: '3px 10px', borderRadius: '10px' }}>
+                  STEP 3
                 </span>
-              </h2>
-
-              <p
-                style={{
-                  color: 'var(--text-sub)',
-                  fontSize: '14px',
-                  lineHeight: 1.6,
-                  marginBottom: '20px'
-                }}
-              >
-                Explore live ₹/sq.ft historical appreciation
-                rates, upcoming corridor hotspots (OMR, ECR,
-                Porur, Guindy), and calculated ROI forecast data.
+                <Building size={20} color="#38bdf8" />
+              </div>
+              <h3 style={{ fontSize: '20px', color: '#fff', margin: '0 0 8px' }}>
+                Properties Catalog
+              </h3>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+                Explore 26+ verified luxury villas, apartments, penthouses, and commercial spaces across Chennai.
               </p>
-
-              <button
-                className="glass-btn"
-                onClick={() => {
-
-                  setActivePage('trends');
-
-                  window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                  });
-
-                }}
-                style={{
-                  background:
-                    'linear-gradient(135deg, #10b981 0%, #0284c7 100%)'
-                }}
-              >
-
-                <span>
-                  📊 View Comprehensive Price Trends & Forecast
-                </span>
-
-                <ArrowRight size={16} />
-
-              </button>
-
             </div>
-
-            <div
-              className="glass-panel"
-              style={{
-                padding: '20px',
-                borderRadius: '16px',
-                background: 'rgba(0,0,0,0.3)'
-              }}
-            >
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginBottom: '12px'
-                }}
-              >
-
-                <span
-                  style={{
-                    fontSize: '13px',
-                    color: 'var(--text-muted)'
-                  }}
-                >
-                  Top Appreciating Corridor
-                </span>
-
-                <span
-                  style={{
-                    color: '#10b981',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  +18.4% YoY
-                </span>
-
-              </div>
-
-              <div
-                style={{
-                  fontSize: '20px',
-                  fontWeight: 'bold',
-                  marginBottom: '4px'
-                }}
-              >
-                ECR & OMR Tech Corridor
-              </div>
-
-              <div
-                style={{
-                  fontSize: '12px',
-                  color: 'var(--text-muted)'
-                }}
-              >
-                Avg Price: ₹8,400/sq.ft • High Demand
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* =========================================================================
-          AI PROPERTY MATCHER BANNER
-         ========================================================================= */}
-      <section className="section-wrapper">
-
-        <div className="ai-finder-box glass-panel">
-
-          <div className="ai-finder-header">
-
-            <div className="ai-glow-icon">
-              <Sparkles size={28} />
-            </div>
-
-            <h2 className="section-main-heading">
-
-              Let AI Find Your{' '}
-
-              <span className="gradient-text">
-                Dream Residence
-              </span>
-
-            </h2>
-
-            <p className="section-subtext">
-              Type your exact natural language requirements and
-              our intelligent algorithm will match the best
-              verified properties in seconds.
-            </p>
-
-          </div>
-
-          <div
-            style={{
-              textAlign: 'center',
-              marginTop: '16px'
-            }}
-          >
-
             <button
               className="glass-btn"
-              style={{
-                padding: '14px 28px',
-                fontSize: '15px'
-              }}
               onClick={() => {
-
-                setActivePage('ai-finder');
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                });
-
+                setActivePage('properties');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{
+                marginTop: '20px',
+                width: '100%',
+                padding: '10px 16px',
+                fontSize: '13px',
+                background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)'
               }}
             >
-
-              <Sparkles size={18} />
-
-              <span>
-                Launch AI Property Finder
-              </span>
-
+              <span>Explore Step 3: Properties →</span>
             </button>
-
           </div>
 
-        </div>
+          {/* Card 2: Step 4 AI Matcher */}
+          <div 
+            className="glass-panel glass-panel-hover"
+            style={{
+              padding: '24px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%)',
+              border: '1px solid rgba(168, 85, 247, 0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 900, color: '#c084fc', background: 'rgba(168, 85, 247, 0.15)', padding: '3px 10px', borderRadius: '10px' }}>
+                  STEP 4
+                </span>
+                <Sparkles size={20} color="#c084fc" />
+              </div>
+              <h3 style={{ fontSize: '20px', color: '#fff', margin: '0 0 8px' }}>
+                AI Property Matcher
+              </h3>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+                Type your budget, BHK, and location in natural language. Our AI instantly surfaces your ideal matches.
+              </p>
+            </div>
+            <button
+              className="glass-btn"
+              onClick={() => {
+                setActivePage('ai-finder');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{
+                marginTop: '20px',
+                width: '100%',
+                padding: '10px 16px',
+                fontSize: '13px',
+                background: 'linear-gradient(135deg, #9333ea 0%, #4f46e5 100%)'
+              }}
+            >
+              <span>Launch Step 4: AI Matcher →</span>
+            </button>
+          </div>
 
+          {/* Card 3: Step 5 Price Trends */}
+          <div 
+            className="glass-panel glass-panel-hover"
+            style={{
+              padding: '24px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 900, color: '#10b981', background: 'rgba(16, 185, 129, 0.15)', padding: '3px 10px', borderRadius: '10px' }}>
+                  STEP 5
+                </span>
+                <TrendingUp size={20} color="#10b981" />
+              </div>
+              <h3 style={{ fontSize: '20px', color: '#fff', margin: '0 0 8px' }}>
+                Price Trends & ROI
+              </h3>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+                Compare ₹/sq.ft price history, YoY growth, and 5-year ROI forecasts across Chennai's premier corridors.
+              </p>
+            </div>
+            <button
+              className="glass-btn"
+              onClick={() => {
+                setActivePage('trends');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{
+                marginTop: '20px',
+                width: '100%',
+                padding: '10px 16px',
+                fontSize: '13px',
+                background: 'linear-gradient(135deg, #10b981 0%, #0284c7 100%)'
+              }}
+            >
+              <span>Open Step 5: Price Trends →</span>
+            </button>
+          </div>
+        </div>
       </section>
 
       {/* =========================================================================
           INTERACTIVE GOOGLE MAP & CHENNAI PRIME CORRIDORS
          ========================================================================= */}
-      <section
-        className="section-wrapper"
-        style={{ marginTop: '10px' }}
-      >
-
+      <section className="section-wrapper" style={{ marginTop: '10px' }}>
         <GoogleMapView
           locationName="Porur, Chennai"
           title="🗺️ Explore Chennai Prime Locations & Corridors on Google Map"
-          height="440px"
+          height="400px"
           showTransitDetails={true}
         />
-
       </section>
 
       {/* =========================================================================
-          ORDERLY 9-STEP WORKFLOW JOURNEY MAP
+          ORDERLY STEP 2 BOTTOM NAVIGATION BAR
          ========================================================================= */}
-      <section
-        className="section-wrapper"
-        style={{ marginTop: '10px' }}
-      >
-
+      <section className="section-wrapper" style={{ marginTop: '20px' }}>
         <div
           className="glass-panel"
           style={{
-            padding: '28px 20px',
-            borderRadius: '22px',
-            background:
-              'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
-            border:
-              '1px solid rgba(56, 189, 248, 0.3)'
+            padding: '24px 20px',
+            borderRadius: '20px',
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
+            border: '1px solid rgba(56, 189, 248, 0.3)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '16px'
           }}
         >
-
-          <div
-            style={{
-              textAlign: 'center',
-              marginBottom: '24px'
-            }}
-          >
-
+          <div>
             <span
-              className="section-tag"
-              style={{ color: '#38bdf8' }}
+              style={{
+                fontSize: '11px',
+                color: '#38bdf8',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em'
+              }}
             >
-              <Compass size={13} />
-              ORDER-WISE 9-PAGE RESIDENCE JOURNEY
+              CURRENT STEP: 2 OF 10 • HOME DISCOVERY HUB
             </span>
+            <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
+              Ready to view the curated properties catalog?
+            </h3>
+          </div>
 
-            <h2
-              style={{
-                fontSize: '28px',
-                margin: '8px 0 6px',
-                color: '#fff'
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button
+              className="glass-btn-secondary"
+              onClick={() => {
+                setActivePage('auth');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
+              style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              Step-by-Step Experience in{' '}
+              <ArrowLeft size={15} /> <span>Previous: Step 1. Login</span>
+            </button>
 
-              <span className="gradient-text">
-                AGS NEST
-              </span>
-
-            </h2>
-
-            <p
+            <button
+              className="glass-btn"
+              onClick={() => {
+                setActivePage('properties');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               style={{
-                color: 'var(--text-muted)',
+                padding: '10px 22px',
                 fontSize: '13px',
-                maxWidth: '650px',
-                margin: '0 auto'
-              }}
-            >
-              Follow the official order-wise sequence from Home
-              Dashboard to Properties, AI Matcher, Price Drops,
-              Trends, Wishlists, Legal Audit, and Room-by-Room
-              3D Tour!
-            </p>
-
-          </div>
-
-          {/* 9-Step Grid */}
-          <div className="journey-steps-grid">
-
-            {[
-              {
-                num: '1',
-                title: 'Home Page',
-                sub: 'Hub Dashboard',
-                icon: '🏠',
-                page: 'home',
-                active: true
-              },
-              {
-                num: '2',
-                title: 'Properties',
-                sub: '26 Residences',
-                icon: '🏘️',
-                page: 'properties'
-              },
-              {
-                num: '3',
-                title: 'AI Finder',
-                sub: 'Smart Match',
-                icon: '🤖',
-                page: 'ai-finder'
-              },
-              {
-                num: '4',
-                title: 'Price Drop',
-                sub: 'Flash Deals',
-                icon: '🔔',
-                page: 'price-drop'
-              },
-              {
-                num: '5',
-                title: 'Price Trends',
-                sub: 'ROI Index',
-                icon: '📈',
-                page: 'trends'
-              },
-              {
-                num: '6',
-                title: 'Saved',
-                sub: 'Wishlist',
-                icon: '❤️',
-                page: 'saved'
-              },
-              {
-                num: '7',
-                title: 'Verified',
-                sub: 'CMDA & RERA',
-                icon: '🛡️',
-                page: 'verified'
-              },
-              {
-                num: '8',
-                title: 'Login/Register',
-                sub: 'Portal Switch',
-                icon: '🔐',
-                page: 'auth'
-              },
-              {
-                num: '9',
-                title: 'Property Detail',
-                sub: '3D Room Tour',
-                icon: '🏡',
-                page: 'properties'
-              }
-            ].map((st) => (
-
-              <div
-                key={st.num}
-                className="glass-panel"
-                onClick={() => {
-
-                  if (
-                    st.page === 'auth' &&
-                    onOpenAuthModal
-                  ) {
-                    onOpenAuthModal('customer');
-                  } else {
-                    setActivePage(st.page);
-                  }
-
-                  window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                  });
-
-                }}
-                style={{
-                  padding: '14px 10px',
-                  borderRadius: '14px',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  background: st.active
-                    ? 'rgba(56, 189, 248, 0.15)'
-                    : 'rgba(255, 255, 255, 0.03)',
-                  border: st.active
-                    ? '1px solid #38bdf8'
-                    : '1px solid rgba(255, 255, 255, 0.08)',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-
-                <div
-                  style={{
-                    fontSize: '11px',
-                    color: st.active
-                      ? '#38bdf8'
-                      : '#94a3b8',
-                    fontWeight: 800
-                  }}
-                >
-                  STEP {st.num}
-                </div>
-
-                <div
-                  style={{
-                    fontSize: '18px',
-                    margin: '4px 0 2px'
-                  }}
-                >
-                  {st.icon}
-                </div>
-
-                <strong
-                  style={{
-                    color: '#fff',
-                    fontSize: '12px',
-                    display: 'block',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  {st.title}
-                </strong>
-
-                <span
-                  style={{
-                    color: 'var(--text-muted)',
-                    fontSize: '10px'
-                  }}
-                >
-                  {st.sub}
-                </span>
-
-              </div>
-
-            ))}
-
-          </div>
-
-          {/* Primary Step-Forward Action Banner */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '16px',
-              padding: '16px 20px',
-              borderRadius: '16px',
-              background: 'rgba(56, 189, 248, 0.08)',
-              border:
-                '1px dashed rgba(56, 189, 248, 0.3)'
-            }}
-          >
-
-            <div>
-
-              <span
-                style={{
-                  fontSize: '11px',
-                  color: '#38bdf8',
-                  fontWeight: 800,
-                  textTransform: 'uppercase'
-                }}
-              >
-                CURRENT: 1. 🏠 HOME DASHBOARD
-              </span>
-
-              <h4
-                style={{
-                  margin: '4px 0 0',
-                  color: '#fff',
-                  fontSize: '16px'
-                }}
-              >
-                Ready to explore all 26 luxury properties
-                across Chennai?
-              </h4>
-
-            </div>
-
-            <div
-              style={{
+                fontWeight: 800,
+                borderRadius: '14px',
+                background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)',
                 display: 'flex',
-                gap: '10px',
-                flexWrap: 'wrap'
+                alignItems: 'center',
+                gap: '6px'
               }}
             >
-
-              <button
-                className="glass-btn"
-                onClick={() => {
-
-                  setActivePage('properties');
-
-                  window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                  });
-
-                }}
-                style={{
-                  padding: '12px 24px',
-                  fontSize: '14px',
-                  fontWeight: 800,
-                  background:
-                    'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)'
-                }}
-              >
-                <span>
-                  Next: 2. 🏘️ Properties Catalog →
-                </span>
-              </button>
-
-            </div>
-
+              <span>Next: Step 3. Properties Catalog →</span>
+            </button>
           </div>
-
         </div>
-
       </section>
 
     </div>

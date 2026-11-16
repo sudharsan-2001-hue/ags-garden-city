@@ -28,7 +28,8 @@ function UnifiedAuthPortal({
   onCustomerSuccess, 
   onAdminSuccess, 
   onClose,
-  onGuestAccess
+  onGuestAccess,
+  isModal = false
 }) {
   const [activePortal, setActivePortal] = useState(initialRole); // 'customer' or 'admin'
   
@@ -529,22 +530,23 @@ function UnifiedAuthPortal({
 
   return (
     <div 
-      className={onClose ? "glass-modal-overlay" : "mach-login-wrapper"}
+      className={isModal ? "glass-modal-overlay" : "mach-login-wrapper"}
       style={{
-        position: onClose ? 'fixed' : 'relative',
-        inset: onClose ? 0 : 'auto',
-        zIndex: onClose ? 100000 : 1,
-        background: onClose ? 'rgba(5, 7, 15, 0.92)' : undefined,
-        backdropFilter: onClose ? 'blur(16px)' : undefined
+        position: isModal ? 'fixed' : 'relative',
+        inset: isModal ? 0 : 'auto',
+        zIndex: isModal ? 100000 : 1,
+        background: isModal ? 'rgba(5, 7, 15, 0.92)' : undefined,
+        backdropFilter: isModal ? 'blur(16px)' : undefined,
+        padding: isModal ? '20px 10px' : '20px 0'
       }}
-      onClick={() => onClose && onClose()}
+      onClick={() => isModal && onClose && onClose()}
     >
       <div 
         className="mach-login-card"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Optional Close Button if in modal mode */}
-        {onClose && (
+        {isModal && onClose && (
           <button 
             type="button" 
             onClick={onClose}

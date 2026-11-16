@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import GlassStepBar from '../components/GlassStepBar';
 import { 
   Heart, 
   Sparkles, 
@@ -47,59 +48,21 @@ function SavedProperties({
   return (
     <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px', width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
       
-      {/* Top 9-Step Workflow Breadcrumb */}
-      <div 
-        className="glass-panel"
-        style={{
-          padding: '12px 18px',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px',
-          background: 'rgba(15, 17, 32, 0.9)'
+      {/* Universal Glassmorphic 10-Step Progress Stepper */}
+      <GlassStepBar 
+        currentStepId="saved"
+        setActivePage={setActivePage}
+        onPrev={() => {
+          setActivePage('trends');
+          window.scrollTo(0, 0);
         }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', flexWrap: 'wrap' }}>
-          <button onClick={() => { setActivePage('home'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            1. 🏠 Home
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { setActivePage('properties'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            2. 🏘️ Properties
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { setActivePage('trends'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            5. 📈 Trends
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: '#ec4899', fontWeight: 800, background: 'rgba(236, 72, 153, 0.15)', padding: '2px 8px', borderRadius: '10px', border: '1px solid rgba(236, 72, 153, 0.3)' }}>
-            6. ❤️ Saved Properties (Active)
-          </span>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { setActivePage('verified'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            7.  Verified
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button 
-            className="glass-btn-secondary" 
-            onClick={() => { setActivePage('trends'); window.scrollTo(0, 0); }}
-            style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '16px' }}
-          >
-            <ArrowLeft size={13} /> Step 5: Trends
-          </button>
-          <button 
-            className="glass-btn" 
-            onClick={() => { setActivePage('verified'); window.scrollTo(0, 0); }}
-            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
-          >
-            Step 7: Verified Properties →
-          </button>
-        </div>
-      </div>
+        prevLabel="Step 5: Price Trends"
+        onNext={() => {
+          setActivePage('verified');
+          window.scrollTo(0, 0);
+        }}
+        nextLabel="Step 7: Verified Properties"
+      />
 
       {/* Main Header */}
       <div className="section-top-header" style={{ marginBottom: '28px' }}>
@@ -220,7 +183,7 @@ function SavedProperties({
       >
         <div>
           <div style={{ fontSize: '11px', color: '#ec4899', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 6 of 9 in AGS NEST Journey
+            Current Step: 6 of 10 in AGS NEST Process
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Ready to inspect 100% CMDA & RERA Approved Properties?
@@ -231,9 +194,9 @@ function SavedProperties({
           <button 
             className="glass-btn-secondary" 
             onClick={() => { setActivePage('trends'); window.scrollTo(0, 0); }}
-            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <ArrowLeft size={15} /> Previous: 5. 📈 Price Trends
+            <ArrowLeft size={15} /> <span>Previous: Step 5. Price Trends</span>
           </button>
 
           <button 
@@ -241,7 +204,7 @@ function SavedProperties({
             onClick={() => { setActivePage('verified'); window.scrollTo(0, 0); }}
             style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
           >
-            <span>Next: 7.  Verified Properties →</span>
+            <span>Next: Step 7. Verified Properties →</span>
           </button>
         </div>
       </div>

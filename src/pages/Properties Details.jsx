@@ -37,8 +37,9 @@ import Virtual3DTourModal from '../components/Virtual3DTourModal';
 import DirectCallModal from '../components/DirectCallModal';
 import GoogleMapView from '../components/GoogleMapView';
 import { getPropertyRoomList } from '../utils/propertyRooms';
+import GlassStepBar from '../components/GlassStepBar';
 
-function PropertyDetails({ property, onBack, onBookProperty, onEnquire }) {
+function PropertyDetails({ property, onBack, onBookProperty, onEnquire, setActivePage }) {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [saved, setSaved] = useState(false);
   const [show3DTour, setShow3DTour] = useState(false);
@@ -90,47 +91,23 @@ function PropertyDetails({ property, onBack, onBookProperty, onEnquire }) {
         />
       )}
 
-      {/* Top 9-Step Workflow Breadcrumb */}
-      <div 
-        className="glass-panel"
-        style={{
-          padding: '10px 14px',
-          marginBottom: '18px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '8px',
-          background: 'rgba(15, 17, 32, 0.9)',
-          width: '100%',
-          boxSizing: 'border-box'
+      {/* Universal Glassmorphic 10-Step Progress Stepper */}
+      <GlassStepBar 
+        currentStepId="property-detail"
+        setActivePage={setActivePage}
+        onPrev={() => {
+          if (setActivePage) setActivePage('verified');
+          else onBack();
+          window.scrollTo(0, 0);
         }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', flexWrap: 'wrap', minWidth: 0 }}>
-          <button 
-            onClick={onBack}
-            style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', padding: 0 }}
-          >
-            ← Back
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: '#38bdf8', fontWeight: 800, background: 'rgba(56, 189, 248, 0.15)', padding: '2px 8px', borderRadius: '10px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-            🏡 Details & 3D Tour
-          </span>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: '#10b981', fontWeight: 700 }}>
-            Slot Booking
-          </span>
-        </div>
-
-        <button 
-          className="glass-btn-secondary" 
-          onClick={onBack}
-          style={{ padding: '5px 12px', fontSize: '11px', borderRadius: '16px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-        >
-          <ArrowLeft size={13} /> Back
-        </button>
-      </div>
+        prevLabel="Step 7: Verified Properties"
+        onNext={() => {
+          if (onBookProperty) onBookProperty(property);
+          else if (setActivePage) setActivePage('checkout');
+          window.scrollTo(0, 0);
+        }}
+        nextLabel={`Step 9: Slot Booking (₹${property.tokenAmount?.toLocaleString('en-IN') || '20,000'})`}
+      />
 
       {/* Special Offer Highlight Banner */}
       <div style={{
@@ -533,6 +510,62 @@ function PropertyDetails({ property, onBack, onBookProperty, onEnquire }) {
 
         </div>
 
+      </div>
+
+      {/* Bottom Step-by-Step Orderly Navigation Bar */}
+      <div 
+        className="glass-panel"
+        style={{
+          marginTop: '28px',
+          marginBottom: '20px',
+          padding: '24px',
+          borderRadius: '20px',
+          background: 'linear-gradient(135deg, rgba(15, 17, 32, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}
+      >
+        <div>
+          <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Current Step: 8 of 10 in AGS NEST Process
+          </div>
+          <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
+            Ready to secure this residence with an official token advance?
+          </h3>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button 
+            className="glass-btn-secondary" 
+            onClick={() => {
+              if (onBack) onBack();
+              else if (setActivePage) setActivePage('verified');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <ArrowLeft size={15} /> <span>Previous: Step 7. Verified</span>
+          </button>
+
+          <button 
+            className="glass-btn-secondary" 
+            onClick={() => onEnquire && onEnquire(property)}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+          >
+            📝 Free Site Visit Cab
+          </button>
+
+          <button 
+            className="glass-btn" 
+            onClick={() => onBookProperty && onBookProperty(property)}
+            style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
+          >
+            <span>Next: Step 9. 💳 Token Booking & GST →</span>
+          </button>
+        </div>
       </div>
 
     </div>

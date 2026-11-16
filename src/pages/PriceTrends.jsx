@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import GlassStepBar from '../components/GlassStepBar';
 import { 
   TrendingUp, 
   BarChart3, 
@@ -197,67 +198,23 @@ function PriceTrends({ setActivePage, onSelectPropertyForBooking }) {
   const estimatedProfit = projectedFutureVal - calcInvestment;
 
   return (
-    <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left' }}>
+    <div className="section-wrapper" style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'left', padding: '0 16px 60px' }}>
       
-      {/* Top 9-Step Workflow Breadcrumb */}
-      <div 
-        className="glass-panel"
-        style={{
-          padding: '12px 18px',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '10px',
-          background: 'rgba(15, 17, 32, 0.9)'
+      {/* Universal Glassmorphic 10-Step Progress Stepper */}
+      <GlassStepBar 
+        currentStepId="trends"
+        setActivePage={setActivePage}
+        onPrev={() => {
+          if (setActivePage) setActivePage('ai-finder');
+          window.scrollTo(0, 0);
         }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', flexWrap: 'wrap' }}>
-          <button onClick={() => { if (setActivePage) setActivePage('home'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            1. 🏠 Home
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { if (setActivePage) setActivePage('properties'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            2. 🏘️ Properties
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { if (setActivePage) setActivePage('price-drop'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            4. 🔔 Price Drop
-          </button>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <span style={{ color: '#38bdf8', fontWeight: 800, background: 'rgba(56, 189, 248, 0.15)', padding: '2px 8px', borderRadius: '10px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-            5. 📈 Price Trends (Active)
-          </span>
-          <span style={{ color: 'var(--text-muted)' }}>➔</span>
-          <button onClick={() => { if (setActivePage) setActivePage('saved'); window.scrollTo(0, 0); }} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontWeight: 600 }}>
-            6. ❤️ Saved
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button 
-            className="glass-btn-secondary" 
-            onClick={() => {
-              if (setActivePage) setActivePage('price-drop');
-              window.scrollTo(0, 0);
-            }}
-            style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '16px' }}
-          >
-            ← Step 4: Price Drop
-          </button>
-          <button 
-            className="glass-btn" 
-            onClick={() => {
-              if (setActivePage) setActivePage('saved');
-              window.scrollTo(0, 0);
-            }}
-            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '16px', background: 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)' }}
-          >
-            Step 6: Saved Properties →
-          </button>
-        </div>
-      </div>
+        prevLabel="Step 4: AI Matcher"
+        onNext={() => {
+          if (setActivePage) setActivePage('saved');
+          window.scrollTo(0, 0);
+        }}
+        nextLabel="Step 6: Saved Properties"
+      />
 
       {/* Top Banner Header */}
       <div className="section-top-header" style={{ marginBottom: '28px' }}>
@@ -597,8 +554,8 @@ function PriceTrends({ setActivePage, onSelectPropertyForBooking }) {
         }}
       >
         <div>
-          <div style={{ fontSize: '11px', color: '#38bdf8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Current Step: 5 of 9 in AGS NEST Journey
+          <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Current Step: 5 of 10 in AGS NEST Process
           </div>
           <h3 style={{ margin: '4px 0 0', color: '#fff', fontSize: '18px' }}>
             Inspect your shortlisted Saved Properties & Wishlist!
@@ -609,12 +566,12 @@ function PriceTrends({ setActivePage, onSelectPropertyForBooking }) {
           <button 
             className="glass-btn-secondary" 
             onClick={() => {
-              if (setActivePage) setActivePage('price-drop');
+              if (setActivePage) setActivePage('ai-finder');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px' }}
+            style={{ padding: '10px 18px', fontSize: '13px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <ArrowLeft size={15} /> Previous: 4. 🔔 Price Drop
+            <ArrowLeft size={15} /> <span>Previous: Step 4. AI Matcher</span>
           </button>
 
           <button 
@@ -625,7 +582,7 @@ function PriceTrends({ setActivePage, onSelectPropertyForBooking }) {
             }}
             style={{ padding: '10px 22px', fontSize: '13px', fontWeight: 800, borderRadius: '14px', background: 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)' }}
           >
-            <span>Next: 6. ❤️ Saved Properties →</span>
+            <span>Next: Step 6. ❤️ Saved Properties →</span>
           </button>
         </div>
       </div>

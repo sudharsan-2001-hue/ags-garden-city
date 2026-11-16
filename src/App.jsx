@@ -20,34 +20,86 @@ import PriceDropAlert from './pages/PriceDropAlert';
 import SavedProperties from './pages/SavedProperties';
 import VerifiedProperties from './pages/VerifiedProperties';
 import EnquiryPage from './pages/EnquiryPage';
-
+import FrontLoginPage from './pages/FrontLoginPage';
+import Conclusion from './pages/Conclusion';
 import { PROPERTIES_DATA } from './data/propertiesData';
-import { X, CheckCircle2, Sparkles } from 'lucide-react';
+
+import { X, CheckCircle2, Sparkles, ArrowLeft, ShieldCheck, Lock } from 'lucide-react';
 import safeStorage from './utils/safeStorage';
 
 function App() {
 
   // ==========================================
-  // MAIN ACTIVE PAGE
+  // AUTHORITATIVE ROUTING & STEP MANAGEMENT
   // ==========================================
-  const [activePage, setActivePage] = useState('home');
+  const VALID_PAGES = [
+    'auth', 'home', 'properties', 'ai-finder', 'trends',
+    'saved', 'verified', 'property-detail', 'checkout',
+    'conclusion', 'admin', 'calculator', 'contact', 'enquiry', 'price-drop', 'trending'
+  ];
+
+  const getPageFromHash = () => {
+    if (typeof window === 'undefined') return 'auth';
+    const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+    if (VALID_PAGES.includes(hash)) {
+      return hash;
+    }
+    const path = window.location.pathname.toLowerCase();
+    if (path === '/ags-nest' || path === '/ags-nest/') {
+      return 'home';
+    }
+    return 'auth'; // Default Step 1: Front Login
+  };
+
+  const [activePage, setActivePageState] = useState(getPageFromHash);
   const [pageHistory, setPageHistory] = useState([]);
 
+  // Navigates to a specific step/page, updating browser URL hash & history
+  const setActivePage = (newPage, replaceHistory = false) => {
+    if (!VALID_PAGES.includes(newPage)) return;
 
-  // ==========================================
-  // AGS NEST URL SUPPORT
-  // ==========================================
-  useEffect(() => {
-    const path = window.location.pathname;
-
-    if (
-      path === '/ags-nest' ||
-      path === '/ags-nest/'
-    ) {
-      setActivePage('home');
+    if (newPage !== activePage) {
+      setPageHistory((prev) => [...prev.slice(-15), activePage]);
     }
-  }, []);
 
+    setActivePageState(newPage);
+
+    const targetHash = `#${newPage}`;
+    if (window.location.hash !== targetHash) {
+      if (replaceHistory) {
+        window.history.replaceState(null, '', targetHash);
+      } else {
+        window.history.pushState(null, '', targetHash);
+      }
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Synchronize with browser Back/Forward buttons and direct URL hash changes
+  useEffect(() => {
+    const handleHashSync = () => {
+      const page = getPageFromHash();
+      setActivePageState(page);
+    };
+
+    window.addEventListener('hashchange', handleHashSync);
+    window.addEventListener('popstate', handleHashSync);
+
+    // Initial check: if no hash exists, set default hash
+    if (!window.location.hash) {
+      const initial = getPageFromHash();
+      window.history.replaceState(null, '', `#${initial}`);
+    }
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashSync);
+      window.removeEventListener('popstate', handleHashSync);
+    };
+  }, []);
 
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -67,7 +119,7 @@ function App() {
   // CUSTOMER ENTRY GATE
   // ==========================================
   const [showCustomerGate, setShowCustomerGate] =
-    useState(true);
+    useState(false);
 
 
   // ==========================================
@@ -443,181 +495,6 @@ function App() {
 
 
   // ==========================================
-  // CUSTOMER LOGIN GATE
-  // ==========================================
-  if (
-    showCustomerGate ||
-    activePage === 'auth'
-  ) {
-
-    return (
-      <div
-        className="app-container"
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          padding: '20px 10px'
-        }}
-      >
-
-        <div className="ambient-orb orb-1"></div>
-        <div className="ambient-orb orb-2"></div>
-        <div className="ambient-orb orb-3"></div>
-
-
-        <UnifiedAuthPortal
-          initialRole={
-            activePage === 'admin'
-              ? 'admin'
-              : 'customer'
-          }
-
-          onCustomerSuccess={
-            handleCustomerSuccess
-          }
-
-          onAdminSuccess={
-            handleAdminSuccess
-          }
-
-          onClose={() =>
-            setShowCustomerGate(false)
-          }
-
-          onGuestAccess={() =>
-            setShowCustomerGate(false)
-          }
-        />
-
-
-        {toastMessage && (
-          <div
-            className="glass-panel"
-            style={{
-              position: 'fixed',
-              bottom: '24px',
-              right: '24px',
-              zIndex: 99999,
-              padding: '14px 22px',
-              borderRadius: '14px',
-              background:
-                'rgba(16, 185, 129, 0.95)',
-              color: '#fff',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              boxShadow:
-                '0 10px 30px rgba(0,0,0,0.5)',
-              border:
-                '1px solid rgba(255,255,255,0.3)'
-            }}
-          >
-
-            <CheckCircle2 size={18} />
-
-            <span>
-              {toastMessage}
-            </span>
-
-          </div>
-        )}
-
-      </div>
-    );
-  }
-
-
-  // ==========================================
-  // ADMIN LOGIN GATE
-  // ==========================================
-  if (
-    activePage === 'admin' &&
-    !isAdminLoggedIn
-  ) {
-
-    return (
-      <div
-        className="app-container"
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          padding: '24px 16px'
-        }}
-      >
-
-        <div className="ambient-orb orb-1"></div>
-        <div className="ambient-orb orb-2"></div>
-        <div className="ambient-orb orb-3"></div>
-
-
-        <UnifiedAuthPortal
-          initialRole="admin"
-
-          onCustomerSuccess={
-            handleCustomerSuccess
-          }
-
-          onAdminSuccess={
-            handleAdminSuccess
-          }
-
-          onClose={() => {
-
-            setActivePage('home');
-
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
-
-          }}
-        />
-
-
-        {toastMessage && (
-          <div
-            className="glass-panel"
-            style={{
-              position: 'fixed',
-              bottom: '24px',
-              right: '24px',
-              zIndex: 99999,
-              padding: '14px 22px',
-              borderRadius: '14px',
-              background:
-                'rgba(16, 185, 129, 0.95)',
-              color: '#fff',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              boxShadow:
-                '0 10px 30px rgba(0,0,0,0.5)'
-            }}
-          >
-
-            <CheckCircle2 size={18} />
-
-            <span>
-              {toastMessage}
-            </span>
-
-          </div>
-        )}
-
-      </div>
-    );
-  }
-
-
-  // ==========================================
   // MAIN APP
   // ==========================================
   return (
@@ -632,6 +509,7 @@ function App() {
       {/* AUTH MODAL */}
       {authModal && (
         <UnifiedAuthPortal
+          isModal={true}
           initialRole={authModal}
 
           onCustomerSuccess={
@@ -837,6 +715,10 @@ function App() {
               });
 
             }}
+
+            setActivePage={
+              setActivePage
+            }
           />
 
         )}
@@ -872,6 +754,10 @@ function App() {
               handleOpenEnquiry
             }
 
+            setActivePage={
+              setActivePage
+            }
+
           />
 
         )}
@@ -903,6 +789,10 @@ function App() {
               handleBookingComplete
             }
 
+            setActivePage={
+              setActivePage
+            }
+
           />
 
         )}
@@ -919,6 +809,14 @@ function App() {
 
             onSelectPropertyForBooking={
               handleBookProperty
+            }
+
+            onSelectProperty={
+              handleSelectProperty
+            }
+
+            onEnquire={
+              handleOpenEnquiry
             }
 
           />
@@ -1067,34 +965,25 @@ function App() {
         )}
 
 
-        {/* AUTH */}
+        {/* STEP 1: FRONT LOGIN & WELCOME PORTAL */}
         {activePage === 'auth' && (
-
-          <UnifiedAuthPortal
-
-            initialRole="customer"
-
-            onCustomerSuccess={
-              handleCustomerSuccess
-            }
-
-            onAdminSuccess={
-              handleAdminSuccess
-            }
-
-            onClose={() => {
-
-              setActivePage('home');
-
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              });
-
-            }}
-
+          <FrontLoginPage
+            setActivePage={setActivePage}
+            onCustomerSuccess={handleCustomerSuccess}
+            onAdminSuccess={handleAdminSuccess}
+            currentUser={currentUser}
           />
+        )}
 
+
+        {/* STEP 10: HR SHOWCASE & CONCLUSION */}
+        {activePage === 'conclusion' && (
+          <Conclusion
+            setActivePage={setActivePage}
+            selectedProperty={selectedProperty}
+            currentUser={currentUser}
+            confirmedBookings={confirmedBookings}
+          />
         )}
 
 
@@ -1113,6 +1002,10 @@ function App() {
               });
 
             }}
+
+            setActivePage={
+              setActivePage
+            }
 
           />
 
@@ -1185,30 +1078,43 @@ function App() {
 
           ) : (
 
-            <UnifiedAuthPortal
+            <div className="section-wrapper" style={{ maxWidth: '600px', margin: '30px auto 60px', padding: '0 16px' }}>
+              <div 
+                className="glass-panel"
+                style={{
+                  padding: '12px 18px',
+                  marginBottom: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  background: 'rgba(15, 17, 32, 0.9)'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#c084fc', fontWeight: 800 }}>
+                  <ShieldCheck size={16} /> <span>AGS NEST Executive Admin Portal</span>
+                </div>
+                <button
+                  className="glass-btn-secondary"
+                  onClick={() => { setActivePage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  style={{ padding: '5px 12px', fontSize: '12px', borderRadius: '14px' }}
+                >
+                  ← Home
+                </button>
+              </div>
 
-              initialRole="admin"
-
-              onCustomerSuccess={
-                handleCustomerSuccess
-              }
-
-              onAdminSuccess={
-                handleAdminSuccess
-              }
-
-              onClose={() => {
-
-                setActivePage('home');
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                });
-
-              }}
-
-            />
+              <UnifiedAuthPortal
+                initialRole="admin"
+                onCustomerSuccess={handleCustomerSuccess}
+                onAdminSuccess={handleAdminSuccess}
+                onClose={() => {
+                  setActivePage('home');
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  });
+                }}
+              />
+            </div>
 
           )
 
@@ -1234,28 +1140,6 @@ function App() {
       />
 
 
-      {/* AUTH MODAL */}
-      {authModal && (
-
-        <UnifiedAuthPortal
-
-          initialRole={authModal}
-
-          onCustomerSuccess={
-            handleCustomerSuccess
-          }
-
-          onAdminSuccess={
-            handleAdminSuccess
-          }
-
-          onClose={() =>
-            setAuthModal(null)
-          }
-
-        />
-
-      )}
 
 
       {/* ==========================================
